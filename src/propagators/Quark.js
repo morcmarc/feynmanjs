@@ -1,24 +1,19 @@
-module.exports = (function() {
+var Klass            = require('./../helpers/Klass');
+var AbstractParticle = require('./AbstractParticle');
 
-  var _color  = '#000';
-  var _length = 100;
+module.exports = (function(_super) {
 
-  var Quark = function(id, anti, color, length) {
+  Klass.__extends(Quark, _super);
 
-    if(id === undefined) {
-      throw new Error('Missing id argument!');
-    }
+  function Quark(id, anti, color, length) {
 
-    this.anti   = anti   || false;
-    this.color  = color  || _color;
-    this.length = length || _length;
-
-    return this;
-  };
+    Quark.__super__.constructor.apply(this, [id, anti || false, color, length]);
+  }
 
   Quark.prototype.draw = function(canvas) {
 
   };
 
   return Quark;
-})();
+
+})(AbstractParticle);

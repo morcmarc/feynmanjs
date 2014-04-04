@@ -1,3 +1,5 @@
+var ParticleGenerator = require('./ParticleGenerator');
+
 module.exports = (function() {
 
   var Stage = function() {
@@ -34,7 +36,7 @@ module.exports = (function() {
 
   var _drawTitle = function(ctx) {
 
-    ctx.canvas.text(this.title).font({
+    ctx.canvas.text(ctx.title).font({
       family : 'Helvetica',
       size   : 14,
       anchor : 'left'

@@ -1,23 +1,19 @@
-module.exports = (function() {
+var Klass            = require('./../helpers/Klass');
+var AbstractParticle = require('./AbstractParticle');
 
-  var _color  = '#009933';
-  var _length = 100;
+module.exports = (function(_super) {
 
-  var Gluon = function(id, color, length) {
+  Klass.__extends(Gluon, _super);
 
-    if(id === undefined) {
-      throw new Error('Missing id argument!');
-    }
+  function Gluon(id, color, length) {
 
-    this.color  = color  || _color;
-    this.length = length || _length;
-
-    return this;
-  };
+    Gluon.__super__.constructor.apply(this, [id, undefined, color || '#009933', length]);
+  }
 
   Gluon.prototype.draw = function(canvas) {
 
   };
 
   return Gluon;
-})();
+
+})(AbstractParticle);

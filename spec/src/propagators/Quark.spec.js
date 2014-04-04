@@ -1,17 +1,17 @@
-var Electron = require('./../../../src/propagators/Electron');
+var Quark = require('./../../../src/propagators/Quark');
 
-describe('Electron', function() {
+describe('Quark', function() {
 
   it('cannot be instantiated without an id', function() {
 
     expect(function() {
-      new Electron();
+      new Quark();
     }).toThrow(new Error('Missing id argument!'));
   });
 
   it('should have defaults', function() {
 
-    var e = new Electron('e1');
+    var e = new Quark('q1');
     expect(e.anti).toBe(false);
     expect(e.color).toEqual('#000');
     expect(e.length).toEqual(100);
@@ -19,7 +19,7 @@ describe('Electron', function() {
 
   it('must implement draw() method', function() {
 
-    var e = new Electron('e1');
+    var e = new Quark('e1');
     expect(function() {
       e.draw();
     }).not.toThrow(new Error('Cannot call abstract method!'));
