@@ -1,6 +1,5 @@
 #Feynman
-
-=======
+========
 
 **A simple cross-browser Javascript library for generating (animated) Feynman diagrams using SVG.**
 
@@ -56,6 +55,8 @@ Alternatively you can run it in the browser at '/spec/'. There is also a grunt t
 
 \[1\] [http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf](http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf)
 
-* [Marcell Jusztin](mailto:hello@morcmarc.com)
+---
+
+[Marcell Jusztin](mailto:hello@morcmarc.com)
 
 Copyright (c) 2014 Marcell Jusztin. This software is licensed under the MIT License.
