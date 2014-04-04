@@ -1,8 +1,10 @@
 var Stage = require('./../../src/Stage');
 
+var fontSpy = function() {}
+
 var canvas = {
-  size: function(w, h) { },
-  text: function(t) { }
+  size: function() { },
+  text: function() { return { font: fontSpy }; }
 };
 
 describe('Stage', function() {
@@ -28,9 +30,9 @@ describe('Stage', function() {
 
     it('should draw title on canvas', function() {
 
-      spyOn(canvas, 'text');
+      fontSpy = jasmine.createSpy('fontSpy');
       stage.setCanvas(canvas).draw();
-      expect(canvas.text).toHaveBeenCalledWith('Feynman');
+      expect(fontSpy).toHaveBeenCalled();
     });
   });
 });

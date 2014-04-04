@@ -28,8 +28,17 @@ module.exports = (function() {
 
   Stage.prototype.draw = function() {
 
-    this.canvas.text(this.title);
+    _drawTitle(this);
     return this;
+  };
+
+  var _drawTitle = function(ctx) {
+
+    ctx.canvas.text(this.title).font({
+      family : 'Helvetica',
+      size   : 14,
+      anchor : 'left'
+    });
   };
 
   return Stage;
