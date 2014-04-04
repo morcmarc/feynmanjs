@@ -13,9 +13,7 @@ module.exports = (function() {
       throw new Error('Missing data argument!');
     }
 
-    var stage = new Stage();
-
-    return stage;
+    return new Stage();
   };
 
   return LatexParser;
