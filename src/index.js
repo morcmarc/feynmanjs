@@ -1,4 +1,4 @@
-var ParserFactory = require('./ParserFactory');
+var ParserFactory = require('./parsers/ParserFactory');
 
 module.exports = (function() {
 
@@ -7,6 +7,11 @@ module.exports = (function() {
     return this;
   };
 
+  /**
+   * Draw diagram onto canvas.
+   * @param canvas Id of canvas element
+   * @param data   Diagram properties
+   */
   Feynman.prototype.draw = function(canvas, data) {
 
     if (typeof canvas === 'undefined') {
@@ -17,10 +22,13 @@ module.exports = (function() {
       throw new Error('Missing data argument!');
     }
 
-
     var svgCanvas  = new SVG(canvas);
     var parser     = ParserFactory.getParser(data.lang);
-    var parsedData = parser.parse(data);
+    var stage      = parser.parse(data);
+
+    stage.setCanvas(svgCanvas).draw();
+
+    return this;
   };
 
   return Feynman;

@@ -15,6 +15,20 @@ module.exports = (function() {
 
     // Main properties (optional)
     this.exchanges   = [];
+
+    return this;
+  };
+
+  Stage.prototype.setCanvas = function(canvas) {
+
+    this.canvas = canvas;
+    return this;
+  };
+
+  Stage.prototype.draw = function() {
+
+    this.canvas.text(this.title);
+    return this;
   };
 
   return Stage;

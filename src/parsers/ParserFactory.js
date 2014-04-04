@@ -1,5 +1,5 @@
-var StandardParser = require('./parsers/StandardParser');
-var LatexParser    = require('./parsers/LatexParser');
+var StandardParser = require('./StandardParser');
+var LatexParser    = require('./LatexParser');
 
 module.exports = {
 
