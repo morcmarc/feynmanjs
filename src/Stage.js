@@ -22,6 +22,7 @@ module.exports = (function() {
   Stage.prototype.setCanvas = function(canvas) {
 
     this.canvas = canvas;
+    this.canvas.size(this.width, this.height);
     return this;
   };
 

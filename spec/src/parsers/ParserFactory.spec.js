@@ -1,6 +1,6 @@
-var StandardParser = require('./../../src/parsers/StandardParser');
-var LatexParser    = require('./../../src/parsers/LatexParser');
-var ParserFactory  = require('./../../src/parsers/ParserFactory');
+var StandardParser = require('./../../../src/parsers/StandardParser');
+var LatexParser    = require('./../../../src/parsers/LatexParser');
+var ParserFactory  = require('./../../../src/parsers/ParserFactory');
 
 describe('ParserFactory', function () {
 

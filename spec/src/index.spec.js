@@ -2,7 +2,6 @@ var Feynman     = require('./../../src/index');
 
 window.SVG  = function() {};
 
-
 describe('Feynman', function() {
 
   var canvas  = document.createElement('canvas');
