@@ -1,4 +1,6 @@
-var Stage = require('./../Stage');
+var Stage             = require('./../Stage');
+var ParticleGenerator = require('./../ParticleGenerator');
+var Vertex            = require('./../Vertex');
 
 module.exports = (function() {
   
@@ -62,7 +64,15 @@ module.exports = (function() {
     if(propagators === undefined) {
       throw new Error('Missing propagators!');
     }
-    stage.propagators = propagators;
+
+    propagators.forEach(function(propagatorAttributes) {
+
+      var p = ParticleGenerator.getParticle(propagatorAttributes);
+
+      if(p !== undefined) {
+        stage.propagators.push(p);
+      }
+    });
   };
 
   var _setVertices = function(stage, vertices) {
@@ -70,7 +80,15 @@ module.exports = (function() {
     if(vertices === undefined) {
       throw new Error('Missing vertices!');
     }
-    stage.vertices = vertices;
+
+    vertices.forEach(function(vertexAttributes) {
+
+      var v = new Vertex(vertexAttributes.id, vertexAttributes.inbound, vertexAttributes.outbound);
+
+      if(v !== undefined) {
+        stage.vertices.push(v);
+      }
+    });
   };
 
   var _setExchanges = function(stage, exchanges) {

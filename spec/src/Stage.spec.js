@@ -14,6 +14,7 @@ describe('Stage', function() {
   beforeEach(function() {
 
     stage = new Stage();
+    stage.vertices = [];
   });
 
   describe('setCanvas()', function() {

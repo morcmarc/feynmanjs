@@ -1,5 +1,3 @@
-var ParticleGenerator = require('./ParticleGenerator');
-
 module.exports = (function() {
 
   var Stage = function() {
@@ -31,6 +29,7 @@ module.exports = (function() {
   Stage.prototype.draw = function() {
 
     _drawTitle(this);
+    _drawVertices(this);
     return this;
   };
 
@@ -40,6 +39,13 @@ module.exports = (function() {
       family : 'Helvetica',
       size   : 14,
       anchor : 'left'
+    });
+  };
+
+  var _drawVertices = function(ctx) {
+
+    ctx.vertices.forEach(function(vertex) {
+      vertex.draw(ctx.canvas);
     });
   };
 
