@@ -32,7 +32,7 @@ module.exports = (function(_super) {
     if(canvas) {
 
       canvas.path(pathString, true).fill('none').stroke({ width: 1, color: this.color });
-      return;
+      return this;
     }
 
     return pathString;

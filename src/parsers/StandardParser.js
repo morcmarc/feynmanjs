@@ -1,6 +1,7 @@
 var Stage             = require('./../Stage');
 var ParticleGenerator = require('./../ParticleGenerator');
 var Vertex            = require('./../Vertex');
+var Exchange          = require('./../Exchange');
 
 module.exports = (function() {
   
@@ -93,9 +94,18 @@ module.exports = (function() {
 
   var _setExchanges = function(stage, exchanges) {
 
-    if(exchanges !== undefined) {
-      stage.exchanges = exchanges;
+    if(exchanges === undefined) {
+      return [];
     }
+
+    exchanges.forEach(function(exchangeAttributes) {
+
+      var e = new Exchange(exchangeAttributes.id, exchangeAttributes.inbound, exchangeAttributes.outbound, exchangeAttributes.particles);
+
+      if(e !== undefined) {
+        stage.exchanges.push(e);
+      }
+    });
   };
 
   return StandardParser;

@@ -1,6 +1,6 @@
 var Vertex = require('./../../src/Vertex');
 
-describe('Vertex', function() {
+describe('Exchange', function() {
 
   it('throws an error if no id is given', function() {
 

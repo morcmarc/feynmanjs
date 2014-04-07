@@ -1,6 +1,7 @@
 var Electron = require('./propagators/Electron');
 var Quark    = require('./propagators/Quark');
 var Gluon    = require('./propagators/Gluon');
+var Photon   = require('./propagators/Photon');
 
 module.exports = {
 
@@ -28,6 +29,10 @@ module.exports = {
 
     if(data.type === 'g') {
       return new Gluon(data.id, data.color, data.length);
+    }
+
+    if(data.type === 'ph') {
+      return new Photon(data.id, data.color, data.length);
     }
   }
 };

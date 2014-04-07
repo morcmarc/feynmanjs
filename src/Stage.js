@@ -30,6 +30,8 @@ module.exports = (function() {
 
     _drawTitle(this);
     _drawVertices(this);
+    _drawPropagators(this);
+    _drawExchanges(this);
     return this;
   };
 
@@ -46,6 +48,20 @@ module.exports = (function() {
 
     ctx.vertices.forEach(function(vertex) {
       vertex.draw(ctx.canvas);
+    });
+  };
+
+  var _drawPropagators = function(ctx) {
+
+    ctx.propagators.forEach(function(particle) {
+      particle.draw(ctx.canvas);
+    });
+  };
+
+  var _drawExchanges = function(ctx) {
+
+    ctx.exchanges.forEach(function(exchange) {
+      exchange.draw(ctx.canvas);
     });
   };
 

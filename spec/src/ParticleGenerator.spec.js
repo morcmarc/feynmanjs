@@ -1,6 +1,7 @@
 var Electron          = require('./../../src/propagators/Electron');
 var Quark             = require('./../../src/propagators/Quark');
 var Gluon             = require('./../../src/propagators/Gluon');
+var Photon            = require('./../../src/propagators/Photon');
 var ParticleGenerator = require('./../../src/ParticleGenerator');
 
 describe('ParticleGenerator', function() {
@@ -42,6 +43,12 @@ describe('ParticleGenerator', function() {
 
       var e = ParticleGenerator.getParticle({ id: 'p1', type: 'g' });
       expect(e instanceof Gluon).toBe(true);
+    });
+
+    it('should be able to create Photons', function() {
+
+      var e = ParticleGenerator.getParticle({ id: 'p1', type: 'ph' });
+      expect(e instanceof Photon).toBe(true);
     });
   });
 });
