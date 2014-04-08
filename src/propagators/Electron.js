@@ -29,6 +29,11 @@ module.exports = (function(_super) {
     canvas.polygon(polygonString).fill(this.color);
   };
 
+  Electron.prototype.getPath = function() {
+
+    return '';
+  };
+
   return Electron;
 
 })(AbstractParticle);

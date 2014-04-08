@@ -14,6 +14,11 @@ module.exports = (function(_super) {
 
   };
 
+  Quark.prototype.getPath = function() {
+
+    return '';
+  };
+
   return Quark;
 
 })(AbstractParticle);

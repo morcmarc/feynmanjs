@@ -14,7 +14,7 @@ describe('Photon', function() {
     var e = new Photon('ph1');
     expect(e.anti).toBe(undefined);
     expect(e.color).toEqual('#0066FF');
-    expect(e.length).toEqual(100);
+    expect(e.length).toEqual(120);
   });
 
   it('must implement draw() method', function() {
@@ -25,12 +25,26 @@ describe('Photon', function() {
     }).not.toThrow(new Error('Cannot call abstract method!'));
   });
 
-  describe('draw()', function() {
+  it('must implement getPath() method', function() {
 
-    it('returns SVG path string if no canvas is given', function() {
+    var e = new Photon('e1');
+    expect(function() {
+      e.getPath();
+    }).not.toThrow(new Error('Cannot call abstract method!'));
+  });
+
+  describe('getPath()', function() {
+
+    it('returns path string for Line', function() {
 
       var e = new Photon('g1', '#000', 24);
-      expect(e.draw()).toEqual('M0,0 Q3,8 6,0 Q9,-8 12,0 Q15,8 18,0 Q21,-8');
+      expect(e.getPath(24, 'line')).toEqual('M 0,0 C 0.814,1.278 3.183,5 5,5 S 9.186,1.278 10,0 S 13.183,-5 15,-5 S 19.186,-1.278 20,0');
+    });
+
+    it('returns path string for Arc', function() {
+
+      var e = new Photon('g1', '#000', 24);
+      expect(e.getPath(24, 'arc')).toEqual('M 0,0 C -0.823,1.272 -3.219,4.977 -2.462,6.629 S 2.666,8.883 3.958,8.636 C 5.303,8.089 8.613,5.172 10.359,5.676 S 13.346,10.414 14.253,12.007 C 15.153,12.494 19.171,14.317 20.693,13.324 S 22.165,7.919 21.73,6.677');
     });
   });
 });

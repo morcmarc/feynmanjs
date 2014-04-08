@@ -21,6 +21,11 @@ module.exports = (function() {
     throw new Error('Cannot call abstract method!');
   };
 
+  AbstractParticle.prototype.getPath = function() {
+
+    throw new Error('Cannot call abstract method!');
+  };
+
   return AbstractParticle;
 
 })();

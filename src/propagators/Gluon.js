@@ -38,6 +38,11 @@ module.exports = (function(_super) {
     return pathString;
   };
 
+  Gluon.prototype.getPath = function() {
+
+    return '';
+  };
+
   return Gluon;
 
 })(AbstractParticle);
