@@ -84,7 +84,7 @@ module.exports = (function() {
 
     vertices.forEach(function(vertexAttributes) {
 
-      var v = new Vertex(vertexAttributes.id, vertexAttributes.inbound, vertexAttributes.outbound);
+      var v = new Vertex(vertexAttributes.id, vertexAttributes.position, vertexAttributes.inbound, vertexAttributes.outbound);
 
       if(v !== undefined) {
         stage.vertices.push(v);

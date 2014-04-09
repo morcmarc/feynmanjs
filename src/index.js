@@ -31,5 +31,7 @@ module.exports = (function() {
     return this;
   };
 
+  window.Feynman = Feynman;
+
   return Feynman;
 })();

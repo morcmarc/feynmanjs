@@ -1,9 +1,13 @@
 module.exports = (function() {
 
-  var Vertex = function(id, inbound, outbound) {
+  var Vertex = function(id, position, inbound, outbound) {
 
     if(id === undefined) {
       throw new Error('Missing id argument!');
+    }
+
+    if(position === undefined) {
+      throw new Error('Missing position argument!');
     }
 
     if(inbound === undefined && outbound === undefined) {
@@ -15,6 +19,7 @@ module.exports = (function() {
     }
 
     this.id       = id;
+    this.position = position;
     this.inbound  = inbound  || [];
     this.outbound = outbound || [];
     this.x        = 0;

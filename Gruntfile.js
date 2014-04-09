@@ -29,8 +29,8 @@ module.exports = function(grunt) {
           'dist/feynman.js': ['src/index.js']
         },
         options: {
-          'debug'     : true,
-          'standalone': 'Feynman'
+          debug      : true,
+          standalone : 'Feynman'
         }
       },
       test: {
@@ -46,6 +46,14 @@ module.exports = function(grunt) {
       feynman: {
         options: {
           specs: './spec/feynman.spec.js'
+        }
+      }
+    },
+    notify: {
+      test: {
+        options: {
+          title: 'Running Unit Tests Complete',  // optional
+          message: 'All Jasmine tests are passing', //required
         }
       }
     },
@@ -70,6 +78,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-notify');
 
   // Default task(s).
   grunt.registerTask('default', 'Browserify and uglify', function() {
@@ -84,6 +93,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('Building tests...');
     grunt.task.run('browserify:test');
     grunt.task.run('jasmine:feynman');
+    grunt.task.run('notify:test');
   });
 
 };

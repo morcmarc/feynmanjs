@@ -23,10 +23,12 @@ describe('StandardParser', function() {
       vertices: [
         {
           id: 'v1',
+          position: [ 'l', 0 ],
           inbound : [ 'p1', 'p2' ]
         },
         {
           id: 'v2',
+          position: [ 'r', 0 ],
           outbound: [ 'p3', 'p4' ]
         }
       ],
@@ -43,6 +45,7 @@ describe('StandardParser', function() {
       propagators : [{ id: 'p1', type: 'e-', color: '#333', length: 200 }],
       vertices    : [{
         id: 'v1',
+        position: [ 'l', 0 ],
         inbound : [ 'p1', 'p2' ]
       }]
     };

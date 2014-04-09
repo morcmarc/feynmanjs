@@ -38,7 +38,7 @@ describe('Gluon', function() {
     it('returns SVG path string if no canvas is given', function() {
 
       var e = new Gluon('g1', '#000', 24);
-      expect(e.draw()).toEqual('M0,1 Q3,1 6,2 Q9,4 10,9 Q12,15 6,15 Q0,15 2,9 Q3,4 6,2 Q9,1 12,1 Q15,1 18,2 Q21,4 22,9 Q24,15 18,15 Q12,15 14,9 Q15,4 18,2 Q21,1 24,0');
+      expect(e.getPath('line')).toEqual('M 0,0 A 11.25 9 0 0 0 11.25,-9 A 3.75 6 0 1 0 3.75,-9 A 11.25 9 0 0 0 15,0');
     });
   });
 });

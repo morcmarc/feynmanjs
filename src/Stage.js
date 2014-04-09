@@ -23,6 +23,9 @@ module.exports = (function() {
 
     this.canvas = canvas;
     this.canvas.size(this.width, this.height);
+
+    _moveVertices(this);    
+
     return this;
   };
 
@@ -33,6 +36,15 @@ module.exports = (function() {
     _drawPropagators(this);
     _drawExchanges(this);
     return this;
+  };
+
+  var _moveVertices = function(ctx) {
+
+    ctx.vertices.forEach(function(vertex) {
+      var coord = _getVertexCoordinates(vertex, ctx);
+      vertex.x  = coord[0];
+      vertex.y  = coord[1];
+    });
   };
 
   var _drawTitle = function(ctx) {
@@ -64,6 +76,31 @@ module.exports = (function() {
     ctx.exchanges.forEach(function(exchange) {
       exchange.draw(ctx.canvas);
     });
+  };
+
+  var _getVertexCoordinates = function(vertex, ctx) {
+
+    var wUnit = Math.floor(ctx.width  / 4);
+    var hUnit = Math.floor(ctx.height / 4);
+
+    var x = 0;
+    var y = 0;
+
+    switch(vertex.position[0]) {
+      case 'l':
+        x = wUnit;
+        break;
+      case 'c':
+        x = wUnit * 2;
+        break;
+      case 'r':
+        x = wUnit * 3;
+        break;
+    }
+
+    y = vertex.position[1] * hUnit;
+
+    return [x, y];
   };
 
   return Stage;
