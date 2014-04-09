@@ -8,16 +8,16 @@ module.exports = (function(_super) {
 
   function Photon(id, color, length) {
 
-    Photon.__super__.constructor.apply(this, [id, undefined, color || '#0066FF', length || 120]);
+    Photon.__super__.constructor.apply(this, [id, undefined, color || '#0066FF', length || 109]);
   }
 
   Photon.prototype.draw = function(canvas) {
 
-    var path = this.getPath(this.length, 'line');
+    var path = this.getPath('arc');
     canvas.path(path, true)
-          .transform()
           .fill('none')
-          .stroke({ width: 1, color: this.color });
+          .stroke({ width: 1, color: this.color })
+          .translate(150, 150);
   };
 
   /**
@@ -31,11 +31,10 @@ module.exports = (function(_super) {
    * [1] http://mathb.in/1447
    * [2] https://github.com/photino/jquery-feyn/blob/master/js/jquery.feyn-1.0.1.js
    *
-   * @param distance
    * @param shape
    * @returns {*}
    */
-  Photon.prototype.getPath = function(distance, shape) {
+  Photon.prototype.getPath = function(shape) {
 
     var PI     = Math.PI;
     var lambda = 0.51128733;
@@ -48,11 +47,13 @@ module.exports = (function(_super) {
 
     var pts = (dir
       ? [[0, 0], 'C', [t, -b], [q, -a], [p, -a],
-               'S', [2 * p - t, -b], [2 * p, 0], 'S', [2 * p + q, a], [3 * p, a],
-               'S', [4 * p - t, b]]
+                 'S', [2 * p - t, -b], [2 * p, 0],
+                 'S', [2 * p + q, a], [3 * p, a],
+                 'S', [4 * p - t, b]]
       : [[0, 0], 'C', [t, b], [q, a], [p, a],
-               'S', [2 * p - t, b], [2 * p, 0], 'S', [2 * p + q, -a], [3 * p, -a],
-               'S', [4 * p - t, -b]]
+                 'S', [2 * p - t, b], [2 * p, 0],
+                 'S', [2 * p + q, -a], [3 * p, -a],
+                 'S', [4 * p - t, -b]]
     );
 
     var tile = (dir
@@ -68,9 +69,13 @@ module.exports = (function(_super) {
 
     switch(shape) {
       case 'line':
-        return Bezier.line(pts, 4 * p, distance);
+        return Bezier.line(pts, 4 * p, this.length);
       case 'arc':
-        return Bezier.arc('photon', tile, p, distance);
+        return Bezier.arc('photon', tile, p, this.length);
+      case 'loop':
+        return Bezier.loop('photon', tile, p, this.length);
+      default:
+        return Bezier.line(pts, 4 * p, this.length);
     }
   };
 

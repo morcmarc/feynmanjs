@@ -1,5 +1,7 @@
 var Klass            = require('./../helpers/Klass');
 var AbstractParticle = require('./AbstractParticle');
+var Bezier           = require('./../helpers/Bezier');
+
 
 module.exports = (function(_super) {
 
@@ -12,26 +14,27 @@ module.exports = (function(_super) {
 
   Electron.prototype.draw = function(canvas) {
 
-    canvas.line(0, 0, this.length, 0).fill(this.color).stroke({
-      width: 1,
-      color: this.color
-    });
-
-    var polygonString, x1, x2, x3, y1, y2, y3;
-    x1 = this.length / 2 + 5;
-    y1 = 0;
-    x2 = this.length / 2 - 5;
-    y2 = 3;
-    x3 = this.length / 2 - 5;
-    y3 = -3;
-    polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3;
-
-    canvas.polygon(polygonString).fill(this.color);
+    canvas.path(this.getPath('line'))
+          .fill('none')
+          .stroke({ width: 1, color: this.color })
+          .translate(150, 150);
   };
 
-  Electron.prototype.getPath = function() {
+  Electron.prototype.getPath = function(shape) {
 
-    return '';
+    var tile = [ [1, 1], [2, 1] ];
+    var l    = 1;
+
+    switch(shape) {
+      case 'line':
+        return Bezier.line(tile, l, this.length);
+      case 'arc':
+        return Bezier.arc('electron', tile, l, this.length);
+      case 'loop':
+        return Bezier.loop('electron', tile, l, this.length);
+      default:
+        return Bezier.line(tile, l, this.length);
+    }
   };
 
   return Electron;

@@ -14,7 +14,7 @@ describe('Electron', function() {
     var e = new Electron('e1');
     expect(e.anti).toBe(false);
     expect(e.color).toEqual('#000');
-    expect(e.length).toEqual(100);
+    expect(e.length).toEqual(109);
   });
 
   it('must implement draw() method', function() {

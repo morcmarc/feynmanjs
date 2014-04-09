@@ -17,13 +17,17 @@ module.exports = (function() {
     this.id       = id;
     this.inbound  = inbound  || [];
     this.outbound = outbound || [];
+    this.x        = 0;
+    this.y        = 0;
 
     return this;
   };
 
   Vertex.prototype.draw = function(canvas) {
 
-    canvas.circle(3).fill({ color: '#000' });
+    canvas.circle(3)
+          .fill({ color: '#000' })
+          .translate(this.x, this.y);
   };
 
   return Vertex;

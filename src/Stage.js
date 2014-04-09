@@ -39,7 +39,7 @@ module.exports = (function() {
 
     ctx.canvas.text(ctx.title).font({
       family : 'Helvetica',
-      size   : 14,
+      size   :  14,
       anchor : 'left'
     });
   };

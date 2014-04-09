@@ -41,11 +41,11 @@ module.exports = {
   },
 
   /**
-   * Fit a given Bezier segment (C) onto an (L) long straight line (N) times.
+   * Project a given (Lp) 1/4 period long Bezier spline (C) onto an (Ll) long straight line.
    *
-   * @param tile       (C) Curve segment
-   * @param period     (N) Number of periods
-   * @param length     (L) Length of propagator
+   * @param tile       (C)  Curve segment
+   * @param period     (Lp) Length of a quarter period
+   * @param length     (Ll) Length of propagator
    * @returns {string} SVG path
    */
   line: function(tile, period, length) {
@@ -77,12 +77,12 @@ module.exports = {
   },
 
   /**
-   * Fit a given Bezier segment (C) onto an (L) long arc (N) times.
+   * Project a given (Lp) quarter period long Bezier spline (C) onto an (Ll) long arc.
    *
    * @param particle   Type of particle, e.g.: "photon"
-   * @param tile       (C) Curve segment
-   * @param period     (N) Number of periods
-   * @param length     (L) Length
+   * @param tile       (C)  Curve segment
+   * @param period     (Lp) Length of a 1/4 period
+   * @param length     (Ll) Length
    * @returns {string} SVG path
    */
   arc: function(particle, tile, period, length) {
@@ -98,6 +98,7 @@ module.exports = {
     for(var n = 0; n <= (PI - 2 * phi) / theta; n++) {
       segment.push([length * (t * Math.cos(theta * n + phi) + 0.5), length * (t * Math.sin(theta * n + phi) - Math.sqrt(t * t - 0.25))]);
     }
+
     for(var i = 0, l = segment.length - 1, model; i < l; i++) {
 
       model = (particle === 'photon' ? tile[i % 2] : tile);
@@ -110,10 +111,60 @@ module.exports = {
         );
       }
     }
+
     return bezier.join(' ').replace(/\s[A-Z]$/, '');
   },
 
-  loop: function() {
+  /**
+   * Project a given (Lp) quarter period long Bezier spline (C) onto an (Ll) diameter circle.
+   *
+   * @param particle   Type of particle, e.g.: "photon"
+   * @param tile       (C) Curve segment
+   * @param period     (N) Length of a 1/4 period
+   * @param length     (L) Length
+   * @returns {string} SVG path
+   */
+  loop: function(particle, tile, period, length) {
 
+    var cw      = true;
+    var theta   = 2 * Math.asin(2 * period / length);
+    var num     = 2 * PI / theta;
+    var segment = [];
+    var lift    = (cw ? -0.5 : 0.5);
+    var bezier  = ['M', (particle === 'gluon' ? lift + ',0' : '0,' + lift)];
+
+    // find the modified distance such that the number of tiles is an integer
+    for(var x = -0.1, dis = length; Math.floor(num) % 4 || num - Math.floor(num) > 0.1; x += 0.001) {
+
+      length = (1 + x) * dis;
+      theta  = 2 * Math.asin(2 * period / length);
+      num    = 2 * PI / theta;
+    }
+
+    // get coordinate pairs for the endpoint of segment
+    for(var n = 0; n <= num; n++) {
+
+      var sx = 0.5 * length * (1 - Math.cos(theta * n));
+      var sy = 0.5 * length * Math.sin(theta * n);
+      segment.push([sx, sy]);
+    }
+
+    for(var i = 0, l = segment.length - 1, model; i < l; i++) {
+
+      // two photon tiles form a period whereas one gluon tile is a period
+      model = (particle === 'photon' ? tile[i % 2] : tile);
+
+      // get bezier path for photon and gluon arc
+      for(var j = 0, m = model.length, item; j < m; j++) {
+
+        item = model[j];
+        bezier.push(isArray(item)
+          ? this.getCoordinatesInBezier(segment[i][0], segment[i][1], segment[i+1][0], segment[i+1][1], item[0], item[1])
+          : item
+        );
+      }
+    }
+
+    return bezier.join(' ').replace(/\s[A-Z]$/, '') + ' Z';
   }
 };
