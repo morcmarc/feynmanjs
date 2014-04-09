@@ -38,8 +38,9 @@ module.exports = (function() {
   var _drawTitle = function(ctx) {
 
     ctx.canvas.text(ctx.title).font({
-      family : 'Helvetica',
+      family : 'Georgia',
       size   :  14,
+      style  : 'italic',
       anchor : 'left'
     });
   };

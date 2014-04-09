@@ -1,5 +1,6 @@
 var Klass            = require('./../helpers/Klass');
 var AbstractParticle = require('./AbstractParticle');
+var Bezier           = require('./../helpers/Bezier');
 
 module.exports = (function(_super) {
 
@@ -12,35 +13,65 @@ module.exports = (function(_super) {
 
   Gluon.prototype.draw = function(canvas) {
 
-    var loopLength = 12;
-    var loops      = Math.floor(this.length / loopLength);
-    var pathString = '';
-
-    for(var i = 0; i < loops; i++) {
-
-      if(i === 0) {
-        pathString += 'M';
-      }
-
-      pathString += (i * 12) + ',1 Q' + (i * 12 + 3) + ',1 ' + (i * 12 + 6) + ',2 Q' + (i * 12 + 9) + ',4 ' + (i * 12 + 10) + ',9 Q' + (i * 12 + 12) + ',15 ' + (i * 12 + 6) + ',15 Q' + (i * 12) + ',15 ' + (i * 12 + 2) + ',9 Q' + (i * 12 + 3) + ',4 ' + (i * 12 + 6) + ',2 Q' + (i * 12 + 9) + ',1 '
-
-      if(i + 1 === loops) {
-        pathString += (i * 12 + 12) + ',0'
-      }
-    }
-
-    if(canvas) {
-
-      canvas.path(pathString, true).fill('none').stroke({ width: 1, color: this.color });
-      return this;
-    }
-
-    return pathString;
+    var path = this.getPath('arc');
+    canvas.path(path, true)
+      .fill('none')
+      .stroke({ width: 1, color: this.color })
+      .translate(150, 150);
   };
 
-  Gluon.prototype.getPath = function() {
+  Gluon.prototype.getPath = function(shape) {
 
-    return '';
+    var gluon = {
+      width  : 15,   // the coil width of gluon propagators
+      height : 15,   // the coil height of gluon propagators
+      factor : 0.75, // the factor parameter for gluon propagators
+      percent: 0.6,  // the percent parameter for gluon propagators
+      scale  : 1.15  // the scale parameter for gluon arcs and loops
+    };
+
+    var kappa = 0.55191502;
+    // a and b are one-half of the ellipse's major and minor axes
+    var a     = gluon.height * gluon.factor;
+    var b     = gluon.width  * gluon.percent;
+    // c and d are one-half of major and minor axes of the other ellipse
+    var c     = gluon.height * (gluon.factor - 0.5);
+    var d     = gluon.width  * (1 - gluon.percent);
+
+    var dir   = false;
+    var pts   = (dir
+      ? [[0, 0], 'A ' + a + ' ' + b, 0, 0, 1, [a, b],
+                 'A ' + c + ' ' + d, 0, 1, 1, [a - 2 * c, b],
+                 'A ' + a + ' ' + b, 0, 0, 1]
+      : [[0, 0], 'A ' + a + ' ' + b, 0, 0, 0, [a, -b],
+                 'A ' + c + ' ' + d, 0, 1, 0, [a - 2 * c, -b],
+                 'A ' + a + ' ' + b, 0, 0, 0]
+    );
+
+    a = (dir ? a : gluon.scale * a);
+    var lift = a / Math.pow(this.length, 0.6);
+
+    var tile = (dir
+      ? ['C', [kappa * a, lift], [a, b - kappa * b], [a, b],
+         'C', [a, b + kappa * d], [a - c + kappa * c, b + d], [a - c, b + d],
+         'S', [a - 2 * c, b + kappa * d], [a - 2 * c, b],
+         'C', [a - 2 * c, b - kappa * b], [2 * (a - c) - kappa * a, 0], [2 * (a - c), -lift]]
+      : ['C', [kappa * a, lift], [a, -b + kappa * b], [a, -b],
+         'C', [a, -b - kappa * d], [a - c + kappa * c, -b - d], [a - c, -b - d],
+         'S', [a - 2 * c, -b - kappa * d], [a - 2 * c, -b],
+         'C', [a - 2 * c, -b + kappa * b], [2 * (a - c) - kappa * a, 0], [2 * (a - c), -lift]]
+    );
+
+    switch(shape) {
+      case 'line':
+        return Bezier.line(pts, gluon.height, this.length);
+      case 'arc':
+        return Bezier.arc('gluon', tile, a - c, this.length);
+      case 'loop':
+        return Bezier.loop('gluon', tile, a - c, this.length);
+      default:
+        return Bezier.line(pts, gluon.height, this.length);
+    }
   };
 
   return Gluon;
