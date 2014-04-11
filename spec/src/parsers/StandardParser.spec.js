@@ -23,12 +23,12 @@ describe('StandardParser', function() {
       vertices: [
         {
           id: 'v1',
-          position: [ 'l', 0 ],
+          position: [ 'left', 0 ],
           inbound : [ 'p1', 'p2' ]
         },
         {
           id: 'v2',
-          position: [ 'r', 0 ],
+          position: [ 'right', 0 ],
           outbound: [ 'p3', 'p4' ]
         }
       ],
@@ -45,7 +45,7 @@ describe('StandardParser', function() {
       propagators : [{ id: 'p1', type: 'e-', color: '#333', length: 200 }],
       vertices    : [{
         id: 'v1',
-        position: [ 'l', 0 ],
+        position: [ 'left', 0 ],
         inbound : [ 'p1', 'p2' ]
       }]
     };
@@ -58,7 +58,7 @@ describe('StandardParser', function() {
     it('throws an error if no data given', function() {
 
       expect(function() {
-        parser.parse()
+        parser.parse();
       }).toThrow(new Error('Missing data argument!'));
     });
 
@@ -137,8 +137,8 @@ describe('StandardParser', function() {
     it('sets vertices', function() {
 
       var stage = parser.parse(data);
-      expect(stage.vertices.length).toEqual(data.vertices.length);
-      expect(stage.vertices[0] instanceof Vertex).toBe(true);
+      expect(stage.vertices.left[0] instanceof Vertex).toBe(true);
+      expect(stage.vertices.right[0] instanceof Vertex).toBe(true);
     });
 
     it('sets exchanges', function() {

@@ -11,7 +11,12 @@ module.exports = (function() {
 
     // Main properties (required)
     this.propagators = [];
-    this.vertices    = [];
+    this.vertices    = {
+      left   : [],
+      right  : [],
+      top    : [],
+      bottom : []
+    };
 
     // Main properties (optional)
     this.exchanges   = [];
@@ -24,8 +29,6 @@ module.exports = (function() {
     this.canvas = canvas;
     this.canvas.size(this.width, this.height);
 
-    _moveVertices(this);
-
     return this;
   };
 
@@ -36,15 +39,6 @@ module.exports = (function() {
     _drawPropagators(this);
     _drawExchanges(this);
     return this;
-  };
-
-  var _moveVertices = function(ctx) {
-
-    ctx.vertices.forEach(function(vertex) {
-      var coord = _getVertexCoordinates(vertex, ctx);
-      vertex.x  = coord[0];
-      vertex.y  = coord[1];
-    });
   };
 
   var _drawTitle = function(ctx) {
@@ -59,9 +53,9 @@ module.exports = (function() {
 
   var _drawVertices = function(ctx) {
 
-    ctx.vertices.forEach(function(vertex) {
-      vertex.draw(ctx.canvas);
-    });
+    // ctx.vertices.forEach(function(vertex) {
+    //   vertex.draw(ctx.canvas);
+    // });
   };
 
   var _drawPropagators = function(ctx) {

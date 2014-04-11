@@ -87,7 +87,7 @@ module.exports = (function() {
       var v = new Vertex(vertexAttributes.id, vertexAttributes.position, vertexAttributes.inbound, vertexAttributes.outbound);
 
       if(v !== undefined) {
-        stage.vertices.push(v);
+        stage.vertices[vertexAttributes.position[0]].push(v);
       }
     });
   };

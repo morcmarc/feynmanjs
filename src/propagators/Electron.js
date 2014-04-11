@@ -16,8 +16,7 @@ module.exports = (function(_super) {
 
     canvas.path(this.getPath('line'))
           .fill('none')
-          .stroke({ width: 1, color: this.color })
-          .translate(150, 150);
+          .stroke({ width: 1, color: this.color });
   };
 
   Electron.prototype.getPath = function(shape) {

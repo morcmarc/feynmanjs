@@ -9,6 +9,7 @@ module.exports = (function() {
       throw new Error('Missing id argument!');
     }
 
+    this.id     = id;
     this.anti   = anti;
     this.color  = color  || _color;
     this.length = length || _length;

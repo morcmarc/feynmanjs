@@ -120,7 +120,8 @@
     "describe",
     "console",
     "spyOn",
-    "SVG"
+    "SVG",
+    "jasmine"
   ],
   "indent"        : 2         // Specify indentation spacing
 }

@@ -13,11 +13,10 @@ module.exports = (function(_super) {
 
   Photon.prototype.draw = function(canvas) {
 
-    var path = this.getPath('arc');
+    var path = this.getPath('line');
     canvas.path(path, true)
           .fill('none')
-          .stroke({ width: 1, color: this.color })
-          .translate(150, 150);
+          .stroke({ width: 1, color: this.color });
   };
 
   /**

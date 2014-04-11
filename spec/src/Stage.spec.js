@@ -1,6 +1,6 @@
 var Stage = require('./../../src/Stage');
 
-var fontSpy = function() {}
+var fontSpy = function() {};
 
 var canvas = {
   size: function() { },
@@ -29,17 +29,6 @@ describe('Stage', function() {
       spyOn(canvas, 'size');
       stage.setCanvas(canvas);
       expect(canvas.size).toHaveBeenCalledWith(400, 400);
-    });
-
-    it('should set Vertex positions', function() {
-
-      stage.setCanvas(canvas);
-
-      expect(stage.vertices[0].x).toEqual(100);
-      expect(stage.vertices[0].y).toEqual(100);
-
-      expect(stage.vertices[1].x).toEqual(300);
-      expect(stage.vertices[1].y).toEqual(200);
     });
   });
 
