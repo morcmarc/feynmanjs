@@ -24,6 +24,23 @@ module.exports = (function() {
     return this;
   };
 
+  Stage.prototype.getVertexById = function(id) {
+
+    var result = undefined;
+
+    for(var key in this.vertices) {
+      if(this.vertices.hasOwnProperty(key)) {
+        this.vertices[key].forEach(function(vertex) {
+          if(vertex.id === id) {
+            result = vertex;
+          }
+        });
+      }
+    }
+
+    return result;
+  };
+
   Stage.prototype.setCanvas = function(canvas) {
 
     this.canvas = canvas;
@@ -53,9 +70,13 @@ module.exports = (function() {
 
   var _drawVertices = function(ctx) {
 
-    // ctx.vertices.forEach(function(vertex) {
-    //   vertex.draw(ctx.canvas);
-    // });
+    for(var key in ctx.vertices) {
+      if(ctx.vertices.hasOwnProperty(key)) {
+        ctx.vertices[key].forEach(function(vertex) {
+          vertex.draw(ctx);
+        });
+      }
+    }
   };
 
   var _drawPropagators = function(ctx) {
@@ -70,31 +91,6 @@ module.exports = (function() {
     ctx.exchanges.forEach(function(exchange) {
       exchange.draw(ctx.canvas);
     });
-  };
-
-  var _getVertexCoordinates = function(vertex, ctx) {
-
-    var wUnit = Math.floor(ctx.width  / 4);
-    var hUnit = Math.floor(ctx.height / 4);
-
-    var x = 0;
-    var y = 0;
-
-    switch(vertex.position[0]) {
-      case 'l':
-        x = wUnit;
-        break;
-      case 'c':
-        x = wUnit * 2;
-        break;
-      case 'r':
-        x = wUnit * 3;
-        break;
-    }
-
-    y = vertex.position[1] * hUnit;
-
-    return [x, y];
   };
 
   return Stage;

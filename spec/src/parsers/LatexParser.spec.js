@@ -14,11 +14,12 @@ describe('LatexParser', function() {
       lang       : 'latex',
       diagram    : [
           'fmfleft{i1,o1}',
+          'fmfleft{i3,o3}',
           'fmfright{i2,o2}',
           'fmf{electron}{i1,v1,o1}',
           'fmf{quark}{i2,v2,o2}',
           'fmf{photon}{v1,v2}',
-          'fmfdot{v1,v2}'
+          'fmfdot{v1,v3}'
         ]
       };
 
@@ -43,7 +44,7 @@ describe('LatexParser', function() {
     it('creates vertices', function() {
 
       var stage = parser.parse(data);
-      expect(stage.vertices.left.length).toEqual(1);
+      expect(stage.vertices.left.length).toEqual(2);
       expect(stage.vertices.right.length).toEqual(1);
     });
 
@@ -51,7 +52,7 @@ describe('LatexParser', function() {
 
       var stage = parser.parse(data);
       expect(stage.vertices.left[0].id).toEqual('v1');
-      expect(stage.vertices.right[0].id).toEqual('v2');
+      expect(stage.vertices.right[0].id).toEqual('v3');
     });
 
     it('creates vertices in the right position', function() {
@@ -75,6 +76,14 @@ describe('LatexParser', function() {
       expect(stage.propagators[0].id).toEqual('i1');
       expect(stage.propagators[1].id).toEqual('o1');
       expect(stage.propagators[2].id).toEqual('i2');
+    });
+
+    it('dot function sets visibility of a vertex', function() {
+
+      var stage = parser.parse(data);
+      expect(stage.vertices.left[0].visible).toBe(true);
+      expect(stage.vertices.left[1].visible).toBe(false);
+      expect(stage.vertices.right[0].visible).toBe(true);
     });
   });
 });

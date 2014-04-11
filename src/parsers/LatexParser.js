@@ -66,6 +66,8 @@ module.exports = (function() {
     var vertexId = 'v' + globalId;
     var vertex   = new Vertex(vertexId, [ pos, localId ], [ args[0][0] ], [ args[0][1] ]);
 
+    vertex.move(stage);
+
     stage.vertices[pos].push(vertex);
   };
 
@@ -91,6 +93,14 @@ module.exports = (function() {
 
   var _processDot = function(args) {
 
+    args[0].forEach(function(vertexId) {
+
+      var vertex = stage.getVertexById(vertexId);
+
+      if(vertex !== undefined) {
+        vertex.visible = true;
+      }
+    });
   };
 
   var _stripCurlies = function(args) {
