@@ -24,7 +24,7 @@ module.exports = (function() {
     this.canvas = canvas;
     this.canvas.size(this.width, this.height);
 
-    _moveVertices(this);    
+    _moveVertices(this);
 
     return this;
   };

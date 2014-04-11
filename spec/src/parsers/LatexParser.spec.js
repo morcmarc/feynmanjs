@@ -6,16 +6,21 @@ describe('LatexParser', function() {
   describe('parse()', function() {
 
     var parser;
-    var data = '' +
-      '\\begin{fmffile}{electron_positron_annihilation}' +
-      ' \\begin{fmfgraph*}(400,400)' +
-      '   \\fmfleft{i1,i2}' +
-      '   \\fmfright{o1,o2}' +
-      '   \\fmf{fermion}{i1,v1,i2}' +
-      '   \\fmf{fermion}{o1,v2,o2}' +
-      '   \\fmf{photon}{v1,v2}' +
-      ' \\end{fmfgraph*}' +
-      '\\end{fmffile}';
+    var data = {
+      title      : 'Electron-Positron Annihilation',
+      width      : 400,
+      height     : 250,
+      showAxes   : true,
+      lang       : 'latex',
+      diagram    : [
+          'fmfleft{i1,o1}',
+          'fmfright{i2,o2}',
+          'fmf{e}{i1,v1,o1}',
+          'fmf{q}{i2,v2,o2}',
+          'fmf{ph}{v1,v2}',
+          'fmfdot{v1,v2}'
+      ]
+    };
 
     beforeEach(function () {
 
@@ -25,7 +30,7 @@ describe('LatexParser', function() {
     it('throws an error if no data given', function () {
 
       expect(function () {
-        parser.parse()
+        parser.parse();
       }).toThrow(new Error('Missing data argument!'));
     });
 
@@ -33,6 +38,12 @@ describe('LatexParser', function() {
 
       var stage = parser.parse(data);
       expect(stage instanceof Stage).toBe(true);
+    });
+
+    it('creates vertices', function() {
+
+      var stage = parser.parse(data);
+      expect(stage.vertices.length).toEqual(2);
     });
   });
 });
