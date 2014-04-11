@@ -9,9 +9,39 @@
 
 - [SVG.js](http://www.svgjs.com/) - Included with source code
 
-###Example
+###Latex Example
 
-You can see a live example in `public/index.html`.
+**HTML:**
+
+```html
+<div id="feynman" style = "width: 400px; height: 400px; background-color: #EEE; "></div>
+```
+
+**JavaScript:**
+
+```javascript
+<script>
+  var feynman = new Feynman();
+
+  var annihilation = {
+    title      : 'Electron-Positron Annihilation',
+    width      : 400,
+    height     : 400,
+    showAxes   : true,
+    lang       : 'latex',
+    diagram    : [
+      'fmfleft{i1,o1}',
+      'fmfright{i2,o2}',
+      'fmf{electron}{i1,v1,o1}',
+      'fmf{quark}{i2,v2,o2}',
+      'fmf{photon}{v1,v2}',
+      'fmfdot{v1,v2}'
+    ]
+  };
+
+  feynman.draw("feynman", annihilation);
+</script>
+```
 
 ##Features
 
