@@ -44,11 +44,26 @@ module.exports = (function() {
 
     this.move(stage);
 
-    stage.canvas.circle(3)
-          .fill({ color: '#000' })
-          .translate(this.x, this.y);
+    stage.canvas
+         .circle(3)
+         .fill({ color: '#000' })
+         .translate(this.x, this.y);
   };
 
+  /**
+   * Example:
+   *
+   * (l1 / t1)    (t2)    (r1 / t3)
+   *
+   *   (l2)                  (r2)
+   *
+   * (l3 / b1)    (b2)    (r3 / b3)
+   *
+   * @param vertex
+   * @param stage
+   * @returns {*[]}
+   * @private
+   */
   var _getVertexCoordinates = function(vertex, stage) {
 
     var wUnit = Math.floor(stage.width  / 4);
@@ -59,14 +74,22 @@ module.exports = (function() {
 
     switch(vertex.position[0]) {
       case 'left':
-        x = wUnit;
+        x = wUnit * 1;
+        y = vertex.position[1] * hUnit;
         break;
       case 'right':
         x = wUnit * 3;
+        y = vertex.position[1] * hUnit;
+        break;
+      case 'top':
+        x = vertex.position[1] * wUnit;
+        y = 1 * hUnit;
+        break;
+      case 'bottom':
+        x = vertex.position[1] * wUnit;
+        y = 3 * hUnit;
         break;
     }
-
-    y = vertex.position[1] * hUnit;
 
     return [x, y];
   };
