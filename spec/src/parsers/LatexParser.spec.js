@@ -85,5 +85,11 @@ describe('LatexParser', function() {
       expect(stage.vertices.left[1].visible).toBe(false);
       expect(stage.vertices.right[0].visible).toBe(true);
     });
+
+    it('creates exchanges', function() {
+
+      var stage = parser.parse(data);
+      expect(stage.exchanges.length).toEqual(1);
+    });
   });
 });

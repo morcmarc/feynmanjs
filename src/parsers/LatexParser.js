@@ -43,16 +43,22 @@ module.exports = (function() {
 
   var _processFermion = function(args) {
 
+    var particle;
+
     // "Exchange fermion" : fmf{photon}{v1,v2}
-    // if(args[1][0][0] === 'v') {
-      
-    // }
+    // id = eX, where X is the number of exchanges + 1
+    if(args[1][0][0] === 'v') {
+      _processExchange(args);
+      return;
+    }
 
     // "In fermion" : fmf{electron}{*i1*,v1,o1}
-    var particle = _getParticle(args[0][0], args[1][0]);
+    // id = i1
+    particle = _getParticle(args[0][0], args[1][0]);
     stage.propagators.push(particle);
 
     // "Out fermion" : fmf{electron}{i1,v1,*o1*}
+    // id = o1
     if(args[1][2]) {
       var outParticle = _getParticle(args[0][0], args[1][2]);
       stage.propagators.push(outParticle);
@@ -69,6 +75,21 @@ module.exports = (function() {
     vertex.move(stage);
 
     stage.vertices[pos].push(vertex);
+  };
+
+  var _processExchange = function(args) {
+
+    var vOutId    = args[1][0];
+    var vInId     = args[1][1];
+    var vertexOut = stage.getVertexById(vOutId);
+    var vertexIn  = stage.getVertexById(vInId);
+    var pId       = 'e' + stage.exchanges.length + 1;
+    var particle  = _getParticle(args[0][0], pId);
+
+    stage.exchanges.push(particle);
+    stage.propagators.push(particle);
+    vertexOut.outbound.push(particle.id);
+    vertexIn.inbound.push(particle.id);
   };
 
   var _processRight = function(args) {

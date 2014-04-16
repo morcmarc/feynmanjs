@@ -3,23 +3,19 @@ module.exports = (function() {
   var Stage = function() {
 
     // Generic Attributes (optional)
-    this.title    = 'Feynman';
-    this.layout   = 'time-space';
-    this.width    = 100;
-    this.height   = 100;
-    this.showAxes = true;
-
-    // Main properties (required)
+    this.title       = 'Feynman';
+    this.layout      = 'time-space';
+    this.width       = 100;
+    this.height      = 100;
+    this.showAxes    = true;
     this.propagators = [];
+    this.exchanges   = [];
     this.vertices    = {
       left   : [],
       right  : [],
       top    : [],
       bottom : []
     };
-
-    // Main properties (optional)
-    this.exchanges   = [];
 
     return this;
   };
@@ -54,7 +50,6 @@ module.exports = (function() {
     _drawTitle(this);
     _drawVertices(this);
     _drawPropagators(this);
-    _drawExchanges(this);
     return this;
   };
 
@@ -82,15 +77,34 @@ module.exports = (function() {
   var _drawPropagators = function(ctx) {
 
     ctx.propagators.forEach(function(particle) {
-      particle.draw(ctx.canvas);
+
+      var startEnd = _getVerticesForPropagator(particle, ctx);
+
+      particle.draw(ctx.canvas, startEnd.end, startEnd.start);
     });
   };
 
-  var _drawExchanges = function(ctx) {
+  var _getVerticesForPropagator = function(propagator, ctx) {
 
-    ctx.exchanges.forEach(function(exchange) {
-      exchange.draw(ctx.canvas);
-    });
+    var vertexA = null;
+    var vertexB = null;
+
+    for(var key in ctx.vertices) {
+
+      if(ctx.vertices.hasOwnProperty(key)) {
+
+        ctx.vertices[key].forEach(function(v) {
+          if(v.inbound.indexOf(propagator.id) > -1) {
+            vertexB = v;
+          }
+          if(v.outbound.indexOf(propagator.id) > -1) {
+            vertexA = v;
+          }
+        });
+      }
+    }
+
+    return { start: vertexA, end: vertexB };
   };
 
   return Stage;

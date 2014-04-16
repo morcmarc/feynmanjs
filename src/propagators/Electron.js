@@ -12,9 +12,30 @@ module.exports = (function(_super) {
     Electron.__super__.constructor.apply(this, [id, anti || false, color, length]);
   }
 
-  Electron.prototype.draw = function(canvas) {
+  Electron.prototype.draw = function(canvas, vertexB, vertexA) {
+
+    var startX = vertexA ? vertexA.x : this.x;
+    var startY = vertexA ? vertexA.y : this.y;
+
+    var endX   = vertexB ? vertexB.x : this.x;
+    var endY   = vertexB ? vertexB.y : this.y;
+
+    var diffX   = endX - startX;
+    var diffY   = endY - startY;
+
+    var angleDir = vertexB ? 1 : -1;
+
+    var angle   = angleDir * Math.atan2(diffY, diffX) * (180.0 / Math.PI);
+    this.length = Math.sqrt(diffX * diffX + diffY * diffY);
 
     canvas.path(this.getPath('line'))
+          .transform({
+            cx: startX,
+            cy: startY,
+            rotation: angle,
+            x: startX,
+            y: startY
+          })
           .fill('none')
           .stroke({ width: 1, color: this.color });
   };

@@ -45,12 +45,15 @@ module.exports = (function() {
     this.move(stage);
 
     stage.canvas
-         .circle(3)
+         .circle(4)
          .fill({ color: '#000' })
-         .translate(this.x, this.y);
+         .translate( this.x - 2, this.y - 2 );
   };
 
   /**
+   *
+   * Get pixel coordinates depending on position and canvas size
+   *
    * Example:
    *
    * (l1 / t1)    (t2)    (r1 / t3)
@@ -74,7 +77,7 @@ module.exports = (function() {
 
     switch(vertex.position[0]) {
       case 'left':
-        x = wUnit * 1;
+        x = wUnit;
         y = vertex.position[1] * hUnit;
         break;
       case 'right':
@@ -83,7 +86,7 @@ module.exports = (function() {
         break;
       case 'top':
         x = vertex.position[1] * wUnit;
-        y = 1 * hUnit;
+        y = hUnit;
         break;
       case 'bottom':
         x = vertex.position[1] * wUnit;

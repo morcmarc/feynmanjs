@@ -11,10 +11,29 @@ module.exports = (function(_super) {
     Photon.__super__.constructor.apply(this, [id, undefined, color || '#0066FF', length || 109]);
   }
 
-  Photon.prototype.draw = function(canvas) {
+  Photon.prototype.draw = function(canvas, vertexB, vertexA) {
+
+    var startX = vertexA ? vertexA.x : this.x;
+    var startY = vertexA ? vertexA.y : this.y;
+
+    var endX   = vertexB ? vertexB.x : this.x;
+    var endY   = vertexB ? vertexB.y : this.y;
+
+    var diffX   = endX - startX;
+    var diffY   = endY - startY;
+
+    var angle   = Math.atan2(diffY, diffX) * (180.0 / Math.PI);
+    this.length = Math.sqrt(diffX * diffX + diffY * diffY);
 
     var path = this.getPath('line');
     canvas.path(path, true)
+          .transform({
+            cx: startX,
+            cy: startY,
+            rotation: angle,
+            x: startX,
+            y: startY
+          })
           .fill('none')
           .stroke({ width: 1, color: this.color });
   };
