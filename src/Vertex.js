@@ -69,8 +69,10 @@ module.exports = (function() {
    */
   var _getVertexCoordinates = function(vertex, stage) {
 
-    var wUnit = Math.floor(stage.width  / 4);
-    var hUnit = Math.floor(stage.height / 4);
+    var numberOfVerticesOnEdge = stage.vertices[vertex.position[0]].length;
+
+    var wUnit = Math.floor(stage.width  / (numberOfVerticesOnEdge + 2));
+    var hUnit = Math.floor(stage.height / (numberOfVerticesOnEdge + 1));
 
     var x = 0;
     var y = 0;
@@ -81,7 +83,7 @@ module.exports = (function() {
         y = vertex.position[1] * hUnit;
         break;
       case 'right':
-        x = wUnit * 3;
+        x = (numberOfVerticesOnEdge + 1) * wUnit;
         y = vertex.position[1] * hUnit;
         break;
       case 'top':

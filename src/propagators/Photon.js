@@ -13,26 +13,18 @@ module.exports = (function(_super) {
 
   Photon.prototype.draw = function(canvas, vertexB, vertexA) {
 
-    var startX = vertexA ? vertexA.x : this.x;
-    var startY = vertexA ? vertexA.y : this.y;
+    var position = this.getPosition(vertexB, vertexA);
 
-    var endX   = vertexB ? vertexB.x : this.x;
-    var endY   = vertexB ? vertexB.y : this.y;
-
-    var diffX   = endX - startX;
-    var diffY   = endY - startY;
-
-    var angle   = Math.atan2(diffY, diffX) * (180.0 / Math.PI);
-    this.length = Math.sqrt(diffX * diffX + diffY * diffY);
+    this.length = position.l;
 
     var path = this.getPath('line');
     canvas.path(path, true)
           .transform({
-            cx: startX,
-            cy: startY,
-            rotation: angle,
-            x: startX,
-            y: startY
+            cx: position.x,
+            cy: position.y,
+            rotation: position.r,
+            x: position.x,
+            y: position.y
           })
           .fill('none')
           .stroke({ width: 1, color: this.color });

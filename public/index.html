@@ -5,39 +5,6 @@
   <body>
 
     <script>
-//      var annihilation = {
-//          title      : 'Electron-Positron Annihilation',
-//          layout     : 'time-space', // X: time, Y: space. Alternative: 'space-time' (X: space, Y: time)
-//          width      : 400,
-//          height     : 250,
-//          showAxes   : true,
-//          propagators: [
-//            { id: 'p1', type: 'e-', color: '#333' },
-//            { id: 'p2', type: 'e+', color: '#333' },
-//            { id: 'p3', type: 'aq', color: '#333', radiates: [{ id: 'p5', type: 'g', color: '#009933' }] },
-//            { id: 'p4', type: 'q',  color: '#333' }
-//          ],
-//          vertices: [
-//            {
-//              id: 'v1',
-//              position: [ 'l', 2 ],
-//              inbound : [ 'p1', 'p2' ]
-//            },
-//            {
-//              id: 'v2',
-//              position: [ 'r', 2 ],
-//              outbound: [ 'p3', 'p4' ]
-//            }
-//          ],
-//          exchanges: [
-//            {
-//              id: 'e1',
-//              inbound  : [ 'v1' ],
-//              outbound : [ 'v2' ],
-//              particles: [ { id: 'p5', type: 'ph', color: '#00F' } ]
-//            }
-//          ]
-//      };
         var annihilation = {
           title      : 'Electron-Positron Annihilation',
           width      : 400,
@@ -55,7 +22,7 @@
         };
     </script>
 
-    <div id="feynman" style = "width:400px; height:400px; background-color: #EEE; "></div>
+    <div id="feynman" style = "width:400px; height:250px; background-color: #EEE; "></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
     <script src="../dist/feynman.js"></script>
