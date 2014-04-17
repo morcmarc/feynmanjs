@@ -1,7 +1,7 @@
 var Stage             = require('./../Stage');
 var ParticleGenerator = require('./../ParticleGenerator');
+var ControlPoint      = require('./../ControlPoint');
 var Vertex            = require('./../Vertex');
-var Exchange          = require('./../Exchange');
 
 module.exports = (function() {
 
@@ -43,97 +43,73 @@ module.exports = (function() {
 
   var _processFermion = function(args) {
 
-    var particle;
+    var i = 0;
 
-    // "Exchange fermion" : fmf{photon}{v1,v2}
-    // id = eX, where X is the number of exchanges + 1
-    if(args[1][0][0] === 'v') {
-      _processExchange(args);
-      return;
-    }
+    while(args[1][i + 1]) {
 
-    // "In fermion" : fmf{electron}{*i1*,v1,o1}
-    // id = i1
-    particle = _getParticle(args[0][0], args[1][0]);
-    stage.propagators.push(particle);
+      var fromId = args[1][i];
+      var toId   = args[1][i + 1];
+      var from   = _processPropagatorStartEnd(fromId);
+      var to     = _processPropagatorStartEnd(toId);
 
-    // "Out fermion" : fmf{electron}{i1,v1,*o1*}
-    // id = o1
-    if(args[1][2]) {
-      var outParticle = _getParticle(args[0][0], args[1][2]);
-      stage.propagators.push(outParticle);
+      if(!from || !to) {
+        throw new Error('Invalid Vertex or Control Point');
+      }
+
+      var id   = 'p' + stage.propagators.length + 1;
+      var p    = _getParticle(args[0][0], id);
+
+      p.from   = from;
+      p.to     = to;
+
+      stage.propagators.push(p);
+      i++;
     }
   };
 
-  var _processVertex = function(pos, args) {
+  var _processControlPoint = function(pos, args) {
 
-    var localId  = stage.vertices[pos].length + 1;
-    var globalId = _getNumberOfVertices() + 1;
-    var vertexId = 'v' + globalId;
-    var vertex   = new Vertex(vertexId, [ pos, localId ], [ args[0][0] ], [ args[0][1] ]);
+    args[0].forEach(function(cId) {
 
-    vertex.move(stage);
+      if(stage.getControlPointById(cId)) {
+        return;
+      }
 
-    stage.vertices[pos].push(vertex);
-  };
-
-  var _processExchange = function(args) {
-
-    var vOutId    = args[1][0];
-    var vInId     = args[1][1];
-    var vertexOut = stage.getVertexById(vOutId);
-    var vertexIn  = stage.getVertexById(vInId);
-    var pId       = 'e' + stage.exchanges.length + 1;
-    var particle  = _getParticle(args[0][0], pId);
-
-    stage.exchanges.push(particle);
-    stage.propagators.push(particle);
-    vertexOut.outbound.push(particle.id);
-    vertexIn.inbound.push(particle.id);
+      var cp = new ControlPoint(cId);
+      stage.cPoints[pos].push(cp);
+    });
   };
 
   var _processRight = function(args) {
 
-    _processVertex('right', args);
+    _processControlPoint('right', args);
   };
 
   var _processLeft = function(args) {
 
-    _processVertex('left', args);
+    _processControlPoint('left', args);
   };
 
   var _processTop = function(args) {
 
-    _processVertex('top', args);
+    _processControlPoint('top', args);
   };
 
   var _processBottom = function(args) {
 
-    _processVertex('bottom', args);
+    _processControlPoint('bottom', args);
   };
 
   var _processDot = function(args) {
 
-    args[0].forEach(function(vertexId) {
-
-      var vertex = stage.getVertexById(vertexId);
-
-      if(vertex !== undefined) {
-        vertex.visible = true;
-      }
-    });
   };
 
   var _stripCurlies = function(args) {
 
     var pattern = /\{|\}/g;
-    var escaped = [];
-
-    escaped = args.map(function(arg) {
+    return args.map(function(arg) {
       return arg.replace(pattern, '');
     });
-
-    return escaped;
   };
 
   var _explodeArgs = function(args) {
@@ -146,19 +122,6 @@ module.exports = (function() {
     });
 
     return explodedArgs;
-  };
-
-  var _getNumberOfVertices = function() {
-
-    var sum = 0;
-
-    for(var key in stage.vertices) {
-      if(stage.vertices.hasOwnProperty(key)) {
-        sum += stage.vertices[key].length;
-      }
-    }
-
-    return sum;
   };
 
   var _getParticle = function(type, id) {
@@ -185,6 +148,30 @@ module.exports = (function() {
     }
 
     return particle;
+  };
+
+  var _isVertex = function(point) {
+
+    return point[0] === 'v';
+  };
+
+  var _processPropagatorStartEnd = function(id) {
+
+    var p;
+
+    if(_isVertex(id)) {
+
+      p = stage.getVertexById(id) ? stage.getVertexById(id) : new Vertex(id);
+
+      if(!stage.getVertexById(id)) {
+        stage.vertices.push(p);
+      }
+    } else {
+
+      p = stage.getControlPointById(id);
+    }
+
+    return p;
   };
 
   var _keywordFunctionMap = {

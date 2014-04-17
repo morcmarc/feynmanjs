@@ -1,7 +1,6 @@
 var StandardParser = require('./../../../src/parsers/StandardParser');
 var Stage          = require('./../../../src/Stage');
 var Electron       = require('./../../../src/propagators/Electron');
-var Vertex         = require('./../../../src/Vertex');
 
 describe('StandardParser', function() {
 
@@ -104,50 +103,6 @@ describe('StandardParser', function() {
 
       var stage2 = parser.parse(emptyData);
       expect(stage2.showAxes).toEqual(true);
-    });
-
-    it('throws error if there are no propagators', function() {
-
-      expect(function() {
-        parser.parse({});
-      }).toThrow(new Error('Missing propagators!'));
-    });
-
-    it('sets propagators', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.propagators.length).toEqual(data.propagators.length);
-    });
-
-    it('calls the ParticleGenerator to create propagators', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.propagators.length).toEqual(data.propagators.length);
-      expect(stage.propagators[0] instanceof Electron).toBe(true);
-      expect(stage.propagators[1] instanceof Electron).toBe(true);
-    });
-
-    it('throws error if there are no vertices', function() {
-
-      expect(function() {
-        parser.parse({ propagators: [] });
-      }).toThrow(new Error('Missing vertices!'));
-    });
-
-    it('sets vertices', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.vertices.left[0] instanceof Vertex).toBe(true);
-      expect(stage.vertices.right[0] instanceof Vertex).toBe(true);
-    });
-
-    it('sets exchanges', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.exchanges.length).toEqual(data.exchanges.length);
-
-      var stage2 = parser.parse(emptyData);
-      expect(stage2.exchanges.length).toEqual(0);
     });
   });
 });

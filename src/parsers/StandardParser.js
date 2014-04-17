@@ -1,7 +1,5 @@
 var Stage             = require('./../Stage');
 var ParticleGenerator = require('./../ParticleGenerator');
-var Vertex            = require('./../Vertex');
-var Exchange          = require('./../Exchange');
 
 module.exports = (function() {
   
@@ -22,9 +20,6 @@ module.exports = (function() {
     _setLayout(stage, data.layout);
     _setDimension(stage, data.width, data.height);
     _setShowAxes(stage, data.showAxes);
-    _setPropagators(stage, data.propagators);
-    _setVertices(stage, data.vertices);
-    _setExchanges(stage, data.exchanges);
 
     return stage;
   };
@@ -58,54 +53,6 @@ module.exports = (function() {
     if(showAxes !== undefined) {
       stage.showAxes = showAxes;
     }
-  };
-
-  var _setPropagators = function(stage, propagators) {
-
-    if(propagators === undefined) {
-      throw new Error('Missing propagators!');
-    }
-
-    propagators.forEach(function(propagatorAttributes) {
-
-      var p = ParticleGenerator.getParticle(propagatorAttributes);
-
-      if(p !== undefined) {
-        stage.propagators.push(p);
-      }
-    });
-  };
-
-  var _setVertices = function(stage, vertices) {
-
-    if(vertices === undefined) {
-      throw new Error('Missing vertices!');
-    }
-
-    vertices.forEach(function(vertexAttributes) {
-
-      var v = new Vertex(vertexAttributes.id, vertexAttributes.position, vertexAttributes.inbound, vertexAttributes.outbound);
-
-      if(v !== undefined) {
-        stage.vertices[vertexAttributes.position[0]].push(v);
-      }
-    });
-  };
-
-  var _setExchanges = function(stage, exchanges) {
-
-    if(exchanges === undefined) {
-      return [];
-    }
-
-    exchanges.forEach(function(exchangeAttributes) {
-
-      var e = new Exchange(exchangeAttributes.id, exchangeAttributes.inbound, exchangeAttributes.outbound, exchangeAttributes.particles);
-
-      if(e !== undefined) {
-        stage.exchanges.push(e);
-      }
-    });
   };
 
   return StandardParser;

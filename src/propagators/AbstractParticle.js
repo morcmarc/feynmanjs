@@ -5,16 +5,17 @@ module.exports = (function() {
   var _color  = '#000';
   var _length = 109;
 
-  var AbstractParticle = function(id, anti, color, length) {
+  var AbstractParticle = function(id, color, length) {
 
     if(id === undefined) {
       throw new Error('Missing id argument!');
     }
 
     this.id     = id;
-    this.anti   = anti;
     this.color  = color  || _color;
     this.length = length || _length;
+    this.from   = null;
+    this.to     = null;
     this.x      = 0;
     this.y      = 0;
 

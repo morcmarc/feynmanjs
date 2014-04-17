@@ -40,56 +40,5 @@ describe('LatexParser', function() {
       var stage = parser.parse(data);
       expect(stage instanceof Stage).toBe(true);
     });
-
-    it('creates vertices', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.vertices.left.length).toEqual(2);
-      expect(stage.vertices.right.length).toEqual(1);
-    });
-
-    it('creates vertices with the right ID', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.vertices.left[0].id).toEqual('v1');
-      expect(stage.vertices.right[0].id).toEqual('v3');
-    });
-
-    it('creates vertices in the right position', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.vertices.left[0].position[0]).toEqual('left');
-      expect(stage.vertices.right[0].position[0]).toEqual('right');
-      expect(stage.vertices.left[0].position[1]).toEqual(1);
-      expect(stage.vertices.right[0].position[1]).toEqual(1);
-    });
-
-    it('creates vertices with the right inbound-outbound particles', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.vertices.left[0].inbound[0]).toEqual('i1');
-    });
-
-    it('creates particles with the right Id', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.propagators[0].id).toEqual('i1');
-      expect(stage.propagators[1].id).toEqual('o1');
-      expect(stage.propagators[2].id).toEqual('i2');
-    });
-
-    it('dot function sets visibility of a vertex', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.vertices.left[0].visible).toBe(true);
-      expect(stage.vertices.left[1].visible).toBe(false);
-      expect(stage.vertices.right[0].visible).toBe(true);
-    });
-
-    it('creates exchanges', function() {
-
-      var stage = parser.parse(data);
-      expect(stage.exchanges.length).toEqual(1);
-    });
   });
 });

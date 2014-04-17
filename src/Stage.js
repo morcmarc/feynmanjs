@@ -9,8 +9,8 @@ module.exports = (function() {
     this.height      = 100;
     this.showAxes    = true;
     this.propagators = [];
-    this.exchanges   = [];
-    this.vertices    = {
+    this.vertices    = [];
+    this.cPoints     = {
       left   : [],
       right  : [],
       top    : [],
@@ -24,11 +24,24 @@ module.exports = (function() {
 
     var result = undefined;
 
-    for(var key in this.vertices) {
-      if(this.vertices.hasOwnProperty(key)) {
-        this.vertices[key].forEach(function(vertex) {
-          if(vertex.id === id) {
-            result = vertex;
+    this.vertices.forEach(function(v) {
+      if(v.id === id) {
+        result = v;
+      }
+    });
+
+    return result;
+  };
+
+  Stage.prototype.getControlPointById = function(id) {
+
+    var result = undefined;
+
+    for(var key in this.cPoints) {
+      if(this.cPoints.hasOwnProperty(key)) {
+        this.cPoints[key].forEach(function(cPoint) {
+          if(cPoint.id === id) {
+            result = cPoint;
           }
         });
       }
@@ -65,13 +78,9 @@ module.exports = (function() {
 
   var _drawVertices = function(ctx) {
 
-    for(var key in ctx.vertices) {
-      if(ctx.vertices.hasOwnProperty(key)) {
-        ctx.vertices[key].forEach(function(vertex) {
-          vertex.draw(ctx);
-        });
-      }
-    }
+    ctx.vertices.forEach(function(vertex) {
+      vertex.draw(ctx);
+    });
   };
 
   var _drawPropagators = function(ctx) {
@@ -86,23 +95,17 @@ module.exports = (function() {
 
   var _getVerticesForPropagator = function(propagator, ctx) {
 
-    var vertexA = null;
-    var vertexB = null;
+    var vertexA = propagator.from;
+    var vertexB = propagator.to;
 
-    for(var key in ctx.vertices) {
-
-      if(ctx.vertices.hasOwnProperty(key)) {
-
-        ctx.vertices[key].forEach(function(v) {
-          if(v.inbound.indexOf(propagator.id) > -1) {
-            vertexB = v;
-          }
-          if(v.outbound.indexOf(propagator.id) > -1) {
-            vertexA = v;
-          }
-        });
-      }
-    }
+//    ctx.vertices.forEach(function(v) {
+//      if(v.inbound.indexOf(propagator.id) > -1) {
+//        vertexB = v;
+//      }
+//      if(v.outbound.indexOf(propagator.id) > -1) {
+//        vertexA = v;
+//      }
+//    });
 
     return { start: vertexA, end: vertexB };
   };
