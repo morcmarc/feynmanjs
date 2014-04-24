@@ -60,6 +60,9 @@ module.exports = (function() {
 
   Stage.prototype.draw = function() {
 
+    _calculateControlPointLocations(this);
+    _calculateVertexLocations(this);
+
     _drawTitle(this);
     _drawVertices(this);
     _drawPropagators(this);
@@ -102,6 +105,47 @@ module.exports = (function() {
     console.log(vertexB);
 
     return { start: vertexA, end: vertexB };
+  };
+
+  var _calculateControlPointLocations = function(ctx) {
+
+    var segments = ctx.cPoints.left.length + 1;
+    var sH = ctx.height / segments;
+
+    var i = 1;
+    ctx.cPoints.left.forEach(function(cp) {
+      cp.y = i * sH;
+      i++;
+    });
+
+    segments = ctx.cPoints.right.length + 1;
+    sH = ctx.height / segments;
+
+    i = 1;
+    ctx.cPoints.right.forEach(function(cp) {
+      cp.x = ctx.width;
+      cp.y = i * sH;
+      i++;
+    });
+  };
+
+  var _calculateVertexLocations = function(ctx) {
+
+    // var hMin = ctx.height * 0.3;
+    // var hMax = ctx.height * 0.7;
+    // var wMin = ctx.width  * 0.3;
+    // var wMax = ctx.width  * 0.7;
+
+    var segments = ctx.vertices.length + 1;
+    var sW = ctx.width / segments;
+    var sH = ctx.height / 2;
+
+    var i = 1;
+    ctx.vertices.forEach(function(v) {
+      v.x = i * sW;
+      v.y = sH;
+      i++;
+    });
   };
 
   return Stage;

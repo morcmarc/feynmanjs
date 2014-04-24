@@ -116,6 +116,9 @@ module.exports = (function() {
 
   Stage.prototype.draw = function() {
 
+    _calculateControlPointLocations(this);
+    _calculateVertexLocations(this);
+
     _drawTitle(this);
     _drawVertices(this);
     _drawPropagators(this);
@@ -158,6 +161,47 @@ module.exports = (function() {
     console.log(vertexB);
 
     return { start: vertexA, end: vertexB };
+  };
+
+  var _calculateControlPointLocations = function(ctx) {
+
+    var segments = ctx.cPoints.left.length + 1;
+    var sH = ctx.height / segments;
+
+    var i = 1;
+    ctx.cPoints.left.forEach(function(cp) {
+      cp.y = i * sH;
+      i++;
+    });
+
+    segments = ctx.cPoints.right.length + 1;
+    sH = ctx.height / segments;
+
+    i = 1;
+    ctx.cPoints.right.forEach(function(cp) {
+      cp.x = ctx.width;
+      cp.y = i * sH;
+      i++;
+    });
+  };
+
+  var _calculateVertexLocations = function(ctx) {
+
+    // var hMin = ctx.height * 0.3;
+    // var hMax = ctx.height * 0.7;
+    // var wMin = ctx.width  * 0.3;
+    // var wMax = ctx.width  * 0.7;
+
+    var segments = ctx.vertices.length + 1;
+    var sW = ctx.width / segments;
+    var sH = ctx.height / 2;
+
+    var i = 1;
+    ctx.vertices.forEach(function(v) {
+      v.x = i * sW;
+      v.y = sH;
+      i++;
+    });
   };
 
   return Stage;
@@ -727,10 +771,10 @@ module.exports = (function() {
 
     var start    = vertexA ? vertexA : this;
     var end      = vertexB ? vertexB : this;
-    var angleDir = vertexB ? -1 : 1;
+    var angleDir = vertexB ? 1 : -1;
 
     var angle   = angleDir * Coordinates.getAngle(start, end);
-    var length  = Coordinates.getDistance(start, end) < 100 ? Coordinates.getDistance(start, end) : 100;
+    var length  = Coordinates.getDistance(start, end);
 
     return { x: vertexA ? start.x : vertexB.x, y: vertexA ? start.y : vertexB.y, r: angle, l: length };
   };
@@ -806,13 +850,23 @@ module.exports = (function(_super) {
     Gluon.__super__.constructor.apply(this, [id, color || '#009933', length || 96]);
   }
 
-  Gluon.prototype.draw = function(canvas) {
+  Gluon.prototype.draw = function(canvas, vertexB, vertexA) {
 
-    var path = this.getPath('arc');
+    var position = this.getPosition(vertexB, vertexA);
+
+    this.length = position.l;
+
+    var path = this.getPath('line');
     canvas.path(path, true)
-      .fill('none')
-      .stroke({ width: 1, color: this.color })
-      .translate(150, 150);
+          .transform({
+            cx: position.x,
+            cy: position.y,
+            rotation: position.r,
+            x: position.x,
+            y: position.y
+          })
+          .fill('none')
+          .stroke({ width: 1, color: this.color });
   };
 
   Gluon.prototype.getPath = function(shape) {

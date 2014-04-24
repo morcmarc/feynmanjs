@@ -8,21 +8,22 @@
         var annihilation = {
           title      : 'Electron-Positron Annihilation',
           width      : 400,
-          height     : 250,
+          height     : 400,
           showAxes   : true,
           lang       : 'latex',
           diagram    : [
-              'fmfleft{i1,o1}',
-              'fmfright{i2,o2}',
-              'fmf{electron}{i1,v1,o1}',
-              'fmf{quark}{i2,v2,o2}',
+              'fmfleft{i1,i2,o1,o2}',
+              'fmfright{i3,o3}',
+              'fmf{electron}{i1,v1,o2}',
+              'fmf{gluon}{i2,v1,o1}',
+              'fmf{quark}{i3,v2,o3}',
               'fmf{photon}{v1,v2}',
               'fmfdot{v1,v2}'
           ]
         };
     </script>
 
-    <div id="feynman" style = "width:400px; height:250px; background-color: #EEE; "></div>
+    <div id="feynman" style = "width:400px; height:400px; background-color: #EEE; "></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
     <script src="../dist/feynman.js"></script>

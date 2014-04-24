@@ -11,13 +11,23 @@ module.exports = (function(_super) {
     Gluon.__super__.constructor.apply(this, [id, color || '#009933', length || 96]);
   }
 
-  Gluon.prototype.draw = function(canvas) {
+  Gluon.prototype.draw = function(canvas, vertexB, vertexA) {
 
-    var path = this.getPath('arc');
+    var position = this.getPosition(vertexB, vertexA);
+
+    this.length = position.l;
+
+    var path = this.getPath('line');
     canvas.path(path, true)
-      .fill('none')
-      .stroke({ width: 1, color: this.color })
-      .translate(150, 150);
+          .transform({
+            cx: position.x,
+            cy: position.y,
+            rotation: position.r,
+            x: position.x,
+            y: position.y
+          })
+          .fill('none')
+          .stroke({ width: 1, color: this.color });
   };
 
   Gluon.prototype.getPath = function(shape) {
