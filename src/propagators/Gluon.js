@@ -8,7 +8,7 @@ module.exports = (function(_super) {
 
   function Gluon(id, color, length) {
 
-    Gluon.__super__.constructor.apply(this, [id, undefined, color || '#009933', length || 96]);
+    Gluon.__super__.constructor.apply(this, [id, color || '#009933', length || 96]);
   }
 
   Gluon.prototype.draw = function(canvas) {

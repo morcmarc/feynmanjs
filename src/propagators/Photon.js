@@ -8,7 +8,7 @@ module.exports = (function(_super) {
 
   function Photon(id, color, length) {
 
-    Photon.__super__.constructor.apply(this, [id, undefined, color || '#0066FF', length || 109]);
+    Photon.__super__.constructor.apply(this, [id, color || '#0066FF', length || 109]);
   }
 
   Photon.prototype.draw = function(canvas, vertexB, vertexA) {

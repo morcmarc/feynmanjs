@@ -102,6 +102,11 @@ module.exports = (function() {
 
   var _processDot = function(args) {
 
+    args[0].forEach(function(vertexId) {
+
+      var v = stage.getVertexById(vertexId);
+      v.visible = true;
+    });
   };
 
   var _stripCurlies = function(args) {

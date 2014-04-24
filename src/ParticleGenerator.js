@@ -12,19 +12,19 @@ module.exports = {
     }
 
     if(data.type === 'e-') {
-      return new Electron(data.id, false, data.color, data.length);
+      return new Electron(data.id, data.color, data.length);
     }
 
     if(data.type === 'e+') {
-      return new Electron(data.id, true, data.color, data.length);
+      return new Electron(data.id, data.color, data.length);
     }
 
     if(data.type === 'q') {
-      return new Quark(data.id, false, data.color, data.length);
+      return new Quark(data.id, data.color, data.length);
     }
 
     if(data.type === 'aq') {
-      return new Quark(data.id, true, data.color, data.length);
+      return new Quark(data.id, data.color, data.length);
     }
 
     if(data.type === 'g') {

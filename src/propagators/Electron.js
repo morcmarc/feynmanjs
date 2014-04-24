@@ -8,9 +8,9 @@ module.exports = (function(_super) {
 
   Klass.__extends(Electron, _super);
 
-  function Electron(id, anti, color, length) {
+  function Electron(id, color, length) {
 
-    Electron.__super__.constructor.apply(this, [id, anti || false, color, length]);
+    Electron.__super__.constructor.apply(this, [id, color, length]);
   }
 
   Electron.prototype.draw = function(canvas, vertexB, vertexA) {

@@ -25,7 +25,7 @@ module.exports = (function() {
     var result = undefined;
 
     this.vertices.forEach(function(v) {
-      if(v.id === id) {
+      if(v && v.id === id) {
         result = v;
       }
     });
@@ -98,14 +98,8 @@ module.exports = (function() {
     var vertexA = propagator.from;
     var vertexB = propagator.to;
 
-//    ctx.vertices.forEach(function(v) {
-//      if(v.inbound.indexOf(propagator.id) > -1) {
-//        vertexB = v;
-//      }
-//      if(v.outbound.indexOf(propagator.id) > -1) {
-//        vertexA = v;
-//      }
-//    });
+    console.log(vertexA);
+    console.log(vertexB);
 
     return { start: vertexA, end: vertexB };
   };

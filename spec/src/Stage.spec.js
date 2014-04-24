@@ -16,10 +16,7 @@ describe('Stage', function() {
     stage = new Stage();
     stage.width  = 400;
     stage.height = 400;
-    stage.vertices = {
-      left  : [ { id: 'i1', position: [ 'left', 1 ], x: 0, y: 0, draw: function() {} } ],
-      right : [ { id: 'o1', position: [ 'right', 2 ], x: 0, y: 0, draw: function() {} } ]
-    };
+    stage.vertices = [ { id: 'i1', position: [ 'left', 1 ], x: 0, y: 0, draw: function() {} } , { id: 'o1', position: [ 'right', 2 ], x: 0, y: 0, draw: function() {} } ];
   });
 
   describe('setCanvas()', function() {

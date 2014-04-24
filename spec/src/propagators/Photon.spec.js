@@ -12,7 +12,6 @@ describe('Photon', function() {
   it('should have defaults', function() {
 
     var e = new Photon('ph1');
-    expect(e.anti).toBe(undefined);
     expect(e.color).toEqual('#0066FF');
     expect(e.length).toEqual(109);
   });

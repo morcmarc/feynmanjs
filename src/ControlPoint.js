@@ -7,5 +7,9 @@ module.exports = (function() {
     this.y        = 0;
   };
 
+  ControlPoint.prototype.draw = function() {
+    
+  };
+
   return ControlPoint;
 })();

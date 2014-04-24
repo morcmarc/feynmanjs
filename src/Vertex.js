@@ -16,8 +16,6 @@ module.exports = (function() {
       return;
     }
 
-    this.move(stage);
-
     stage.canvas
          .circle(4)
          .fill({ color: '#000' })

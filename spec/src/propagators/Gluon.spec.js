@@ -12,7 +12,6 @@ describe('Gluon', function() {
   it('should have defaults', function() {
 
     var e = new Gluon('g1');
-    expect(e.anti).toBe(undefined);
     expect(e.color).toEqual('#009933');
     expect(e.length).toEqual(96);
   });

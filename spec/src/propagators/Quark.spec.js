@@ -12,7 +12,6 @@ describe('Quark', function() {
   it('should have defaults', function() {
 
     var e = new Quark('q1');
-    expect(e.anti).toBe(false);
     expect(e.color).toEqual('#000');
     expect(e.length).toEqual(109);
   });
