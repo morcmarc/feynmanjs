@@ -122,22 +122,24 @@ module.exports = (function() {
 
   var _calculateControlPointLocations = function(ctx) {
 
-    var segments = ctx.cPoints.left.length + 1;
-    var sH = ctx.height / segments;
+    var segments = ctx.cPoints.left.length === 1 ? 2 : ctx.cPoints.left.length;
+    var padding  = (ctx.height * 0.3) / 2;
+    var sH       = (ctx.height * 0.7) / (segments - 1);
 
-    var i = 1;
+    var i = 0;
     ctx.cPoints.left.forEach(function(cp) {
-      cp.y = i * sH;
+      cp.y = i * sH + padding;
       i++;
     });
 
-    segments = ctx.cPoints.right.length + 1;
-    sH = ctx.height / segments;
+    segments = ctx.cPoints.right.length === 1 ? 2 : ctx.cPoints.right.length;
+    padding  = (ctx.height * 0.3) / 2;
+    sH       = (ctx.height * 0.7) / (segments - 1);
 
-    i = 1;
+    i = 0;
     ctx.cPoints.right.forEach(function(cp) {
       cp.x = ctx.width;
-      cp.y = i * sH;
+      cp.y = i * sH + padding;
       i++;
     });
   };
@@ -145,7 +147,8 @@ module.exports = (function() {
   var _calculateVertexLocations = function(ctx) {
 
     var padding     = (ctx.height * 0.3) / 2;
-    var levelHeight = (ctx.height * 0.7) / (ctx.levels);
+    var levels      = ctx.levels === 1 ? 2 : ctx.levels;
+    var levelHeight = (ctx.height * 0.7) / levels;
 
     for(var l = 1; l <= ctx.levels; l++) {
 

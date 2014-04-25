@@ -11,33 +11,42 @@
           height     : 400,
           showAxes   : true,
           lang       : 'latex',
-//          diagram    : [
-//              'fmfleft{i1,o1}',
-//              'fmfright{i2,o2}',
-//              'fmf{electron}{i1,v1,o1}',
-//              'fmf{quark}{i2,v2,o2}',
-//              'fmf{photon}{v1,v2}',
-//              'fmfdot{v1,v2}'
-//          ]
+          diagram    : [
+              'fmfleft{i1,o1}',
+              'fmfright{i2,o2}',
+              'fmf{electron}{i1,v1,o1}',
+              'fmf{quark}{i2,v2,o2}',
+              'fmf{photon}{v1,v2}',
+              'fmfdot{v1,v2}'
+          ]
+        };
+        var circular = {
+          title      : 'Example 2',
+          width      : 400,
+          height     : 400,
+          showAxes   : true,
+          lang       : 'latex',
           diagram: [
-            'fmfleft{i1,i2}',
-            'fmfright{o1,o2}',
-            'fmf{antifermion}{i1,v1,v2,o1}',
-            'fmf{fermion}{i2,v3,v4,o2}',
-            'fmf{photon}{v1,v3}',
-            'fmf{photon}{v2,v4}',
-            'fmfdot{v1,v2,v3,v4}'
+              'fmfleft{i1,i2}',
+              'fmfright{o1,o2}',
+              'fmf{antifermion}{i1,v1,v2,o1}',
+              'fmf{fermion}{i2,v3,v4,o2}',
+              'fmf{photon}{v1,v3}',
+              'fmf{photon}{v2,v4}',
+              'fmfdot{v1,v2,v3,v4}'
           ]
         };
     </script>
 
     <div id="feynman" style = "width:400px; height:400px; background-color: #EEE; "></div>
+    <div id="feynman2" style = "width:400px; height:400px; background-color: #EEE; margin-top: 20px; "></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
     <script src="../dist/feynman.js"></script>
     <script>
         var feynman = new Feynman();
         feynman.draw("feynman", annihilation);
+        feynman.draw("feynman2", circular);
     </script>
   </body>
 </html>
