@@ -1,8 +1,9 @@
 module.exports = (function() {
 
-  var ControlPoint = function(id) {
+  var ControlPoint = function(id, pos) {
 
     this.id       = id;
+    this.pos      = pos;
     this.x        = 0;
     this.y        = 0;
   };

@@ -45,12 +45,14 @@ module.exports = (function() {
 
     var i = 0;
 
+    var isMultilevel = _isMultilevel(args[1]);
+
     while(args[1][i + 1]) {
 
       var fromId = args[1][i];
       var toId   = args[1][i + 1];
-      var from   = _processPropagatorStartEnd(fromId);
-      var to     = _processPropagatorStartEnd(toId);
+      var from   = _processPropagatorStartEnd(fromId, isMultilevel);
+      var to     = _processPropagatorStartEnd(toId, isMultilevel);
 
       if(!from || !to) {
         throw new Error('Invalid Vertex or Control Point');
@@ -65,6 +67,10 @@ module.exports = (function() {
       stage.propagators.push(p);
       i++;
     }
+
+    if(isMultilevel) {
+      stage.levels += 1;
+    }
   };
 
   var _processControlPoint = function(pos, args) {
@@ -75,7 +81,7 @@ module.exports = (function() {
         return;
       }
 
-      var cp = new ControlPoint(cId);
+      var cp = new ControlPoint(cId, pos);
       stage.cPoints[pos].push(cp);
     });
   };
@@ -160,7 +166,15 @@ module.exports = (function() {
     return point[0] === 'v';
   };
 
-  var _processPropagatorStartEnd = function(id) {
+  var _isMultilevel = function(fermionPath) {
+
+    var sp = stage.getControlPointById(fermionPath[0]);
+    var ep = stage.getControlPointById(fermionPath[fermionPath.length - 1]);
+
+    return ((sp && ep) && (sp.pos !== ep.pos));
+  };
+
+  var _processPropagatorStartEnd = function(id, isMultilevel) {
 
     var p;
 
@@ -168,9 +182,14 @@ module.exports = (function() {
 
       p = stage.getVertexById(id) ? stage.getVertexById(id) : new Vertex(id);
 
+      if(isMultilevel) {
+        p.level = stage.levels;
+      }
+
       if(!stage.getVertexById(id)) {
         stage.vertices.push(p);
       }
+
     } else {
 
       p = stage.getControlPointById(id);

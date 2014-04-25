@@ -4,6 +4,7 @@ module.exports = (function() {
 
     this.id = id;
     this.visible = false;
+    this.level = 1;
     this.x = 0;
     this.y = 0;
 

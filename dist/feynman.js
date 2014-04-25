@@ -1,9 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = (function() {
 
-  var ControlPoint = function(id) {
+  var ControlPoint = function(id, pos) {
 
     this.id       = id;
+    this.pos      = pos;
     this.x        = 0;
     this.y        = 0;
   };
@@ -72,6 +73,7 @@ module.exports = (function() {
       top    : [],
       bottom : []
     };
+    this.levels      = 1;
 
     return this;
   };
@@ -87,6 +89,19 @@ module.exports = (function() {
     });
 
     return result;
+  };
+
+  Stage.prototype.getVerticesByLevel = function(level) {
+
+    var results = [];
+
+    this.vertices.forEach(function(v) {
+      if(v && v.level === level) {
+        results.push(v);
+      }
+    });
+
+    return results;
   };
 
   Stage.prototype.getControlPointById = function(id) {
@@ -111,13 +126,15 @@ module.exports = (function() {
     this.canvas = canvas;
     this.canvas.size(this.width, this.height);
 
+    _calculateControlPointLocations(this);
+    _calculateVertexLocations(this);
+
     return this;
   };
 
   Stage.prototype.draw = function() {
 
-    _calculateControlPointLocations(this);
-    _calculateVertexLocations(this);
+    console.log(this.vertices);
 
     _drawTitle(this);
     _drawVertices(this);
@@ -157,9 +174,6 @@ module.exports = (function() {
     var vertexA = propagator.from;
     var vertexB = propagator.to;
 
-    console.log(vertexA);
-    console.log(vertexB);
-
     return { start: vertexA, end: vertexB };
   };
 
@@ -187,21 +201,23 @@ module.exports = (function() {
 
   var _calculateVertexLocations = function(ctx) {
 
-    // var hMin = ctx.height * 0.3;
-    // var hMax = ctx.height * 0.7;
-    // var wMin = ctx.width  * 0.3;
-    // var wMax = ctx.width  * 0.7;
+    var padding     = (ctx.height * 0.3) / 2;
+    var levelHeight = (ctx.height * 0.7) / (ctx.levels);
 
-    var segments = ctx.vertices.length + 1;
-    var sW = ctx.width / segments;
-    var sH = ctx.height / 2;
+    for(var l = 1; l <= ctx.levels; l++) {
 
-    var i = 1;
-    ctx.vertices.forEach(function(v) {
-      v.x = i * sW;
-      v.y = sH;
-      i++;
-    });
+      console.log(l);
+
+      var vertices = ctx.getVerticesByLevel(l);
+      var sW       = ctx.width / (vertices.length + 1);
+      var i        = 1;
+
+      vertices.forEach(function(v) {
+        v.x = i * sW;
+        v.y = levelHeight * v.level + padding;
+        i++;
+      });
+    }
   };
 
   return Stage;
@@ -213,6 +229,7 @@ module.exports = (function() {
 
     this.id = id;
     this.visible = false;
+    this.level = 1;
     this.x = 0;
     this.y = 0;
 
@@ -513,12 +530,14 @@ module.exports = (function() {
 
     var i = 0;
 
+    var isMultilevel = _isMultilevel(args[1]);
+
     while(args[1][i + 1]) {
 
       var fromId = args[1][i];
       var toId   = args[1][i + 1];
-      var from   = _processPropagatorStartEnd(fromId);
-      var to     = _processPropagatorStartEnd(toId);
+      var from   = _processPropagatorStartEnd(fromId, isMultilevel);
+      var to     = _processPropagatorStartEnd(toId, isMultilevel);
 
       if(!from || !to) {
         throw new Error('Invalid Vertex or Control Point');
@@ -533,6 +552,10 @@ module.exports = (function() {
       stage.propagators.push(p);
       i++;
     }
+
+    if(isMultilevel) {
+      stage.levels += 1;
+    }
   };
 
   var _processControlPoint = function(pos, args) {
@@ -543,7 +566,7 @@ module.exports = (function() {
         return;
       }
 
-      var cp = new ControlPoint(cId);
+      var cp = new ControlPoint(cId, pos);
       stage.cPoints[pos].push(cp);
     });
   };
@@ -628,7 +651,15 @@ module.exports = (function() {
     return point[0] === 'v';
   };
 
-  var _processPropagatorStartEnd = function(id) {
+  var _isMultilevel = function(fermionPath) {
+
+    var sp = stage.getControlPointById(fermionPath[0]);
+    var ep = stage.getControlPointById(fermionPath[fermionPath.length - 1]);
+
+    return ((sp && ep) && (sp.pos !== ep.pos));
+  };
+
+  var _processPropagatorStartEnd = function(id, isMultilevel) {
 
     var p;
 
@@ -636,9 +667,14 @@ module.exports = (function() {
 
       p = stage.getVertexById(id) ? stage.getVertexById(id) : new Vertex(id);
 
+      if(isMultilevel) {
+        p.level = stage.levels;
+      }
+
       if(!stage.getVertexById(id)) {
         stage.vertices.push(p);
       }
+
     } else {
 
       p = stage.getControlPointById(id);
