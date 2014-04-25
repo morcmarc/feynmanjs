@@ -27,7 +27,7 @@ module.exports = (function(_super) {
             y: position.y
           })
           .fill('none')
-          .stroke({ width: 1, color: this.color });
+          .stroke({ width: 2, color: this.color });
   };
 
   /**

@@ -18,16 +18,21 @@ module.exports = (function(_super) {
 
     this.length = position.l;
 
-    canvas.path(this.getPath('line'))
-          .transform({
-            cx: position.x,
-            cy: position.y,
-            rotation: position.r,
-            x: position.x,
-            y: position.y
-          })
-          .fill('none')
-          .stroke({ width: 1, color: this.color });
+    var uiGroup = canvas.group();
+
+    _drawArrow(uiGroup, this.length, this.color);
+    uiGroup
+      .path(this.getPath('line'))
+      .fill('none')
+      .stroke({ width: 2, color: this.color });
+    uiGroup
+      .transform({
+        cx: position.x,
+        cy: position.y,
+        rotation: position.r,
+        x: position.x,
+        y: position.y
+      });
   };
 
   Quark.prototype.getPath = function(shape) {
@@ -45,6 +50,24 @@ module.exports = (function(_super) {
       default:
         return Bezier.line(tile, l, this.length);
     }
+  };
+
+  var _drawArrow = function(uiGroup, length, color) {
+
+    //On-the-line
+    var x1 = length / 2 + 7;
+    var y1 = 0;
+    //Below-the-line
+    var x2 = length / 2 - 7;
+    var y2 = 4;
+    //Above-the-line
+    var x3 = length / 2 - 7;
+    var y3 = -4;
+    //'x1,y1 x2,y2, x3,y3'
+    var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3
+    uiGroup
+      .polygon(polygonString)
+      .fill(color);
   };
 
   return Quark;

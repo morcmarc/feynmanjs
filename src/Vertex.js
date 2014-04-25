@@ -17,10 +17,12 @@ module.exports = (function() {
       return;
     }
 
-    stage.canvas
-         .circle(4)
-         .fill({ color: '#000' })
-         .translate( this.x - 2, this.y - 2 );
+    var uiGroup = stage.canvas.group();
+
+    uiGroup
+      .circle(4)
+      .fill({ color: '#000' })
+      .translate( this.x - 2, this.y - 2 );
   };
 
   return Vertex;
