@@ -7,9 +7,11 @@ module.exports = (function(_super) {
 
   Klass.__extends(Quark, _super);
 
-  function Quark(id, color, length) {
+  function Quark(id, color, length, anti) {
 
     Quark.__super__.constructor.apply(this, [id, color, length]);
+
+    this.anti = anti || false;
   }
 
   Quark.prototype.draw = function(canvas, vertexB, vertexA) {
@@ -20,7 +22,7 @@ module.exports = (function(_super) {
 
     var uiGroup = canvas.group();
 
-    _drawArrow(uiGroup, this.length, this.color);
+    _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
@@ -52,16 +54,18 @@ module.exports = (function(_super) {
     }
   };
 
-  var _drawArrow = function(uiGroup, length, color) {
+  var _drawArrow = function(uiGroup, length, color, anti) {
+
+    var coeff = anti ? -1 : 1;
 
     //On-the-line
-    var x1 = length / 2 + 7;
+    var x1 = length / 2 + coeff * 7;
     var y1 = 0;
     //Below-the-line
-    var x2 = length / 2 - 7;
+    var x2 = length / 2 - coeff * 7;
     var y2 = 4;
     //Above-the-line
-    var x3 = length / 2 - 7;
+    var x3 = length / 2 - coeff * 7;
     var y3 = -4;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3

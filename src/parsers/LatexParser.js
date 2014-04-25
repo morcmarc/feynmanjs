@@ -144,6 +144,9 @@ module.exports = (function() {
       case 'electron':
         particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
         break;
+      case 'pozitron':
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        break;
       case 'quark':
         particle = ParticleGenerator.getParticle({ id: id, type: 'q' });
         break;
@@ -153,6 +156,10 @@ module.exports = (function() {
       case 'gluon':
         particle = ParticleGenerator.getParticle({ id: id, type: 'g' });
         break;
+      case 'antifermion':
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        break;
+      // fermion
       default:
         particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
         break;

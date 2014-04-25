@@ -16,7 +16,7 @@ module.exports = {
     }
 
     if(data.type === 'e+') {
-      return new Electron(data.id, data.color, data.length);
+      return new Electron(data.id, data.color, data.length, true);
     }
 
     if(data.type === 'q') {
@@ -24,7 +24,7 @@ module.exports = {
     }
 
     if(data.type === 'aq') {
-      return new Quark(data.id, data.color, data.length);
+      return new Quark(data.id, data.color, data.length, true);
     }
 
     if(data.type === 'g') {

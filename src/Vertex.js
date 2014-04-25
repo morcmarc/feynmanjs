@@ -2,11 +2,11 @@ module.exports = (function() {
 
   var Vertex = function(id) {
 
-    this.id = id;
+    this.id      = id;
     this.visible = false;
-    this.level = 1;
-    this.x = 0;
-    this.y = 0;
+    this.level   = 1;
+    this.x       = 0;
+    this.y       = 0;
 
     return this;
   };
@@ -20,9 +20,9 @@ module.exports = (function() {
     var uiGroup = stage.canvas.group();
 
     uiGroup
-      .circle(4)
+      .circle(8)
       .fill({ color: '#000' })
-      .translate( this.x - 2, this.y - 2 );
+      .translate( this.x - 4, this.y - 4 );
   };
 
   return Vertex;

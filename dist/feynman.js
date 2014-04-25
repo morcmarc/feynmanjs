@@ -34,7 +34,7 @@ module.exports = {
     }
 
     if(data.type === 'e+') {
-      return new Electron(data.id, data.color, data.length);
+      return new Electron(data.id, data.color, data.length, true);
     }
 
     if(data.type === 'q') {
@@ -42,7 +42,7 @@ module.exports = {
     }
 
     if(data.type === 'aq') {
-      return new Quark(data.id, data.color, data.length);
+      return new Quark(data.id, data.color, data.length, true);
     }
 
     if(data.type === 'g') {
@@ -227,11 +227,11 @@ module.exports = (function() {
 
   var Vertex = function(id) {
 
-    this.id = id;
+    this.id      = id;
     this.visible = false;
-    this.level = 1;
-    this.x = 0;
-    this.y = 0;
+    this.level   = 1;
+    this.x       = 0;
+    this.y       = 0;
 
     return this;
   };
@@ -245,9 +245,9 @@ module.exports = (function() {
     var uiGroup = stage.canvas.group();
 
     uiGroup
-      .circle(4)
+      .circle(8)
       .fill({ color: '#000' })
-      .translate( this.x - 2, this.y - 2 );
+      .translate( this.x - 4, this.y - 4 );
   };
 
   return Vertex;
@@ -631,6 +631,9 @@ module.exports = (function() {
       case 'electron':
         particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
         break;
+      case 'pozitron':
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        break;
       case 'quark':
         particle = ParticleGenerator.getParticle({ id: id, type: 'q' });
         break;
@@ -640,6 +643,10 @@ module.exports = (function() {
       case 'gluon':
         particle = ParticleGenerator.getParticle({ id: id, type: 'g' });
         break;
+      case 'antifermion':
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        break;
+      // fermion
       default:
         particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
         break;
@@ -831,9 +838,11 @@ module.exports = (function(_super) {
 
   Klass.__extends(Electron, _super);
 
-  function Electron(id, color, length) {
+  function Electron(id, color, length, anti) {
 
     Electron.__super__.constructor.apply(this, [id, color, length]);
+
+    this.anti = anti || false;
   }
 
   Electron.prototype.draw = function(canvas, vertexB, vertexA) {
@@ -844,7 +853,7 @@ module.exports = (function(_super) {
 
     var uiGroup = canvas.group();
 
-    _drawArrow(uiGroup, this.length, this.color);
+    _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
@@ -876,16 +885,18 @@ module.exports = (function(_super) {
     }
   };
 
-  var _drawArrow = function(uiGroup, length, color) {
+  var _drawArrow = function(uiGroup, length, color, anti) {
+
+    var coeff = anti ? -1 : 1;
 
     //On-the-line
-    var x1 = length / 2 + 7;
+    var x1 = length / 2 + coeff * 7;
     var y1 = 0;
     //Below-the-line
-    var x2 = length / 2 - 7;
+    var x2 = length / 2 - coeff * 7;
     var y2 = 4;
     //Above-the-line
-    var x3 = length / 2 - 7;
+    var x3 = length / 2 - coeff * 7;
     var y3 = -4;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3
@@ -1092,9 +1103,11 @@ module.exports = (function(_super) {
 
   Klass.__extends(Quark, _super);
 
-  function Quark(id, color, length) {
+  function Quark(id, color, length, anti) {
 
     Quark.__super__.constructor.apply(this, [id, color, length]);
+
+    this.anti = anti || false;
   }
 
   Quark.prototype.draw = function(canvas, vertexB, vertexA) {
@@ -1105,7 +1118,7 @@ module.exports = (function(_super) {
 
     var uiGroup = canvas.group();
 
-    _drawArrow(uiGroup, this.length, this.color);
+    _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
@@ -1137,16 +1150,18 @@ module.exports = (function(_super) {
     }
   };
 
-  var _drawArrow = function(uiGroup, length, color) {
+  var _drawArrow = function(uiGroup, length, color, anti) {
+
+    var coeff = anti ? -1 : 1;
 
     //On-the-line
-    var x1 = length / 2 + 7;
+    var x1 = length / 2 + coeff * 7;
     var y1 = 0;
     //Below-the-line
-    var x2 = length / 2 - 7;
+    var x2 = length / 2 - coeff * 7;
     var y2 = 4;
     //Above-the-line
-    var x3 = length / 2 - 7;
+    var x3 = length / 2 - coeff * 7;
     var y3 = -4;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3
