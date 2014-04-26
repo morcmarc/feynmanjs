@@ -36,10 +36,27 @@
               'fmfdot{v1,v2,v3,v4}'
           ]
         };
+        var resonant = {
+          title      : 'Resonant t-channel',
+          width      : 400,
+          height     : 400,
+          showAxes   : true,
+          lang       : 'latex',
+          diagram: [
+              'fmfleft{i1,i2}',
+              'fmfright{o1,o2,o3,o4}',
+              'fmf{fermion}{i1,v1,v2,i2}',
+              'fmf{photon}{v1,v3}',
+              'fmf{fermion}{o1,v3,o2}',
+              'fmf{photon}{v2,v4}',
+              'fmf{fermion}{o4,v4,o3}'
+          ]
+        };
     </script>
 
     <div id="feynman" style = "width:400px; height:400px; background-color: #EEE; "></div>
     <div id="feynman2" style = "width:400px; height:400px; background-color: #EEE; margin-top: 20px; "></div>
+    <div id="feynman3" style = "width:400px; height:400px; background-color: #EEE; margin-top: 20px; "></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
     <script src="../dist/feynman.js"></script>
@@ -47,6 +64,7 @@
         var feynman = new Feynman();
         feynman.draw("feynman", annihilation);
         feynman.draw("feynman2", circular);
+        feynman.draw("feynman3", resonant);
     </script>
   </body>
 </html>
