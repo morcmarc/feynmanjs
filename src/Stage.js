@@ -122,23 +122,25 @@ module.exports = (function() {
 
   var _calculateControlPointLocations = function(ctx) {
 
-    var segments = ctx.cPoints.left.length === 1 ? 2 : ctx.cPoints.left.length;
-    var padding  = (ctx.height * 0.3) / 2;
-    var sH       = (ctx.height * 0.7) / (segments - 1);
+    var segments = ctx.cPoints.left.length === 1 ? 3 : ctx.cPoints.left.length;
+    var padding  = (ctx.height * 0.4) / 2;
+    var paddingW = (ctx.width  * 0.1) / 2
+    var sH       = (ctx.height * 0.6) / (segments - 1);
 
-    var i = 0;
+    var i = ctx.cPoints.left.length === 1 ? 1 : 0;
     ctx.cPoints.left.forEach(function(cp) {
+      cp.x = paddingW;
       cp.y = i * sH + padding;
       i++;
     });
 
-    segments = ctx.cPoints.right.length === 1 ? 2 : ctx.cPoints.right.length;
-    padding  = (ctx.height * 0.3) / 2;
-    sH       = (ctx.height * 0.7) / (segments - 1);
+    segments = ctx.cPoints.right.length === 1 ? 3 : ctx.cPoints.right.length;
+    padding  = (ctx.height * 0.4) / 2;
+    sH       = (ctx.height * 0.6) / (segments - 1);
 
-    i = 0;
+    i = ctx.cPoints.right.length === 1 ? 1 : 0;
     ctx.cPoints.right.forEach(function(cp) {
-      cp.x = ctx.width;
+      cp.x = ctx.width - paddingW;
       cp.y = i * sH + padding;
       i++;
     });

@@ -59,7 +59,7 @@ module.exports = (function() {
       }
 
       var id   = 'p' + stage.propagators.length + 1;
-      var p    = _getParticle(args[0][0], id);
+      var p    = _getParticle(args[0][0], id, args[0][1]);
 
       p.from   = from;
       p.to     = to;
@@ -68,7 +68,7 @@ module.exports = (function() {
       i++;
     }
 
-    if(isMultilevel) {
+    if(isMultilevel === 'opposite') {
       stage.levels += 1;
     }
   };
@@ -135,33 +135,33 @@ module.exports = (function() {
     return explodedArgs;
   };
 
-  var _getParticle = function(type, id) {
+  var _getParticle = function(type, id, style) {
 
     var particle;
 
     switch(type) {
 
       case 'electron':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e-', style: style });
         break;
       case 'pozitron':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+', style: style });
         break;
       case 'quark':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'q' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'q', style: style });
         break;
       case 'photon':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'ph' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'ph', style: style });
         break;
       case 'gluon':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'g' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'g', style: style });
         break;
       case 'antifermion':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+', style: style });
         break;
       // fermion
       default:
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e-', style: style });
         break;
     }
 
@@ -178,7 +178,13 @@ module.exports = (function() {
     var sp = stage.getControlPointById(fermionPath[0]);
     var ep = stage.getControlPointById(fermionPath[fermionPath.length - 1]);
 
-    return ((sp && ep) && (sp.pos !== ep.pos));
+    if((sp && ep) && (sp.pos !== ep.pos)) {
+      return 'opposite';
+    }
+    if((sp && ep) && (sp.pos === ep.pos)) {
+      return 'same';
+    }
+    return false;
   };
 
   var _processPropagatorStartEnd = function(id, isMultilevel) {

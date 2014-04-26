@@ -30,27 +30,27 @@ module.exports = {
     }
 
     if(data.type === 'e-') {
-      return new Electron(data.id, data.color, data.length);
+      return new Electron(data.id, data.color, data.length, false, data.style);
     }
 
     if(data.type === 'e+') {
-      return new Electron(data.id, data.color, data.length, true);
+      return new Electron(data.id, data.color, data.length, true, data.style);
     }
 
     if(data.type === 'q') {
-      return new Quark(data.id, data.color, data.length);
+      return new Quark(data.id, data.color, data.length, false, data.style);
     }
 
     if(data.type === 'aq') {
-      return new Quark(data.id, data.color, data.length, true);
+      return new Quark(data.id, data.color, data.length, true, data.style);
     }
 
     if(data.type === 'g') {
-      return new Gluon(data.id, data.color, data.length);
+      return new Gluon(data.id, data.color, data.length, false, data.style);
     }
 
     if(data.type === 'ph') {
-      return new Photon(data.id, data.color, data.length);
+      return new Photon(data.id, data.color, data.length, false, data.style);
     }
   }
 };
@@ -179,23 +179,25 @@ module.exports = (function() {
 
   var _calculateControlPointLocations = function(ctx) {
 
-    var segments = ctx.cPoints.left.length === 1 ? 2 : ctx.cPoints.left.length;
-    var padding  = (ctx.height * 0.3) / 2;
-    var sH       = (ctx.height * 0.7) / (segments - 1);
+    var segments = ctx.cPoints.left.length === 1 ? 3 : ctx.cPoints.left.length;
+    var padding  = (ctx.height * 0.4) / 2;
+    var paddingW = (ctx.width  * 0.1) / 2
+    var sH       = (ctx.height * 0.6) / (segments - 1);
 
-    var i = 0;
+    var i = ctx.cPoints.left.length === 1 ? 1 : 0;
     ctx.cPoints.left.forEach(function(cp) {
+      cp.x = paddingW;
       cp.y = i * sH + padding;
       i++;
     });
 
-    segments = ctx.cPoints.right.length === 1 ? 2 : ctx.cPoints.right.length;
-    padding  = (ctx.height * 0.3) / 2;
-    sH       = (ctx.height * 0.7) / (segments - 1);
+    segments = ctx.cPoints.right.length === 1 ? 3 : ctx.cPoints.right.length;
+    padding  = (ctx.height * 0.4) / 2;
+    sH       = (ctx.height * 0.6) / (segments - 1);
 
-    i = 0;
+    i = ctx.cPoints.right.length === 1 ? 1 : 0;
     ctx.cPoints.right.forEach(function(cp) {
-      cp.x = ctx.width;
+      cp.x = ctx.width - paddingW;
       cp.y = i * sH + padding;
       i++;
     });
@@ -549,7 +551,7 @@ module.exports = (function() {
       }
 
       var id   = 'p' + stage.propagators.length + 1;
-      var p    = _getParticle(args[0][0], id);
+      var p    = _getParticle(args[0][0], id, args[0][1]);
 
       p.from   = from;
       p.to     = to;
@@ -558,7 +560,7 @@ module.exports = (function() {
       i++;
     }
 
-    if(isMultilevel) {
+    if(isMultilevel === 'opposite') {
       stage.levels += 1;
     }
   };
@@ -625,33 +627,33 @@ module.exports = (function() {
     return explodedArgs;
   };
 
-  var _getParticle = function(type, id) {
+  var _getParticle = function(type, id, style) {
 
     var particle;
 
     switch(type) {
 
       case 'electron':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e-', style: style });
         break;
       case 'pozitron':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+', style: style });
         break;
       case 'quark':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'q' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'q', style: style });
         break;
       case 'photon':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'ph' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'ph', style: style });
         break;
       case 'gluon':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'g' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'g', style: style });
         break;
       case 'antifermion':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e+' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e+', style: style });
         break;
       // fermion
       default:
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e-' });
+        particle = ParticleGenerator.getParticle({ id: id, type: 'e-', style: style });
         break;
     }
 
@@ -668,7 +670,13 @@ module.exports = (function() {
     var sp = stage.getControlPointById(fermionPath[0]);
     var ep = stage.getControlPointById(fermionPath[fermionPath.length - 1]);
 
-    return ((sp && ep) && (sp.pos !== ep.pos));
+    if((sp && ep) && (sp.pos !== ep.pos)) {
+      return 'opposite';
+    }
+    if((sp && ep) && (sp.pos === ep.pos)) {
+      return 'same';
+    }
+    return false;
   };
 
   var _processPropagatorStartEnd = function(id, isMultilevel) {
@@ -1010,9 +1018,12 @@ module.exports = (function(_super) {
 
   Klass.__extends(Photon, _super);
 
-  function Photon(id, color, length) {
+  function Photon(id, color, length, anti, style) {
 
     Photon.__super__.constructor.apply(this, [id, color || '#0066FF', length || 109]);
+
+    this.anti = anti;
+    this.style = style || 'line';
   }
 
   Photon.prototype.draw = function(canvas, vertexB, vertexA) {
@@ -1021,7 +1032,7 @@ module.exports = (function(_super) {
 
     this.length = position.l;
 
-    var path = this.getPath('line');
+    var path = this.getPath(this.style);
     canvas.path(path, true)
           .transform({
             cx: position.x,
@@ -1176,4 +1187,4 @@ module.exports = (function(_super) {
   return Quark;
 
 })(AbstractParticle);
-},{"./../helpers/Bezier":5,"./../helpers/Coordinates":6,"./../helpers/Klass":7,"./AbstractParticle":12}]},{},[8])
+},{"./../helpers/Bezier":5,"./../helpers/Coordinates":6,"./../helpers/Klass":7,"./AbstractParticle":12}]},{},[8]);

@@ -12,27 +12,27 @@ module.exports = {
     }
 
     if(data.type === 'e-') {
-      return new Electron(data.id, data.color, data.length);
+      return new Electron(data.id, data.color, data.length, false, data.style);
     }
 
     if(data.type === 'e+') {
-      return new Electron(data.id, data.color, data.length, true);
+      return new Electron(data.id, data.color, data.length, true, data.style);
     }
 
     if(data.type === 'q') {
-      return new Quark(data.id, data.color, data.length);
+      return new Quark(data.id, data.color, data.length, false, data.style);
     }
 
     if(data.type === 'aq') {
-      return new Quark(data.id, data.color, data.length, true);
+      return new Quark(data.id, data.color, data.length, true, data.style);
     }
 
     if(data.type === 'g') {
-      return new Gluon(data.id, data.color, data.length);
+      return new Gluon(data.id, data.color, data.length, false, data.style);
     }
 
     if(data.type === 'ph') {
-      return new Photon(data.id, data.color, data.length);
+      return new Photon(data.id, data.color, data.length, false, data.style);
     }
   }
 };

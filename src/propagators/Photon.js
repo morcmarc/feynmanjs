@@ -6,9 +6,12 @@ module.exports = (function(_super) {
 
   Klass.__extends(Photon, _super);
 
-  function Photon(id, color, length) {
+  function Photon(id, color, length, anti, style) {
 
     Photon.__super__.constructor.apply(this, [id, color || '#0066FF', length || 109]);
+
+    this.anti = anti;
+    this.style = style || 'line';
   }
 
   Photon.prototype.draw = function(canvas, vertexB, vertexA) {
@@ -17,7 +20,7 @@ module.exports = (function(_super) {
 
     this.length = position.l;
 
-    var path = this.getPath('line');
+    var path = this.getPath(this.style);
     canvas.path(path, true)
           .transform({
             cx: position.x,
