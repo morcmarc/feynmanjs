@@ -18,11 +18,12 @@ module.exports = (function() {
     }
 
     var uiGroup = stage.canvas.group();
+    var penSize = stage.canvas.penSize === 'thick' ? 2 : 1;
 
     uiGroup
-      .circle(8)
+      .circle(penSize * 4)
       .fill({ color: '#000' })
-      .translate( this.x - 4, this.y - 4 );
+      .translate( this.x - (penSize * 2), this.y - (penSize * 2) );
   };
 
   return Vertex;

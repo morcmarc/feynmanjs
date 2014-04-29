@@ -15,6 +15,7 @@ describe('LatexParser', function() {
       showAxes   : true,
       lang       : 'latex',
       diagram    : [
+          'fmfpen{thin}',
           'fmfleft{i1,o1}',
           'fmfright{i2,o2}',
           'fmf{electron}{i1,v1,o1}',
@@ -86,6 +87,12 @@ describe('LatexParser', function() {
       var stage = parser.parse(data);
       expect(stage.vertices[0].visible).toBe(true);
       expect(stage.vertices[1].visible).toBe(true);
+    });
+
+    it('sets pen size', function() {
+
+      var stage = parser.parse(data);
+      expect(stage.penSize).toEqual('thin');
     });
 
   });

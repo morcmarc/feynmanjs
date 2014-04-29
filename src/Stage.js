@@ -17,6 +17,7 @@ module.exports = (function() {
       bottom : []
     };
     this.levels      = 1;
+    this.penSize     = 'thick';
 
     return this;
   };
@@ -68,6 +69,7 @@ module.exports = (function() {
 
     this.canvas = canvas;
     this.canvas.size(this.width, this.height);
+    this.canvas.penSize = this.penSize;
 
     _calculateControlPointLocations(this);
     _calculateVertexLocations(this);
@@ -76,9 +78,7 @@ module.exports = (function() {
   };
 
   Stage.prototype.draw = function() {
-
-    console.log(this.vertices);
-
+    
     _drawTitle(this);
     _drawVertices(this);
     _drawPropagators(this);
@@ -92,7 +92,7 @@ module.exports = (function() {
       size   :  14,
       style  : 'italic',
       anchor : 'left'
-    });
+    }).translate(10, 10);
   };
 
   var _drawVertices = function(ctx) {
@@ -149,12 +149,10 @@ module.exports = (function() {
   var _calculateVertexLocations = function(ctx) {
 
     var padding     = (ctx.height * 0.3) / 2;
-    var levels      = ctx.levels === 1 ? 2 : ctx.levels;
+    var levels      =  ctx.levels === 1 ? 2 : ctx.levels;
     var levelHeight = (ctx.height * 0.7) / levels;
 
     for(var l = 1; l <= ctx.levels; l++) {
-
-      console.log(l);
 
       var vertices = ctx.getVerticesByLevel(l);
       var sW       = ctx.width / (vertices.length + 1);

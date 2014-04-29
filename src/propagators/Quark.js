@@ -21,12 +21,13 @@ module.exports = (function(_super) {
     this.length = position.l;
 
     var uiGroup = canvas.group();
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
 
     _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
-      .stroke({ width: 2, color: this.color });
+      .stroke({ width: penSize, color: this.color });
     uiGroup
       .transform({
         cx: position.x,

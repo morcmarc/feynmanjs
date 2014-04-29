@@ -19,6 +19,12 @@ module.exports = (function(_super) {
     var position = this.getPosition(vertexB, vertexA);
 
     this.length = position.l;
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
+
+    // Adjust length to be an integer multiple of the period length
+    if(this.style === 'arc') {
+      this.length += 5 - this.length % 5;
+    }
 
     var path = this.getPath(this.style);
     canvas.path(path, true)
@@ -30,7 +36,7 @@ module.exports = (function(_super) {
             y: position.y
           })
           .fill('none')
-          .stroke({ width: 2, color: this.color });
+          .stroke({ width: penSize, color: this.color });
   };
 
   /**

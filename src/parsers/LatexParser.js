@@ -115,6 +115,13 @@ module.exports = (function() {
     });
   };
 
+  var _processPenSize = function(args) {
+
+    if(args[0][0] === 'thick' || args[0][0] === 'thin') {
+      stage.penSize = args[0][0];
+    }
+  };
+
   var _stripCurlies = function(args) {
 
     var pattern = /\{|\}/g;
@@ -214,10 +221,13 @@ module.exports = (function() {
   var _keywordFunctionMap = {
     'fmf'       : _processFermion,
     'fmfright'  : _processRight,
+    // 'fmfrightn' : _processNRight,
     'fmfleft'   : _processLeft,
+    // 'fmfleftn'  : _processNLeft,
     'fmftop'    : _processTop,
     'fmfbottom' : _processBottom,
-    'fmfdot'    : _processDot
+    'fmfdot'    : _processDot,
+    'fmfpen'    : _processPenSize
   };
 
   return LatexParser;

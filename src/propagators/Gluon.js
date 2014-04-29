@@ -16,6 +16,7 @@ module.exports = (function(_super) {
     var position = this.getPosition(vertexB, vertexA);
 
     this.length = position.l;
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
 
     var path = this.getPath('line');
     canvas.path(path, true)
@@ -27,7 +28,7 @@ module.exports = (function(_super) {
             y: position.y
           })
           .fill('none')
-          .stroke({ width: 1, color: this.color });
+          .stroke({ width: penSize, color: this.color });
   };
 
   Gluon.prototype.getPath = function(shape) {

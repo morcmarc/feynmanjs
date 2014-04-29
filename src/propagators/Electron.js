@@ -22,12 +22,13 @@ module.exports = (function(_super) {
     this.length = position.l;
 
     var uiGroup = canvas.group();
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
 
     _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
-      .stroke({ width: 2, color: this.color });
+      .stroke({ width: penSize, color: this.color });
     uiGroup
       .transform({
         cx: position.x,
@@ -63,10 +64,10 @@ module.exports = (function(_super) {
     var x1 = length / 2 + coeff * 7;
     var y1 = 0;
     //Below-the-line
-    var x2 = length / 2 - coeff * 7;
+    var x2 = length / 2 - coeff * 9;
     var y2 = 4;
     //Above-the-line
-    var x3 = length / 2 - coeff * 7;
+    var x3 = length / 2 - coeff * 9;
     var y3 = -4;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3

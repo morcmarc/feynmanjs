@@ -74,6 +74,7 @@ module.exports = (function() {
       bottom : []
     };
     this.levels      = 1;
+    this.penSize     = 'thick';
 
     return this;
   };
@@ -125,6 +126,7 @@ module.exports = (function() {
 
     this.canvas = canvas;
     this.canvas.size(this.width, this.height);
+    this.canvas.penSize = this.penSize;
 
     _calculateControlPointLocations(this);
     _calculateVertexLocations(this);
@@ -133,9 +135,7 @@ module.exports = (function() {
   };
 
   Stage.prototype.draw = function() {
-
-    console.log(this.vertices);
-
+    
     _drawTitle(this);
     _drawVertices(this);
     _drawPropagators(this);
@@ -149,7 +149,7 @@ module.exports = (function() {
       size   :  14,
       style  : 'italic',
       anchor : 'left'
-    });
+    }).translate(10, 10);
   };
 
   var _drawVertices = function(ctx) {
@@ -206,12 +206,10 @@ module.exports = (function() {
   var _calculateVertexLocations = function(ctx) {
 
     var padding     = (ctx.height * 0.3) / 2;
-    var levels      = ctx.levels === 1 ? 2 : ctx.levels;
+    var levels      =  ctx.levels === 1 ? 2 : ctx.levels;
     var levelHeight = (ctx.height * 0.7) / levels;
 
     for(var l = 1; l <= ctx.levels; l++) {
-
-      console.log(l);
 
       var vertices = ctx.getVerticesByLevel(l);
       var sW       = ctx.width / (vertices.length + 1);
@@ -248,11 +246,12 @@ module.exports = (function() {
     }
 
     var uiGroup = stage.canvas.group();
+    var penSize = stage.canvas.penSize === 'thick' ? 2 : 1;
 
     uiGroup
-      .circle(8)
+      .circle(penSize * 4)
       .fill({ color: '#000' })
-      .translate( this.x - 4, this.y - 4 );
+      .translate( this.x - (penSize * 2), this.y - (penSize * 2) );
   };
 
   return Vertex;
@@ -607,6 +606,13 @@ module.exports = (function() {
     });
   };
 
+  var _processPenSize = function(args) {
+
+    if(args[0][0] === 'thick' || args[0][0] === 'thin') {
+      stage.penSize = args[0][0];
+    }
+  };
+
   var _stripCurlies = function(args) {
 
     var pattern = /\{|\}/g;
@@ -706,10 +712,13 @@ module.exports = (function() {
   var _keywordFunctionMap = {
     'fmf'       : _processFermion,
     'fmfright'  : _processRight,
+    // 'fmfrightn' : _processNRight,
     'fmfleft'   : _processLeft,
+    // 'fmfleftn'  : _processNLeft,
     'fmftop'    : _processTop,
     'fmfbottom' : _processBottom,
-    'fmfdot'    : _processDot
+    'fmfdot'    : _processDot,
+    'fmfpen'    : _processPenSize
   };
 
   return LatexParser;
@@ -863,12 +872,13 @@ module.exports = (function(_super) {
     this.length = position.l;
 
     var uiGroup = canvas.group();
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
 
     _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
-      .stroke({ width: 2, color: this.color });
+      .stroke({ width: penSize, color: this.color });
     uiGroup
       .transform({
         cx: position.x,
@@ -904,10 +914,10 @@ module.exports = (function(_super) {
     var x1 = length / 2 + coeff * 7;
     var y1 = 0;
     //Below-the-line
-    var x2 = length / 2 - coeff * 7;
+    var x2 = length / 2 - coeff * 9;
     var y2 = 4;
     //Above-the-line
-    var x3 = length / 2 - coeff * 7;
+    var x3 = length / 2 - coeff * 9;
     var y3 = -4;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3
@@ -938,6 +948,7 @@ module.exports = (function(_super) {
     var position = this.getPosition(vertexB, vertexA);
 
     this.length = position.l;
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
 
     var path = this.getPath('line');
     canvas.path(path, true)
@@ -949,7 +960,7 @@ module.exports = (function(_super) {
             y: position.y
           })
           .fill('none')
-          .stroke({ width: 1, color: this.color });
+          .stroke({ width: penSize, color: this.color });
   };
 
   Gluon.prototype.getPath = function(shape) {
@@ -1031,6 +1042,12 @@ module.exports = (function(_super) {
     var position = this.getPosition(vertexB, vertexA);
 
     this.length = position.l;
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
+
+    // Adjust length to be an integer multiple of the period length
+    if(this.style === 'arc') {
+      this.length += 5 - this.length % 5;
+    }
 
     var path = this.getPath(this.style);
     canvas.path(path, true)
@@ -1042,7 +1059,7 @@ module.exports = (function(_super) {
             y: position.y
           })
           .fill('none')
-          .stroke({ width: 2, color: this.color });
+          .stroke({ width: penSize, color: this.color });
   };
 
   /**
@@ -1131,12 +1148,13 @@ module.exports = (function(_super) {
     this.length = position.l;
 
     var uiGroup = canvas.group();
+    var penSize = canvas.penSize === 'thick' ? 2 : 1;
 
     _drawArrow(uiGroup, this.length, this.color, this.anti);
     uiGroup
       .path(this.getPath('line'))
       .fill('none')
-      .stroke({ width: 2, color: this.color });
+      .stroke({ width: penSize, color: this.color });
     uiGroup
       .transform({
         cx: position.x,
