@@ -42,6 +42,7 @@ module.exports = (function() {
     // Match first "word"
     var keyword   = command.match(/\w+/g)[0];
     // Match anything between curly braces { ... }
+    // Example: http://www.regexr.com/38q9i
     var rawArgs   = command.match(/(\{\w+([^\}\{]|\d?)+?\})/g);
     // Get rid of curly braces and convert comma separated args into an Array
     var args      = _explodeArgs(_stripCurlies(rawArgs));
