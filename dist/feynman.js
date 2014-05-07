@@ -257,7 +257,16 @@ module.exports = (function() {
       _processEndPoint(fromId);
       _processEndPoint(toId);
 
-      data.particles.push({ id: id, from: fromId, to: toId, type: args[0][0] });
+      var options = _processPropagatorOptions(args[0].slice(1));
+      var p = {
+        id    : id,
+        from  : fromId,
+        to    : toId,
+        type  : args[0][0],
+        label : options.label
+      };
+
+      data.particles.push(p);
       i++;
     }
   };
@@ -372,11 +381,58 @@ module.exports = (function() {
     var explodedArgs = [];
 
     args.forEach(function(arg) {
+      
       var e = arg.split(',');
+
+      e = _processArgumentOptions(e);
       explodedArgs.push(e);
     });
 
     return explodedArgs;
+  };
+
+  var _processArgumentOptions = function(args) {
+
+    var processed = [];
+
+    args.forEach(function(arg) {
+      
+      var pa      = arg;
+      var pattern = /(\w+)\=(\S+)/g;
+      var matches = pattern.exec(pa);
+
+      if(matches && matches.length > 2) {
+        var key   = matches[1];
+        var value = matches[2];
+        pa = {};
+        pa[key] = value;
+      }
+
+      processed.push(pa);
+    });
+
+    return processed;
+  };
+
+  var _processPropagatorOptions = function(options) {
+
+    var processed = {};
+
+    if(options && options.length === 0) {
+      return processed;
+    }
+
+    options.forEach(function(o) {
+      if(typeof o === 'string') {
+        processed[o] = true;
+      }
+      if(typeof o === 'object') {
+        var key = Object.keys(o)[0];
+        processed[key] = typeof o[key] === 'undefined' ? true : o[key];
+      }
+    });
+
+    return processed;
   };
 
   var _getVertexById = function(id) {

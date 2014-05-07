@@ -137,6 +137,12 @@ describe('LatexParser', function() {
       expect(s.particles.length).toEqual(5);
     });
 
+    it('sets label for propagator', function() {
+
+      var s = p.parse();
+      expect(s.particles[0].label).toEqual('$\\tau$');
+    });
+
     it('sets particle type correctly', function() {
 
       var s = p.parse();
