@@ -11,7 +11,7 @@ describe('LatexParser', function() {
     diagram: [
       'fmfleft{i1,i2}',
       'fmfright{o1,o2}',
-      'fmf{fermion}{i1,v1,i2}',
+      'fmf{fermion,tension=1/3,right,label=$\\tau$}{i1,v1,i2}',
       'fmf{fermion}{o2,v2,o1}',
       'fmf{photon}{v1,v2}',
       'fmfpen{thin}',

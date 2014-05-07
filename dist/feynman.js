@@ -13,7 +13,54 @@ module.exports = (function () {
 
     this.canvas = canvas;
     this.data   = stageData;
+
+    return this;
   }
+
+  Stage.prototype.draw = function() {
+
+    _drawCanvas.bind(this)();
+    _drawTitle.bind(this)();
+    _drawPropagators.bind(this)();
+    _drawVertices.bind(this)();
+  };
+
+  var _drawCanvas = function() {
+
+    this.canvas.size(this.data.width, this.data.height);
+  };
+
+  var _drawTitle = function() {
+
+    var ui = this.canvas.group();
+    ui.text(this.data.title).font({
+      family : 'Georgia',
+      size   :  14,
+      style  : 'italic',
+      anchor : 'left'
+    }).translate(10, 10);
+  };
+
+  var _drawVertices = function(ctx) {
+
+    var ui = this.canvas.group();
+
+    this.data.vertices.forEach(function(v) {
+      
+    });
+  };
+
+  var _drawPropagators = function(ctx) {
+
+  };
+
+  var _calculateControlPointLocations = function(ctx) {
+
+  };
+
+  var _calculateVertexLocations = function(ctx) {
+
+  };
 
   return Stage;
 })();
@@ -130,7 +177,9 @@ module.exports = (function() {
     var svgCanvas  = new SVG(canvas);
     var parser     = ParserFactory.getParser(data);
     var stageData  = parser.parse();
-    var stage      = new Stage(stageData);
+    var stage      = new Stage(svgCanvas, stageData);
+
+    stage.draw();
 
     return this;
   };
@@ -141,6 +190,7 @@ module.exports = (function() {
 })();
 },{"./Stage":1,"./parsers/ParserFactory":6}],5:[function(require,module,exports){
 var StageStructure = require('./../StageStructure');
+var Klass = require('./../helpers/Klass');
 
 module.exports = (function() {
 
@@ -180,8 +230,12 @@ module.exports = (function() {
 
   var _processCommand = function(command) {
 
+    // Match first "word"
     var keyword   = command.match(/\w+/g)[0];
-    var args      = _explodeArgs(_stripCurlies(command.match(/(\{(\w+,?)+\})/g)));
+    // Match anything between curly braces { ... }
+    var rawArgs   = command.match(/(\{\w+([^\}\{]|\d?)+?\})/g);
+    // Get rid of curly braces and convert comma separated args into an Array
+    var args      = _explodeArgs(_stripCurlies(rawArgs));
 
     if(keyword !== undefined && _keywordFunctionMap[keyword] !== undefined) {
 
@@ -306,6 +360,7 @@ module.exports = (function() {
   var _stripCurlies = function(args) {
 
     var pattern = /\{|\}/g;
+
     return args.map(function(arg) {
       return arg.replace(pattern, '');
     });
@@ -342,8 +397,11 @@ module.exports = (function() {
     var result;
 
     for(var key in data.cPoints) {
+
       if(data.cPoints.hasOwnProperty(key)) {
+
         data.cPoints[key].forEach(function(cPoint) {
+
           if(cPoint.id === id) {
             result = cPoint;
           }
@@ -356,21 +414,21 @@ module.exports = (function() {
 
   var _keywordFunctionMap = {
     'fmf'       : _processFermion,
-    'fmfright'  : _processRight,
-    'fmfleft'   : _processLeft,
-    'fmftop'    : _processTop,
     'fmfbottom' : _processBottom,
-    'fmfrightn' : _processNRight,
-    'fmfleftn'  : _processNLeft,
-    'fmftopn'   : _processNTop,
     'fmfbottomn': _processNBottom,
     'fmfdot'    : _processDot,
-    'fmfpen'    : _processPenSize
+    'fmfleft'   : _processLeft,
+    'fmfleftn'  : _processNLeft,
+    'fmfpen'    : _processPenSize,
+    'fmfright'  : _processRight,
+    'fmfrightn' : _processNRight,
+    'fmftop'    : _processTop,
+    'fmftopn'   : _processNTop
   };
 
   return LatexParser;
 })();
-},{"./../StageStructure":2}],6:[function(require,module,exports){
+},{"./../StageStructure":2,"./../helpers/Klass":3}],6:[function(require,module,exports){
 var LatexParser = require('./LatexParser');
 
 module.exports = {

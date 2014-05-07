@@ -1,4 +1,5 @@
 var StageStructure = require('./../StageStructure');
+var Klass = require('./../helpers/Klass');
 
 module.exports = (function() {
 
@@ -38,8 +39,12 @@ module.exports = (function() {
 
   var _processCommand = function(command) {
 
+    // Match first "word"
     var keyword   = command.match(/\w+/g)[0];
-    var args      = _explodeArgs(_stripCurlies(command.match(/(\{(\w+,?)+\})/g)));
+    // Match anything between curly braces { ... }
+    var rawArgs   = command.match(/(\{\w+([^\}\{]|\d?)+?\})/g);
+    // Get rid of curly braces and convert comma separated args into an Array
+    var args      = _explodeArgs(_stripCurlies(rawArgs));
 
     if(keyword !== undefined && _keywordFunctionMap[keyword] !== undefined) {
 
@@ -164,6 +169,7 @@ module.exports = (function() {
   var _stripCurlies = function(args) {
 
     var pattern = /\{|\}/g;
+
     return args.map(function(arg) {
       return arg.replace(pattern, '');
     });
@@ -200,8 +206,11 @@ module.exports = (function() {
     var result;
 
     for(var key in data.cPoints) {
+
       if(data.cPoints.hasOwnProperty(key)) {
+
         data.cPoints[key].forEach(function(cPoint) {
+
           if(cPoint.id === id) {
             result = cPoint;
           }
@@ -214,16 +223,16 @@ module.exports = (function() {
 
   var _keywordFunctionMap = {
     'fmf'       : _processFermion,
-    'fmfright'  : _processRight,
-    'fmfleft'   : _processLeft,
-    'fmftop'    : _processTop,
     'fmfbottom' : _processBottom,
-    'fmfrightn' : _processNRight,
-    'fmfleftn'  : _processNLeft,
-    'fmftopn'   : _processNTop,
     'fmfbottomn': _processNBottom,
     'fmfdot'    : _processDot,
-    'fmfpen'    : _processPenSize
+    'fmfleft'   : _processLeft,
+    'fmfleftn'  : _processNLeft,
+    'fmfpen'    : _processPenSize,
+    'fmfright'  : _processRight,
+    'fmfrightn' : _processNRight,
+    'fmftop'    : _processTop,
+    'fmftopn'   : _processNTop
   };
 
   return LatexParser;

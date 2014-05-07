@@ -26,7 +26,9 @@ module.exports = (function() {
     var svgCanvas  = new SVG(canvas);
     var parser     = ParserFactory.getParser(data);
     var stageData  = parser.parse();
-    var stage      = new Stage(stageData);
+    var stage      = new Stage(svgCanvas, stageData);
+
+    stage.draw();
 
     return this;
   };
