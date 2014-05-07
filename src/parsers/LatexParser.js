@@ -1,33 +1,39 @@
-var Stage             = require('./../Stage');
-var ParticleGenerator = require('./../ParticleGenerator');
-var ControlPoint      = require('./../ControlPoint');
-var Vertex            = require('./../Vertex');
+var StageStructure = require('./../StageStructure');
 
 module.exports = (function() {
 
-  var stage = new Stage();
+  var data;
 
-  var LatexParser = function() {
+  function LatexParser(raw) {
 
-    return this;
-  };
-
-  LatexParser.prototype.parse = function(data) {
-
-    if(data === undefined) {
-      throw new Error('Missing data argument!');
+    if(typeof raw === 'undefined') {
+      throw new Error('No data given.');
     }
 
-    stage        = new Stage();
-    stage.title  = data.title;
-    stage.width  = data.width;
-    stage.height = data.height;
+    this.raw = raw;
 
-    data.diagram.forEach(function(command) {
-      _processCommand(command);
-    }, this);
+    data = StageStructure.getStructure();
 
-    return stage;
+    return this;
+  }
+
+  LatexParser.prototype.parse = function() {
+
+    if(this.raw.title) {
+      data.title = this.raw.title;
+    }
+    if(this.raw.width) {
+      data.width = this.raw.width;
+    }
+    if(this.raw.height) {
+      data.height = this.raw.height;
+    }
+    if(this.raw.diagram) {
+      this.raw.diagram.forEach(function(command) {
+        _processCommand(command);
+      });
+    }
+    return data;
   };
 
   var _processCommand = function(command) {
@@ -45,44 +51,29 @@ module.exports = (function() {
 
     var i = 0;
 
-    var isMultilevel = _isMultilevel(args[1]);
-
     while(args[1][i + 1]) {
 
       var fromId = args[1][i];
       var toId   = args[1][i + 1];
-      var from   = _processPropagatorStartEnd(fromId, isMultilevel);
-      var to     = _processPropagatorStartEnd(toId, isMultilevel);
+      var id     = 'p' + (data.particles.length + 1);
 
-      if(!from || !to) {
-        throw new Error('Invalid Vertex or Control Point');
-      }
+      _processEndPoint(fromId);
+      _processEndPoint(toId);
 
-      var id   = 'p' + stage.propagators.length + 1;
-      var p    = _getParticle(args[0][0], id, args[0][1]);
-
-      p.from   = from;
-      p.to     = to;
-
-      stage.propagators.push(p);
+      data.particles.push({ id: id, from: fromId, to: toId, type: args[0][0] });
       i++;
-    }
-
-    if(isMultilevel === 'opposite') {
-      stage.levels += 1;
     }
   };
 
   var _processControlPoint = function(pos, args) {
 
-    args[0].forEach(function(cId) {
+    args[0].forEach(function(pId) {
 
-      if(stage.getControlPointById(cId)) {
+      if(_getControlPointById(pId)) {
         return;
       }
 
-      var cp = new ControlPoint(cId, pos);
-      stage.cPoints[pos].push(cp);
+      data.cPoints[pos].push({ id: pId });
     });
   };
 
@@ -106,19 +97,67 @@ module.exports = (function() {
     _processControlPoint('bottom', args);
   };
 
+  var _processNPos = function(pos, args) {
+
+    var n        = parseInt(args[0], 10);
+    var points   = [];
+    var i        = 1;
+    var idLetter = pos === 'left' || pos === 'top' ? 'i' : 'o';
+
+    while(i <= n) {
+      points.push(idLetter + i);
+      i++;
+    }
+
+    _processControlPoint(pos, [points]);
+  };
+
+  var _processNRight = function(args) {
+
+    _processNPos('right', args);
+  };
+
+  var _processNLeft = function(args) {
+
+    _processNPos('left', args);
+  };
+
+  var _processNTop = function(args) {
+
+    _processNPos('top', args);
+  };
+
+  var _processNBottom = function(args) {
+
+    _processNPos('bottom', args);
+  };
+
   var _processDot = function(args) {
 
-    args[0].forEach(function(vertexId) {
-
-      var v = stage.getVertexById(vertexId);
-      v.visible = true;
+    args[0].forEach(function(vId) {
+      var v = _getVertexById(vId);
+      if(v) {
+        v.visible = true;
+      }
     });
   };
 
   var _processPenSize = function(args) {
 
     if(args[0][0] === 'thick' || args[0][0] === 'thin') {
-      stage.penSize = args[0][0];
+      data.thickness = args[0][0];
+    }
+  };
+
+  var _isVertex = function(point) {
+
+    return point[0] === 'v';
+  };
+
+  var _processEndPoint = function(id) {
+
+    if(_isVertex(id) && !_getVertexById(id)) {
+      data.vertices.push({ id: id });
     }
   };
 
@@ -142,90 +181,47 @@ module.exports = (function() {
     return explodedArgs;
   };
 
-  var _getParticle = function(type, id, style) {
+  var _getVertexById = function(id) {
 
-    var particle;
+    var result;
 
-    switch(type) {
+    data.vertices.forEach(function(v) {
 
-      case 'electron':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e-', style: style });
-        break;
-      case 'pozitron':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e+', style: style });
-        break;
-      case 'quark':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'q', style: style });
-        break;
-      case 'photon':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'ph', style: style });
-        break;
-      case 'gluon':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'g', style: style });
-        break;
-      case 'antifermion':
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e+', style: style });
-        break;
-      // fermion
-      default:
-        particle = ParticleGenerator.getParticle({ id: id, type: 'e-', style: style });
-        break;
-    }
-
-    return particle;
-  };
-
-  var _isVertex = function(point) {
-
-    return point[0] === 'v';
-  };
-
-  var _isMultilevel = function(fermionPath) {
-
-    var sp = stage.getControlPointById(fermionPath[0]);
-    var ep = stage.getControlPointById(fermionPath[fermionPath.length - 1]);
-
-    if((sp && ep) && (sp.pos !== ep.pos)) {
-      return 'opposite';
-    }
-    if((sp && ep) && (sp.pos === ep.pos)) {
-      return 'same';
-    }
-    return false;
-  };
-
-  var _processPropagatorStartEnd = function(id, isMultilevel) {
-
-    var p;
-
-    if(_isVertex(id)) {
-
-      p = stage.getVertexById(id) ? stage.getVertexById(id) : new Vertex(id);
-
-      if(isMultilevel) {
-        p.level = stage.levels;
+      if(v.id === id) {
+        result = v;
       }
+    });
 
-      if(!stage.getVertexById(id)) {
-        stage.vertices.push(p);
+    return result;
+  };
+
+  var _getControlPointById = function(id) {
+
+    var result;
+
+    for(var key in data.cPoints) {
+      if(data.cPoints.hasOwnProperty(key)) {
+        data.cPoints[key].forEach(function(cPoint) {
+          if(cPoint.id === id) {
+            result = cPoint;
+          }
+        });
       }
-
-    } else {
-
-      p = stage.getControlPointById(id);
     }
 
-    return p;
+    return result;
   };
 
   var _keywordFunctionMap = {
     'fmf'       : _processFermion,
     'fmfright'  : _processRight,
-    // 'fmfrightn' : _processNRight,
     'fmfleft'   : _processLeft,
-    // 'fmfleftn'  : _processNLeft,
     'fmftop'    : _processTop,
     'fmfbottom' : _processBottom,
+    'fmfrightn' : _processNRight,
+    'fmfleftn'  : _processNLeft,
+    'fmftopn'   : _processNTop,
+    'fmfbottomn': _processNBottom,
     'fmfdot'    : _processDot,
     'fmfpen'    : _processPenSize
   };

@@ -1,4 +1,5 @@
 var ParserFactory = require('./parsers/ParserFactory');
+var Stage         = require('./Stage');
 
 module.exports = (function() {
 
@@ -23,10 +24,9 @@ module.exports = (function() {
     }
 
     var svgCanvas  = new SVG(canvas);
-    var parser     = ParserFactory.getParser(data.lang);
-    var stage      = parser.parse(data);
-
-    stage.setCanvas(svgCanvas).draw();
+    var parser     = ParserFactory.getParser(data);
+    var stageData  = parser.parse();
+    var stage      = new Stage(stageData);
 
     return this;
   };

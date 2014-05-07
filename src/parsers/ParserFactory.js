@@ -1,13 +1,12 @@
-var StandardParser = require('./StandardParser');
-var LatexParser    = require('./LatexParser');
+var LatexParser = require('./LatexParser');
 
 module.exports = {
 
-  getParser: function(lang) {
+  getParser: function(data) {
 
-    if(lang === 'latex') {
-      return new LatexParser();
+    switch(data.lang) {
+      default:
+        return new LatexParser(data);
     }
-    return new StandardParser();
   }
 };
