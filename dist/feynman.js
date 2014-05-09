@@ -78,10 +78,14 @@ module.exports = {
       thickness : 'thick', // or 'thin'
       particles : [
         // {
-        //   id   : 'p1',
-        //   type : 'photon',
-        //   from : 'i1',
-        //   to   : 'v1'
+          // id      : 'p1',
+          // type    : 'photon',
+          // from    : 'i1',
+          // to      : 'v1',
+          // label   : '$\tau$',
+          // right   : true
+          // left    : true,
+          // tension : '1/3'
         // }
       ],
       vertices  : [
@@ -259,11 +263,19 @@ module.exports = (function() {
 
       var options = _processPropagatorOptions(args[0].slice(1));
       var p = {
-        id    : id,
-        from  : fromId,
-        to    : toId,
-        type  : args[0][0],
-        label : options.label
+        id            : id,
+        from          : fromId,
+        to            : toId,
+        type          : args[0][0],
+        label         : options.label,
+        labelSide     : options.side,
+        labelDistance : options.dist,
+        tension       : options.tension,
+        right         : options.right,
+        tag           : options.tag,
+        color         : options.foreground,
+        bgColor       : options.background,
+        penWidth      : options.width
       };
 
       data.particles.push(p);
