@@ -21,11 +21,73 @@ module.exports = (function () {
   Stage.prototype.draw = function() {
 
     _calculateControlPointLocations.bind(this)();
-
+    _calculateVertexLocations.bind(this)();
     _drawCanvas.bind(this)();
     _drawTitle.bind(this)();
     _drawPropagators.bind(this)();
     _drawVertices.bind(this)();
+  };
+
+  Stage.prototype.getVertexById = function(id) {
+
+    var result;
+
+    this.data.vertices.forEach(function(v) {
+
+      if(v.id === id) {
+        result = v;
+      }
+    });
+
+    return result;
+  };
+
+  Stage.prototype.getControlPointById = function(id) {
+
+    var result;
+
+    for(var key in this.data.cPoints) {
+
+      if(this.data.cPoints.hasOwnProperty(key)) {
+
+        this.data.cPoints[key].forEach(function(cPoint) {
+
+          if(cPoint.id === id) {
+            result = cPoint;
+          }
+        });
+      }
+    }
+
+    return result;
+  };
+
+  Stage.prototype.getParticlesStartingFromPoint = function(sP) {
+
+    return _getParticleFromOrToPoint.bind(this)('from', sP);
+  };
+
+  Stage.prototype.getParticlesEndingInPoint = function(eP) {
+
+    return _getParticleFromOrToPoint.bind(this)('to', eP);
+  };
+
+  Stage.prototype.getParticlePathsFromControlPoint = function(cp) {
+
+  };
+
+  var _getParticleFromOrToPoint = function(dir, point) {
+
+    var results = [];
+
+    this.data.particles.forEach(function(p) {
+
+      if(p[dir] === point) {
+        results.push(p);
+      }
+    });
+
+    return results;
   };
 
   var _drawCanvas = function() {
@@ -47,26 +109,11 @@ module.exports = (function () {
   var _drawVertices = function() {
 
     var ui = this.canvas.group();
-
-    this.data.vertices.forEach(function(v) {
-      
-    });
   };
 
   var _drawPropagators = function() {
 
     var ui = this.canvas.group();
-
-    for(var key in this.data.cPoints) {
-
-      if(this.data.cPoints.hasOwnProperty(key)) {
-
-        this.data.cPoints[key].forEach(function(cp) {
-
-          ui.circle(5).fill({ color: '#000' }).translate(cp.x, cp.y);
-        });
-      }
-    }
   };
 
   var _calculateControlPointLocations = function() {
@@ -100,8 +147,19 @@ module.exports = (function () {
     }
   };
 
-  var _calculateVertexLocations = function(ctx) {
+  var _calculateVertexLocations = function() {
 
+    var paths = [];
+
+    this.data.cPoints.left.forEach(function(cp) {
+
+      this.getParticlePathsFromControlPoint(cp);
+    }, this);
+
+    this.data.cPoints.top.forEach(function(cp) {
+
+      this.getParticlePathsFromControlPoint(cp);
+    }, this);
   };
 
   return Stage;
@@ -140,7 +198,8 @@ module.exports = {
 
         left   : [
           // {
-          //   id: 'i1'
+          //   id: 'i1',
+          //   side: 'left'
           // }
         ],
         right  : [
@@ -333,7 +392,7 @@ module.exports = (function() {
         return;
       }
 
-      data.cPoints[pos].push({ id: pId, x: 0, y: 0 });
+      data.cPoints[pos].push({ id: pId, x: 0, y: 0, side: pos });
     });
   };
 

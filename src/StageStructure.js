@@ -31,7 +31,8 @@ module.exports = {
 
         left   : [
           // {
-          //   id: 'i1'
+          //   id: 'i1',
+          //   side: 'left'
           // }
         ],
         right  : [

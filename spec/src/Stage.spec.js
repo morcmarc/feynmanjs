@@ -1,12 +1,55 @@
 var Stage = require('./../../src/Stage');
+var ParserFactory = require('./../../src/parsers/ParserFactory');
+var SVG = function() {
+  return {
+    size      : function(){ return this; },
+    group     : function(){ return this; },
+    text      : function(){ return this; },
+    font      : function(){ return this; },
+    translate : function(){ return this; }
+  };
+};
 
 describe('Stage', function() {
 
   var stage;
+  var testData = {
+    title: 'Scattering Diagram',
+    width: 200,
+    height: 150,
+    diagram: [
+      'fmfleft{i1,i2}',
+      'fmfright{o1,o2}',
+      'fmf{fermion,tension=1/3,right,label=$\\tau$,label.side=left,label.dist=10,tag=tag1,width=5,foreground=#00F,background=#000}{i1,v1,i2}',
+      'fmf{fermion}{i1,v1,i2}',
+      'fmf{fermion}{o2,v2,o1}',
+      'fmf{photon}{v1,v2}',
+      'fmfpen{thin}',
+      'fmfdot{v1}'
+    ]
+  };
+  var annihilationRev = {
+    title      : 'E-P Annihilation',
+    width      : 200,
+    height     : 300,
+    showAxes   : true,
+    lang       : 'latex',
+    diagram: [
+      'fmftop{i1,i2}',
+      'fmfbottom{o1,o2}',
+      'fmf{antifermion}{i1,v1,v2,o1}',
+      'fmf{fermion}{i2,v3,v4,o2}',
+      'fmf{photon}{v1,v3}',
+      'fmf{photon}{v2,v4}',
+      'fmfdot{v1,v2,v3,v4}'
+    ]
+  };
 
   beforeEach(function() {
 
-    stage = new Stage('', {}, {});
+    var parser     = ParserFactory.getParser(testData);
+    var stageData  = parser.parse();
+    stage = new Stage('testCanvas', new SVG('testCanvas'), stageData);
   });
 
   it('cannot be instantiated without a canvas', function() {
@@ -21,5 +64,102 @@ describe('Stage', function() {
     expect(function() {
       var invalid = new Stage('', {});
     }).toThrow(new Error('Missing data argument.'));
+  });
+
+  describe('getVertexById()', function() {
+
+    it('returns vertex object if that exists', function() {
+
+      expect(stage.getVertexById('v1')).toBeDefined();
+      expect(stage.getVertexById('v1').id).toEqual('v1');
+    });
+
+    it('returns undefined if vertex does not exist', function() {
+
+      expect(stage.getVertexById('v10')).toBeUndefined();
+    });
+  });
+
+  describe('getControlPointById()', function() {
+
+    it('returns control point object if that exists', function() {
+
+      expect(stage.getControlPointById('i1')).toBeDefined();
+      expect(stage.getControlPointById('i1').id).toEqual('i1');
+    });
+
+    it('returns undefined if control point does not exist', function() {
+
+      expect(stage.getControlPointById('i10')).toBeUndefined();
+    });
+  });
+
+  describe('getParticlesStartingFromPoint()', function() {
+
+    it('returns all particles starting from a Point', function() {
+
+      var results = stage.getParticlesStartingFromPoint('i1');
+      expect(results.length).toEqual(2);
+      expect(results[0].id).toEqual('p1');
+      expect(results[1].id).toEqual('p3');
+    });
+
+    it('returns empty array if there are no particles starting from that particular point', function() {
+
+      var results = stage.getParticlesStartingFromPoint('hello');
+      expect(results.length).toEqual(0);
+    });
+  });
+
+  describe('getParticlesEndingInPoint()', function() {
+
+    it('returns all particles ending in Point', function() {
+
+      var results = stage.getParticlesEndingInPoint('i2');
+      expect(results.length).toEqual(2);
+      expect(results[0].id).toEqual('p2');
+    });
+
+    it('returns empty array if there are no particles in that particular point', function() {
+
+      var results = stage.getParticlesEndingInPoint('hello');
+      expect(results.length).toEqual(0);
+    });
+  });
+
+  describe('draw()', function() {
+
+    it('positions control points for Left-Right aligned diagrams', function() {
+
+      stage.draw();
+      
+      expect(stage.getControlPointById('i1').x).toEqual(30);
+      expect(stage.getControlPointById('i2').x).toEqual(30);
+      expect(stage.getControlPointById('i1').y).toEqual(30);
+      expect(stage.getControlPointById('i2').y).toEqual(120);
+
+      expect(stage.getControlPointById('o1').x).toEqual(170);
+      expect(stage.getControlPointById('o2').x).toEqual(170);
+      expect(stage.getControlPointById('o1').y).toEqual(30);
+      expect(stage.getControlPointById('o2').y).toEqual(120);
+    });
+
+    it('positions control points for Top-bottom aligned diagrams', function() {
+
+      var parser     = ParserFactory.getParser(annihilationRev);
+      var stageData  = parser.parse();
+      stage = new Stage('testCanvas', new SVG('testCanvas'), stageData);
+      stage.draw();
+      
+      expect(stage.getControlPointById('i1').x).toEqual(40);
+      expect(stage.getControlPointById('i2').x).toEqual(160);
+      expect(stage.getControlPointById('i1').y).toEqual(40);
+      expect(stage.getControlPointById('i2').y).toEqual(40);
+
+      expect(stage.getControlPointById('o1').x).toEqual(40);
+      expect(stage.getControlPointById('o2').x).toEqual(160);
+      expect(stage.getControlPointById('o1').y).toEqual(260);
+      expect(stage.getControlPointById('o2').y).toEqual(260);
+    });
   });
 });
