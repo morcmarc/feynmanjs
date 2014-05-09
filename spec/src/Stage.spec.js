@@ -6,20 +6,20 @@ describe('Stage', function() {
 
   beforeEach(function() {
 
-    stage = new Stage({}, {});
+    stage = new Stage('', {}, {});
   });
 
   it('cannot be instantiated without a canvas', function() {
 
     expect(function() {
-      var invalid = new Stage();
+      var invalid = new Stage('');
     }).toThrow(new Error('Missing canvas argument.'));
   });
 
   it('cannot be instantiated without data', function() {
 
     expect(function() {
-      var invalid = new Stage({});
+      var invalid = new Stage('', {});
     }).toThrow(new Error('Missing data argument.'));
   });
 });

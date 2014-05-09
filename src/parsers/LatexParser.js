@@ -96,7 +96,7 @@ module.exports = (function() {
         return;
       }
 
-      data.cPoints[pos].push({ id: pId });
+      data.cPoints[pos].push({ id: pId, x: 0, y: 0 });
     });
   };
 

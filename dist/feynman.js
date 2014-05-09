@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = (function () {
   
-  function Stage(canvas, stageData) {
+  function Stage(canvasId, canvas, stageData) {
 
     if(typeof canvas === 'undefined') {
       throw new Error('Missing canvas argument.');
@@ -11,13 +11,16 @@ module.exports = (function () {
       throw new Error('Missing data argument.');
     }
 
-    this.canvas = canvas;
-    this.data   = stageData;
+    this.canvasId = canvasId;
+    this.canvas   = canvas;
+    this.data     = stageData;
 
     return this;
   }
 
   Stage.prototype.draw = function() {
+
+    _calculateControlPointLocations.bind(this)();
 
     _drawCanvas.bind(this)();
     _drawTitle.bind(this)();
@@ -41,7 +44,7 @@ module.exports = (function () {
     }).translate(10, 10);
   };
 
-  var _drawVertices = function(ctx) {
+  var _drawVertices = function() {
 
     var ui = this.canvas.group();
 
@@ -50,12 +53,51 @@ module.exports = (function () {
     });
   };
 
-  var _drawPropagators = function(ctx) {
+  var _drawPropagators = function() {
 
+    var ui = this.canvas.group();
+
+    for(var key in this.data.cPoints) {
+
+      if(this.data.cPoints.hasOwnProperty(key)) {
+
+        this.data.cPoints[key].forEach(function(cp) {
+
+          ui.circle(5).fill({ color: '#000' }).translate(cp.x, cp.y);
+        });
+      }
+    }
   };
 
-  var _calculateControlPointLocations = function(ctx) {
+  var _calculateControlPointLocations = function() {
 
+    for(var key in this.data.cPoints) {
+
+      if(this.data.cPoints.hasOwnProperty(key)) {
+
+        // Set up variables depending on current side
+        var sideA    = key === 'left'  || key === 'right'  ? this.data.height : this.data.width;
+        var sideB    = key === 'left'  || key === 'right'  ? this.data.width  : this.data.height;
+        var coordA   = key === 'left'  || key === 'right'  ? 'x' : 'y';
+        var coordB   = key === 'left'  || key === 'right'  ? 'y' : 'x';
+        var coeff    = key === 'right' || key === 'bottom' ? -1 : 1;
+        // Number of parts we need to split a side into
+        var segments = this.data.cPoints[key].length === 1 ? 3 : this.data.cPoints[key].length;
+        // Padding on perpendicular side
+        var paddingA = (sideA * 0.4) / 2;
+        // Padding on parallel side
+        var paddingB = (sideB * 0.1) / 2;
+        // Size of a segment
+        var s        = (sideA * 0.6) / (segments - 1);
+
+        var i = this.data.cPoints[key].length === 1 ? 1 : 0;
+        this.data.cPoints[key].forEach(function(cp) {
+          cp[coordA] = coeff === -1 ? sideB - paddingA : paddingA;
+          cp[coordB] = i * s + paddingA;
+          i++;
+        });
+      }
+    }
   };
 
   var _calculateVertexLocations = function(ctx) {
@@ -181,7 +223,7 @@ module.exports = (function() {
     var svgCanvas  = new SVG(canvas);
     var parser     = ParserFactory.getParser(data);
     var stageData  = parser.parse();
-    var stage      = new Stage(svgCanvas, stageData);
+    var stage      = new Stage(canvas, svgCanvas, stageData);
 
     stage.draw();
 
@@ -291,7 +333,7 @@ module.exports = (function() {
         return;
       }
 
-      data.cPoints[pos].push({ id: pId });
+      data.cPoints[pos].push({ id: pId, x: 0, y: 0 });
     });
   };
 
