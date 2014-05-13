@@ -1,3 +1,5 @@
+var Electron = require('./particles/Electron');
+
 module.exports = (function () {
   
   function Stage(canvasId, canvas, stageData) {
@@ -139,6 +141,13 @@ module.exports = (function () {
   var _drawPropagators = function() {
 
     var ui = this.canvas.group();
+
+    this.data.particles.forEach(function(p) {
+
+      p.from = this.getVertexById(p.from) ? this.getVertexById(p.from) : this.getControlPointById(p.from);
+      p.to   = this.getVertexById(p.to) ? this.getVertexById(p.to) : this.getControlPointById(p.to);
+      Electron.draw(this.canvas, p);
+    }, this);
   };
 
   var _calculateControlPointLocations = function() {

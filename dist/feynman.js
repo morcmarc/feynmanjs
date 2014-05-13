@@ -1,4 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Electron = require('./particles/Electron');
+
 module.exports = (function () {
   
   function Stage(canvasId, canvas, stageData) {
@@ -140,6 +142,13 @@ module.exports = (function () {
   var _drawPropagators = function() {
 
     var ui = this.canvas.group();
+
+    this.data.particles.forEach(function(p) {
+
+      p.from = this.getVertexById(p.from) ? this.getVertexById(p.from) : this.getControlPointById(p.from);
+      p.to   = this.getVertexById(p.to) ? this.getVertexById(p.to) : this.getControlPointById(p.to);
+      Electron.draw(this.canvas, p);
+    }, this);
   };
 
   var _calculateControlPointLocations = function() {
@@ -250,7 +259,7 @@ module.exports = (function () {
 
   return Stage;
 })();
-},{}],2:[function(require,module,exports){
+},{"./particles/Electron":10}],2:[function(require,module,exports){
 var Klass = require('./helpers/Klass');
 
 module.exports = {
@@ -264,14 +273,20 @@ module.exports = {
       thickness : 'thick', // or 'thin'
       particles : [
         // {
-          // id      : 'p1',
-          // type    : 'photon',
-          // from    : 'i1',
-          // to      : 'v1',
-          // label   : '$\tau$',
-          // right   : true
-          // left    : true,
-          // tension : '1/3'
+          // id            : 'p1',
+          // type          : 'photon',
+          // from          : 'i1',
+          // to            : 'v1',
+          // label         : '$\tau$',
+          // right         : true
+          // left          : true,
+          // tension       : '1/3',
+          // tag           : 'tag1',
+          // color         : '#F00',
+          // bgColor       : '#0F0',
+          // penWidth      : 5,
+          // labelSide     : 'right',
+          // labelDistance : 10
         // }
       ],
       vertices  : [
@@ -307,7 +322,211 @@ module.exports = {
     });
   }
 };
-},{"./helpers/Klass":3}],3:[function(require,module,exports){
+},{"./helpers/Klass":5}],3:[function(require,module,exports){
+module.exports = {
+
+  /*
+  * Recursively merge properties of two objects 
+  */
+  merge: function (obj1, obj2) {
+
+    for(var p in obj2) {
+
+      if(obj2.hasOwnProperty(p)) {
+
+        try {
+          // Property in destination object set; update its value.
+          if ( obj2[p].constructor === Object ) {
+            obj1[p] = this.merge(obj1[p], obj2[p]);
+
+          } else {
+            obj1[p] = obj2[p] && obj1[p] ? obj2[p] : obj1[p];
+
+          }
+
+        } catch(e) {
+          // Property in destination object not set; create it and set its value.
+          obj1[p] = obj2[p];
+
+        }
+      }
+    }
+
+    return obj1;
+  }
+};
+},{}],4:[function(require,module,exports){
+var PI      = Math.PI;
+var isArray = function(a) {
+  return Object.prototype.toString.call(a) === '[object Array]';
+};
+
+module.exports = {
+
+  normalizePathString: function() {
+
+    var str = '';
+
+    for(var i = 0, l = arguments.length, item; i < l; i++) {
+
+      item = arguments[i];
+      str += ' ' + (typeof item !== 'number' ?
+        item :
+        item.toFixed(3).replace(/(.\d*?)0+$/, '$1').replace(/\.$/, '')
+      );
+    }
+    var trimmed = str.trim();
+
+    return trimmed.replace(/ ?, ?/g, ',');
+  },
+
+  /**
+   * Get coordinates of a given point in reference to a given Bezier curve segment
+   *
+   * @param sx Start of segment X
+   * @param sy Start of segment Y
+   * @param ex End of segment X
+   * @param ey End of segment Y
+   * @param x  Point to fit X
+   * @param y  Point to fit Y
+   * @returns {*}
+   */
+  getCoordinatesInBezier: function(sx, sy, ex, ey, x, y) {
+
+    var ang = Math.atan2(ey - sy, ex - sx);
+
+    return this.normalizePathString(x * Math.cos(ang) - y * Math.sin(ang) + sx, ',', x * Math.sin(ang) + y * Math.cos(ang) + sy);
+  },
+
+  /**
+   * Project a given (Lp) 1/4 period long Bezier spline (C) onto an (Ll) long straight line.
+   *
+   * @param tile       (C)  Curve segment
+   * @param period     (Lp) Length of a quarter period
+   * @param length     (Ll) Length of propagator
+   * @returns {string} SVG path
+   */
+  line: function(tile, period, length) {
+
+    var bezier = ['M'];
+    var num    = Math.floor(length / period);
+    var extra  = length - period * num + 0.1;
+
+    for(var n = 0; n <= num; n++) {
+
+      for(var i = 0, l = tile.length, item; i < l; i++) {
+
+        item = tile[i];
+
+        if(isArray(item)) {
+
+          if(n < num || item[0] < extra) {
+            bezier.push(this.normalizePathString(item[0] + period * n, ',', item[1]));
+          } else {
+            break;
+          }
+        } else {
+          bezier.push(item);
+        }
+
+      }
+    }
+    return bezier.join(' ').replace(/\s[A-Z][^A-Z]*$/, '');
+  },
+
+  /**
+   * Project a given (Lp) quarter period long Bezier spline (C) onto an (Ll) long arc.
+   *
+   * @param particle   Type of particle, e.g.: "photon"
+   * @param tile       (C)  Curve segment
+   * @param period     (Lp) Length of a 1/4 period
+   * @param length     (Ll) Length
+   * @returns {string} SVG path
+   */
+  arc: function(particle, tile, period, length) {
+
+    var tension = 2;
+    var t       = 0.25 * Math.max(tension, 2);
+    var phi     = Math.acos(-0.5 / t);
+    var theta   = -2 * Math.asin(period / (t * length));
+    var segment = [];
+    var bezier  = ['M', '0,0'];
+
+    // get coordinate pairs for the endpoint of segment
+    for(var n = 0; n <= (PI - 2 * phi) / theta; n++) {
+      segment.push([length * (t * Math.cos(theta * n + phi) + 0.5), length * (t * Math.sin(theta * n + phi) - Math.sqrt(t * t - 0.25))]);
+    }
+
+    for(var i = 0, l = segment.length - 1, model; i < l; i++) {
+
+      model = (particle === 'photon' ? tile[i % 2] : tile);
+
+      for(var j = 0, m = model.length, item; j < m; j++) {
+        item = model[j];
+        bezier.push(isArray(item)
+          ? this.getCoordinatesInBezier(segment[i][0], segment[i][1], segment[i+1][0], segment[i+1][1], item[0], item[1])
+          : item
+        );
+      }
+    }
+
+    return bezier.join(' ').replace(/\s[A-Z]$/, '');
+  },
+
+  /**
+   * Project a given (Lp) quarter period long Bezier spline (C) onto an (Ll) diameter circle.
+   *
+   * @param particle   Type of particle, e.g.: "photon"
+   * @param tile       (C) Curve segment
+   * @param period     (N) Length of a 1/4 period
+   * @param length     (L) Length
+   * @returns {string} SVG path
+   */
+  loop: function(particle, tile, period, length) {
+
+    var cw      = true;
+    var theta   = 2 * Math.asin(2 * period / length);
+    var num     = 2 * PI / theta;
+    var segment = [];
+    var lift    = (cw ? -0.5 : 0.5);
+    var bezier  = ['M', (particle === 'gluon' ? lift + ',0' : '0,' + lift)];
+
+    // find the modified distance such that the number of tiles is an integer
+    for(var x = -0.1, dis = length; Math.floor(num) % 4 || num - Math.floor(num) > 0.1; x += 0.001) {
+
+      length = (1 + x) * dis;
+      theta  = 2 * Math.asin(2 * period / length);
+      num    = 2 * PI / theta;
+    }
+
+    // get coordinate pairs for the endpoint of segment
+    for(var n = 0; n <= num; n++) {
+
+      var sx = 0.5 * length * (1 - Math.cos(theta * n));
+      var sy = 0.5 * length * Math.sin(theta * n);
+      segment.push([sx, sy]);
+    }
+
+    for(var i = 0, l = segment.length - 1, model; i < l; i++) {
+
+      // two photon tiles form a period whereas one gluon tile is a period
+      model = (particle === 'photon' ? tile[i % 2] : tile);
+
+      // get bezier path for photon and gluon arc
+      for(var j = 0, m = model.length, item; j < m; j++) {
+
+        item = model[j];
+        bezier.push(isArray(item)
+          ? this.getCoordinatesInBezier(segment[i][0], segment[i][1], segment[i+1][0], segment[i+1][1], item[0], item[1])
+          : item
+        );
+      }
+    }
+
+    return bezier.join(' ').replace(/\s[A-Z]$/, '') + ' Z';
+  }
+};
+},{}],5:[function(require,module,exports){
 var __hasProp = {}.hasOwnProperty;
 
 module.exports = {
@@ -339,7 +558,34 @@ module.exports = {
     return copy;
   }
 };
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+module.exports = {
+
+  getAngle: function(A, B, inRadian) {
+
+    var r = inRadian ? 1 : (180 / Math.PI);
+
+    var diffX   = B.x - A.x;
+    var diffY   = B.y - A.y;
+    return Math.atan2(diffY, diffX) * r;
+  },
+
+  getDistance: function(A, B) {
+
+    var diffX   = B.x - A.x;
+    var diffY   = B.y - A.y;
+    return Math.sqrt(diffX * diffX + diffY * diffY);
+  },
+
+  getPositionValues: function(pA, pB) {
+
+    var angle  = this.getAngle(pA, pB);
+    var length = this.getDistance(pA, pB);
+
+    return { x: pA.x, y: pA.y, r: angle, l: length };
+  }
+};
+},{}],7:[function(require,module,exports){
 var ParserFactory = require('./parsers/ParserFactory');
 var Stage         = require('./Stage');
 
@@ -379,7 +625,7 @@ module.exports = (function() {
 
   return Feynman;
 })();
-},{"./Stage":1,"./parsers/ParserFactory":6}],5:[function(require,module,exports){
+},{"./Stage":1,"./parsers/ParserFactory":9}],8:[function(require,module,exports){
 var StageStructure = require('./../StageStructure');
 var Klass = require('./../helpers/Klass');
 
@@ -684,7 +930,7 @@ module.exports = (function() {
 
   return LatexParser;
 })();
-},{"./../StageStructure":2,"./../helpers/Klass":3}],6:[function(require,module,exports){
+},{"./../StageStructure":2,"./../helpers/Klass":5}],9:[function(require,module,exports){
 var LatexParser = require('./LatexParser');
 
 module.exports = {
@@ -697,4 +943,94 @@ module.exports = {
     }
   }
 };
-},{"./LatexParser":5}]},{},[4])
+},{"./LatexParser":8}],10:[function(require,module,exports){
+var PointHelper = require('./../helpers/Point');
+var ArrayHelper = require('./../helpers/Array');
+var Bezier      = require('./../helpers/Bezier');
+
+module.exports = {
+
+  _defaults: {
+    type          : 'electron',
+    from          : { x: 0, y: 0 },
+    to            : { x: 0, y: 0 },
+    label         : '',
+    right         : false,
+    left          : false,
+    tension       : 1,
+    tag           : '',
+    color         : '#000',
+    bgColor       : null,
+    penWidth      : 2,
+    labelSide     : 'right',
+    labelDistance : 10
+  },
+
+  draw: function(canvas, options) {
+
+    if(!canvas) {
+      return;
+    }
+
+    var ui = canvas.group();
+
+    var position = PointHelper.getPositionValues(options.from, options.to);
+
+    this._drawArrow(ui, position.l, options.color ? options.color : this._defaults.color, false);
+
+    ui
+      .path(this.getPath('line', options))
+      .fill('none')
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+    ui
+      .transform({
+        cx       : position.x,
+        cy       : position.y,
+        rotation : position.r,
+        x        : position.x,
+        y        : position.y
+      });
+
+    return ui;
+  },
+
+  getPath: function(shape, options) {
+
+    var position = PointHelper.getPositionValues(options.from, options.to);
+    var length   = position.l;
+    var tile     = [ [1, 1], [2, 1] ];
+    var l        = 1;
+
+    switch(shape) {
+      case 'line':
+        return Bezier.line(tile, 1, length);
+      case 'arc':
+        return Bezier.arc('electron', tile, 1, length);
+      case 'loop':
+        return Bezier.loop('electron', tile, 1, length);
+      default:
+        return Bezier.line(tile, 1, length);
+    }
+  },
+
+  _drawArrow: function(ui, length, color, anti) {
+
+    var coeff = anti ? -1 : 1;
+
+    //On-the-line
+    var x1 = length / 2 + coeff * 7;
+    var y1 = 0;
+    //Below-the-line
+    var x2 = length / 2 - coeff * 9;
+    var y2 = 4;
+    //Above-the-line
+    var x3 = length / 2 - coeff * 9;
+    var y3 = -4;
+    //'x1,y1 x2,y2, x3,y3'
+    var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3;
+    ui
+      .polygon(polygonString)
+      .fill(color);
+  }
+};
+},{"./../helpers/Array":3,"./../helpers/Bezier":4,"./../helpers/Point":6}]},{},[7])

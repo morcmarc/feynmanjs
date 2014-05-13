@@ -11,14 +11,20 @@ module.exports = {
       thickness : 'thick', // or 'thin'
       particles : [
         // {
-          // id      : 'p1',
-          // type    : 'photon',
-          // from    : 'i1',
-          // to      : 'v1',
-          // label   : '$\tau$',
-          // right   : true
-          // left    : true,
-          // tension : '1/3'
+          // id            : 'p1',
+          // type          : 'photon',
+          // from          : 'i1',
+          // to            : 'v1',
+          // label         : '$\tau$',
+          // right         : true
+          // left          : true,
+          // tension       : '1/3',
+          // tag           : 'tag1',
+          // color         : '#F00',
+          // bgColor       : '#0F0',
+          // penWidth      : 5,
+          // labelSide     : 'right',
+          // labelDistance : 10
         // }
       ],
       vertices  : [
