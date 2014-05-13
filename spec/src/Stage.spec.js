@@ -6,7 +6,9 @@ var SVG = function() {
     group     : function(){ return this; },
     text      : function(){ return this; },
     font      : function(){ return this; },
-    translate : function(){ return this; }
+    translate : function(){ return this; },
+    circle    : function(){ return this; },
+    fill      : function(){ return this; }
   };
 };
 
@@ -37,11 +39,13 @@ describe('Stage', function() {
     diagram: [
       'fmftop{i1,i2}',
       'fmfbottom{o1,o2}',
-      'fmf{antifermion}{i1,v1,v2,o1}',
-      'fmf{fermion}{i2,v3,v4,o2}',
-      'fmf{photon}{v1,v3}',
-      'fmf{photon}{v2,v4}',
-      'fmfdot{v1,v2,v3,v4}'
+      'fmf{photon}{i1,v1}',
+      'fmf{photon}{i1,v1}',
+      'fmf{photon}{o1,v2}',
+      'fmf{photon}{o1,v2}',
+      'fmf{fermion}{i2,v1,v2,o2}',
+      'fmf{fermion}{i2,v1,v2,o2}',
+      'fmfdot{v1,v2}'
     ]
   };
 
@@ -77,6 +81,25 @@ describe('Stage', function() {
     it('returns undefined if vertex does not exist', function() {
 
       expect(stage.getVertexById('v10')).toBeUndefined();
+    });
+  });
+
+  describe('getVerticesByDistance()', function () {
+    
+    it('returns an array of vertices for a given distance', function() {
+
+      expect(stage.getVerticesByDistance(1).length).toEqual(1);
+      expect(stage.getVerticesByDistance(1)[0].id).toEqual('v1');
+      expect(stage.getVerticesByDistance(2).length).toEqual(1);
+      expect(stage.getVerticesByDistance(2)[0].id).toEqual('v2');
+    });
+  });
+
+  describe('getNumberOfLevels()', function () {
+    
+    it('returns the number of levels', function (done) {
+      
+      expect(stage.getNumberOfLevels()).toEqual(2);
     });
   });
 
@@ -160,6 +183,46 @@ describe('Stage', function() {
       expect(stage.getControlPointById('o2').x).toEqual(160);
       expect(stage.getControlPointById('o1').y).toEqual(260);
       expect(stage.getControlPointById('o2').y).toEqual(260);
+    });
+
+    it('sets vertex distances for simple diagrams (no loops or cycles)', function (done) {
+      
+      stage.draw();
+
+      expect(stage.getVertexById('v1').distance).toEqual(1);
+      expect(stage.getVertexById('v2').distance).toEqual(2);
+    });
+
+    it('sets vertex distances for cycle diagrams', function (done) {
+      
+      var parser     = ParserFactory.getParser(annihilationRev);
+      var stageData  = parser.parse();
+      stage = new Stage('testCanvas', new SVG('testCanvas'), stageData);
+      stage.draw();
+
+      expect(stage.getVertexById('v1').distance).toEqual(1);
+      expect(stage.getVertexById('v2').distance).toEqual(2);
+    });
+
+    it('sets vertex positions correctly for Left-Right diagrams', function (done) {
+      
+      expect(stage.getVertexById('v1').x).toEqual(50);
+      expect(stage.getVertexById('v1').y).toEqual(75);
+      expect(stage.getVertexById('v2').x).toEqual(150);
+      expect(stage.getVertexById('v2').y).toEqual(75);
+    });
+
+    it('sets vertex positions correctly for Top-Bottom diagrams', function (done) {
+      
+      var parser     = ParserFactory.getParser(annihilationRev);
+      var stageData  = parser.parse();
+      stage = new Stage('testCanvas', new SVG('testCanvas'), stageData);
+      stage.draw();
+
+      expect(stage.getVertexById('v1').x).toEqual(100);
+      expect(stage.getVertexById('v1').y).toEqual(75);
+      expect(stage.getVertexById('v2').x).toEqual(100);
+      expect(stage.getVertexById('v2').y).toEqual(225);
     });
   });
 });

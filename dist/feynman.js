@@ -11,19 +11,20 @@ module.exports = (function () {
       throw new Error('Missing data argument.');
     }
 
-    this.canvasId = canvasId;
-    this.canvas   = canvas;
-    this.data     = stageData;
+    this.canvasId    = canvasId;
+    this.canvas      = canvas;
+    this.data        = stageData;
+
+    _calculateControlPointLocations.bind(this)();
+    _calculateVertexLocations.bind(this)();
 
     return this;
   }
 
   Stage.prototype.draw = function() {
 
-    _calculateControlPointLocations.bind(this)();
-    _calculateVertexLocations.bind(this)();
     _drawCanvas.bind(this)();
-    _drawTitle.bind(this)();
+    // _drawTitle.bind(this)();
     _drawPropagators.bind(this)();
     _drawVertices.bind(this)();
   };
@@ -40,6 +41,31 @@ module.exports = (function () {
     });
 
     return result;
+  };
+
+  Stage.prototype.getVerticesByDistance = function (dist) {
+    
+    var results = [];
+
+    this.data.vertices.forEach(function(v) {
+
+      if(v.distance === dist) {
+        results.push(v);
+      }
+    });
+
+    return results;
+  };
+
+  Stage.prototype.getNumberOfLevels = function () {
+    
+    var levels = 0;
+
+    while(this.getVerticesByDistance(levels + 1).length > 0) {
+      levels++;
+    }
+
+    return levels;
   };
 
   Stage.prototype.getControlPointById = function(id) {
@@ -70,10 +96,6 @@ module.exports = (function () {
   Stage.prototype.getParticlesEndingInPoint = function(eP) {
 
     return _getParticleFromOrToPoint.bind(this)('to', eP);
-  };
-
-  Stage.prototype.getParticlePathsFromControlPoint = function(cp) {
-
   };
 
   var _getParticleFromOrToPoint = function(dir, point) {
@@ -109,6 +131,10 @@ module.exports = (function () {
   var _drawVertices = function() {
 
     var ui = this.canvas.group();
+
+    this.data.vertices.forEach(function(v) {
+      ui.circle(6).fill('#000').translate(v.x - 3 , v.y - 3);
+    });
   };
 
   var _drawPropagators = function() {
@@ -149,17 +175,77 @@ module.exports = (function () {
 
   var _calculateVertexLocations = function() {
 
-    var paths = [];
+    _setVertexDistances.bind(this)();
 
-    this.data.cPoints.left.forEach(function(cp) {
+    var sideA    = this.data.cPoints.left.length > 0 ? this.data.width : this.data.height;
+    var sideB    = this.data.cPoints.left.length > 0 ? this.data.height : this.data.width;
+    var coordA   = this.data.cPoints.left.length > 0 ? 'x' : 'y';
+    var coordB   = this.data.cPoints.left.length > 0 ? 'y' : 'x';
+    var paddingA = (sideA * 0.25);
+    var paddingB = (sideB * 0.25);
+    var stageA   = (sideA * 0.5);
+    var stageB   = (sideB * 0.5);
 
-      this.getParticlePathsFromControlPoint(cp);
-    }, this);
+    var level = 1;
 
-    this.data.cPoints.top.forEach(function(cp) {
+    while(this.getVerticesByDistance(level).length > 0) {
 
-      this.getParticlePathsFromControlPoint(cp);
-    }, this);
+      var vertices  = this.getVerticesByDistance(level);
+      var segmentsA = this.getNumberOfLevels() === 1 ? 2 : this.getNumberOfLevels() - 1;
+      var segmentsB = vertices.length === 1 ? 2 : vertices.length - 1;
+      var sA        = stageA / segmentsA;
+      var sB        = stageB / segmentsB;
+
+      var counter = vertices.length === 1 ? 1 : 0;
+
+      vertices.forEach(function(v) {
+
+        v[coordA] = sA * (level - 1) + paddingA;
+        v[coordB] = sB * counter + paddingB;
+        counter++;
+      });
+      level++;
+    }
+  };
+
+  var _setVertexDistances = function() {
+
+    var AM    = {}; // Adjacency matrix
+    var that  = this;
+
+    var walk = function(node, distance, prev) {
+
+      var vertex = that.getVertexById(node);
+
+      if(vertex) {
+        vertex.distance = vertex.distance ? Math.min(vertex.distance, distance) : distance;
+        var adj = AM[node].filter(function(n) { return n !== prev; });
+        adj.forEach(function(n) {
+          walk(n, distance + 1, node);
+        });
+      }
+    };
+
+    this.data.particles.forEach(function(p) {
+
+      AM[p.to]   = [];
+      AM[p.from] = [];
+    });
+
+    this.data.particles.forEach(function(p) {
+
+      AM[p.to].push(p.from);
+      AM[p.from].push(p.to);
+    });
+
+    var dir = this.data.cPoints.left.length > 0 ? 'left' : 'top';
+
+    this.data.cPoints[dir].forEach(function(cp) {
+
+      AM[cp.id].forEach(function(v) {
+        walk(v, 1);
+      });
+    });
   };
 
   return Stage;
