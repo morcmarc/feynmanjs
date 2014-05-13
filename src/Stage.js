@@ -1,4 +1,4 @@
-var Electron = require('./particles/Electron');
+var ParticleGenerator = require('./ParticleGenerator');
 
 module.exports = (function () {
   
@@ -145,8 +145,8 @@ module.exports = (function () {
     this.data.particles.forEach(function(p) {
 
       p.from = this.getVertexById(p.from) ? this.getVertexById(p.from) : this.getControlPointById(p.from);
-      p.to   = this.getVertexById(p.to) ? this.getVertexById(p.to) : this.getControlPointById(p.to);
-      Electron.draw(this.canvas, p);
+      p.to   = this.getVertexById(p.to)   ? this.getVertexById(p.to)   : this.getControlPointById(p.to);
+      ParticleGenerator.getParticle(p.type).draw(this.canvas, p);
     }, this);
   };
 
@@ -189,10 +189,10 @@ module.exports = (function () {
     var sideB    = this.data.cPoints.left.length > 0 ? this.data.height : this.data.width;
     var coordA   = this.data.cPoints.left.length > 0 ? 'x' : 'y';
     var coordB   = this.data.cPoints.left.length > 0 ? 'y' : 'x';
-    var paddingA = (sideA * 0.25);
-    var paddingB = (sideB * 0.25);
-    var stageA   = (sideA * 0.5);
-    var stageB   = (sideB * 0.5);
+    var paddingA = (sideA * 0.30);
+    var paddingB = (sideB * 0.30);
+    var stageA   = (sideA * 0.4);
+    var stageB   = (sideB * 0.4);
 
     var level = 1;
 

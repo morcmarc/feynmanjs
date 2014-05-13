@@ -8,7 +8,11 @@ var SVG = function() {
     font      : function(){ return this; },
     translate : function(){ return this; },
     circle    : function(){ return this; },
-    fill      : function(){ return this; }
+    fill      : function(){ return this; },
+    polygon   : function(){ return this; },
+    path      : function(){ return this; },
+    stroke    : function(){ return this; },
+    transform : function(){ return this; }
   };
 };
 

@@ -1,5 +1,27 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Electron = require('./particles/Electron');
+var Photon   = require('./particles/Photon');
+var Gluon    = require('./particles/Gluon');
+
+module.exports = {
+
+  getParticle: function(type) {
+
+    switch(type) {
+
+      case 'electron':
+        return Electron;
+      case 'photon':
+        return Photon;
+      case 'gluon':
+        return Gluon;
+      default:
+        return Electron;
+    }
+  }
+};
+},{"./particles/Electron":11,"./particles/Gluon":12,"./particles/Photon":13}],2:[function(require,module,exports){
+var ParticleGenerator = require('./ParticleGenerator');
 
 module.exports = (function () {
   
@@ -146,8 +168,8 @@ module.exports = (function () {
     this.data.particles.forEach(function(p) {
 
       p.from = this.getVertexById(p.from) ? this.getVertexById(p.from) : this.getControlPointById(p.from);
-      p.to   = this.getVertexById(p.to) ? this.getVertexById(p.to) : this.getControlPointById(p.to);
-      Electron.draw(this.canvas, p);
+      p.to   = this.getVertexById(p.to)   ? this.getVertexById(p.to)   : this.getControlPointById(p.to);
+      ParticleGenerator.getParticle(p.type).draw(this.canvas, p);
     }, this);
   };
 
@@ -190,10 +212,10 @@ module.exports = (function () {
     var sideB    = this.data.cPoints.left.length > 0 ? this.data.height : this.data.width;
     var coordA   = this.data.cPoints.left.length > 0 ? 'x' : 'y';
     var coordB   = this.data.cPoints.left.length > 0 ? 'y' : 'x';
-    var paddingA = (sideA * 0.25);
-    var paddingB = (sideB * 0.25);
-    var stageA   = (sideA * 0.5);
-    var stageB   = (sideB * 0.5);
+    var paddingA = (sideA * 0.30);
+    var paddingB = (sideB * 0.30);
+    var stageA   = (sideA * 0.4);
+    var stageB   = (sideB * 0.4);
 
     var level = 1;
 
@@ -259,7 +281,7 @@ module.exports = (function () {
 
   return Stage;
 })();
-},{"./particles/Electron":10}],2:[function(require,module,exports){
+},{"./ParticleGenerator":1}],3:[function(require,module,exports){
 var Klass = require('./helpers/Klass');
 
 module.exports = {
@@ -322,7 +344,7 @@ module.exports = {
     });
   }
 };
-},{"./helpers/Klass":5}],3:[function(require,module,exports){
+},{"./helpers/Klass":6}],4:[function(require,module,exports){
 module.exports = {
 
   /*
@@ -355,7 +377,7 @@ module.exports = {
     return obj1;
   }
 };
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var PI      = Math.PI;
 var isArray = function(a) {
   return Object.prototype.toString.call(a) === '[object Array]';
@@ -526,7 +548,7 @@ module.exports = {
     return bezier.join(' ').replace(/\s[A-Z]$/, '') + ' Z';
   }
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var __hasProp = {}.hasOwnProperty;
 
 module.exports = {
@@ -558,7 +580,7 @@ module.exports = {
     return copy;
   }
 };
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = {
 
   getAngle: function(A, B, inRadian) {
@@ -585,7 +607,7 @@ module.exports = {
     return { x: pA.x, y: pA.y, r: angle, l: length };
   }
 };
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var ParserFactory = require('./parsers/ParserFactory');
 var Stage         = require('./Stage');
 
@@ -625,7 +647,7 @@ module.exports = (function() {
 
   return Feynman;
 })();
-},{"./Stage":1,"./parsers/ParserFactory":9}],8:[function(require,module,exports){
+},{"./Stage":2,"./parsers/ParserFactory":10}],9:[function(require,module,exports){
 var StageStructure = require('./../StageStructure');
 var Klass = require('./../helpers/Klass');
 
@@ -930,7 +952,7 @@ module.exports = (function() {
 
   return LatexParser;
 })();
-},{"./../StageStructure":2,"./../helpers/Klass":5}],9:[function(require,module,exports){
+},{"./../StageStructure":3,"./../helpers/Klass":6}],10:[function(require,module,exports){
 var LatexParser = require('./LatexParser');
 
 module.exports = {
@@ -943,7 +965,7 @@ module.exports = {
     }
   }
 };
-},{"./LatexParser":8}],10:[function(require,module,exports){
+},{"./LatexParser":9}],11:[function(require,module,exports){
 var PointHelper = require('./../helpers/Point');
 var ArrayHelper = require('./../helpers/Array');
 var Bezier      = require('./../helpers/Bezier');
@@ -1033,4 +1055,235 @@ module.exports = {
       .fill(color);
   }
 };
-},{"./../helpers/Array":3,"./../helpers/Bezier":4,"./../helpers/Point":6}]},{},[7])
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Point":7}],12:[function(require,module,exports){
+var PointHelper = require('./../helpers/Point');
+var ArrayHelper = require('./../helpers/Array');
+var Bezier      = require('./../helpers/Bezier');
+
+module.exports = {
+
+  _defaults: {
+    type          : 'gluon',
+    from          : { x: 0, y: 0 },
+    to            : { x: 0, y: 0 },
+    label         : '',
+    right         : false,
+    left          : false,
+    tension       : 1,
+    tag           : '',
+    color         : '#009933',
+    bgColor       : null,
+    penWidth      : 2,
+    labelSide     : 'right',
+    labelDistance : 10
+  },
+
+  draw: function(canvas, options) {
+
+    if(!canvas) {
+      return;
+    }
+
+    var ui = canvas.group();
+
+    var position = PointHelper.getPositionValues(options.from, options.to);
+
+    ui
+      .path(this.getPath('line', options))
+      .fill('none')
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+    ui
+      .transform({
+        cx       : position.x,
+        cy       : position.y,
+        rotation : position.r,
+        x        : position.x,
+        y        : position.y
+      });
+
+    return ui;
+  },
+
+  /**
+   * Approximation of the first quarter of one period of a sine curve
+   * is a cubic Bezier curve with the following control points:
+   *
+   * (0, 0) (lambda * p / PI, lambda * a / 2) (2 * p / PI, a) (p, a)
+   *
+   * References:
+   *
+   * [1] http://mathb.in/1447
+   * [2] https://github.com/photino/jquery-feyn/blob/master/js/jquery.feyn-1.0.1.js
+   *
+   * @param shape
+   * @returns {*}
+   */
+  getPath: function(shape, options) {
+
+    var position = PointHelper.getPositionValues(options.from, options.to);
+    var length   = position.l + (5 - position.l % 5);
+
+    var gluon = {
+      width  : 15,   // the coil width of gluon propagators
+      height : 15,   // the coil height of gluon propagators
+      factor : 0.75, // the factor parameter for gluon propagators
+      percent: 0.6,  // the percent parameter for gluon propagators
+      scale  : 1.15  // the scale parameter for gluon arcs and loops
+    };
+
+    var kappa = 0.55191502;
+    // a and b are one-half of the ellipse's major and minor axes
+    var a     = gluon.height * gluon.factor;
+    var b     = gluon.width  * gluon.percent;
+    // c and d are one-half of major and minor axes of the other ellipse
+    var c     = gluon.height * (gluon.factor - 0.5);
+    var d     = gluon.width  * (1 - gluon.percent);
+
+    var dir   = false;
+    var pts   = (dir
+      ? [[0, 0], 'A ' + a + ' ' + b, 0, 0, 1, [a, b],
+                 'A ' + c + ' ' + d, 0, 1, 1, [a - 2 * c, b],
+                 'A ' + a + ' ' + b, 0, 0, 1]
+      : [[0, 0], 'A ' + a + ' ' + b, 0, 0, 0, [a, -b],
+                 'A ' + c + ' ' + d, 0, 1, 0, [a - 2 * c, -b],
+                 'A ' + a + ' ' + b, 0, 0, 0]
+    );
+
+    a = (dir ? a : gluon.scale * a);
+    var lift = a / Math.pow(this.length, 0.6);
+
+    var tile = (dir
+      ? ['C', [kappa * a, lift], [a, b - kappa * b], [a, b],
+         'C', [a, b + kappa * d], [a - c + kappa * c, b + d], [a - c, b + d],
+         'S', [a - 2 * c, b + kappa * d], [a - 2 * c, b],
+         'C', [a - 2 * c, b - kappa * b], [2 * (a - c) - kappa * a, 0], [2 * (a - c), -lift]]
+      : ['C', [kappa * a, lift], [a, -b + kappa * b], [a, -b],
+         'C', [a, -b - kappa * d], [a - c + kappa * c, -b - d], [a - c, -b - d],
+         'S', [a - 2 * c, -b - kappa * d], [a - 2 * c, -b],
+         'C', [a - 2 * c, -b + kappa * b], [2 * (a - c) - kappa * a, 0], [2 * (a - c), -lift]]
+    );
+
+    switch(shape) {
+      case 'line':
+        return Bezier.line(pts, gluon.height, length);
+      case 'arc':
+        return Bezier.arc('gluon', tile, a - c, length);
+      case 'loop':
+        return Bezier.loop('gluon', tile, a - c, length);
+      default:
+        return Bezier.line(pts, gluon.height, length);
+    }
+  }
+};
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Point":7}],13:[function(require,module,exports){
+var PointHelper = require('./../helpers/Point');
+var ArrayHelper = require('./../helpers/Array');
+var Bezier      = require('./../helpers/Bezier');
+
+module.exports = {
+
+  _defaults: {
+    type          : 'photon',
+    from          : { x: 0, y: 0 },
+    to            : { x: 0, y: 0 },
+    label         : '',
+    right         : false,
+    left          : false,
+    tension       : 1,
+    tag           : '',
+    color         : '#0066FF',
+    bgColor       : null,
+    penWidth      : 2,
+    labelSide     : 'right',
+    labelDistance : 10
+  },
+
+  draw: function(canvas, options) {
+
+    if(!canvas) {
+      return;
+    }
+
+    var ui = canvas.group();
+
+    var position = PointHelper.getPositionValues(options.from, options.to);
+
+    ui
+      .path(this.getPath('line', options))
+      .fill('none')
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+    ui
+      .transform({
+        cx       : position.x,
+        cy       : position.y,
+        rotation : position.r,
+        x        : position.x,
+        y        : position.y
+      });
+
+    return ui;
+  },
+
+  /**
+   * Approximation of the first quarter of one period of a sine curve
+   * is a cubic Bezier curve with the following control points:
+   *
+   * (0, 0) (lambda * p / PI, lambda * a / 2) (2 * p / PI, a) (p, a)
+   *
+   * References:
+   *
+   * [1] http://mathb.in/1447
+   * [2] https://github.com/photino/jquery-feyn/blob/master/js/jquery.feyn-1.0.1.js
+   *
+   * @param shape
+   * @returns {*}
+   */
+  getPath: function(shape, options) {
+
+    var position = PointHelper.getPositionValues(options.from, options.to);
+    var length   = position.l + (5 - position.l % 5);
+
+    var PI     = Math.PI;
+    var lambda = 0.51128733;
+    var a      = 5;
+    var b      = 0.5 * lambda * a;
+    var p      = 5;
+    var q      = 2 * p / PI;
+    var t      = lambda * p / PI;
+    var dir    = false;
+
+    var pts = (dir
+      ? [[0, 0], 'C', [t, -b], [q, -a], [p, -a],
+                 'S', [2 * p - t, -b], [2 * p, 0],
+                 'S', [2 * p + q, a], [3 * p, a],
+                 'S', [4 * p - t, b]]
+      : [[0, 0], 'C', [t, b], [q, a], [p, a],
+                 'S', [2 * p - t, b], [2 * p, 0],
+                 'S', [2 * p + q, -a], [3 * p, -a],
+                 'S', [4 * p - t, -b]]
+    );
+
+    var tile = (dir
+      ? [['C', [t, -b], [q, -a], [p, -a],
+          'S', [2 * p - t, -b], [2 * p + 0.5, 0]],
+         ['C', [t, b], [q, a], [p, a],
+          'S', [2 * p - t, -b], [2 * p - 0.5, 0]]]
+      : [['C', [t, b], [q, a], [p, a],
+          'S', [2 * p - t, b], [2 * p - 0.5, 0]],
+         ['C', [t, -b], [q, -a], [p, -a],
+          'S', [2 * p - t, -b], [2 * p + 0.5, 0]]]
+    );
+
+    switch(shape) {
+      case 'line':
+        return Bezier.line(pts, 4 * p, length);
+      case 'arc':
+        return Bezier.arc('photon', tile, p, length);
+      case 'loop':
+        return Bezier.loop('photon', tile, p, length);
+      default:
+        return Bezier.line(pts, 4 * p, length);
+    }
+  }
+};
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Point":7}]},{},[8])
