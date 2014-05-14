@@ -63,7 +63,7 @@ module.exports = {
   getPath: function(shape, options) {
 
     var position = PointHelper.getPositionValues(options.from, options.to);
-    var length   = position.l + (5 - position.l % 5);
+    var length   = position.l;// + (5 - position.l % 5);
 
     var PI     = Math.PI;
     var lambda = 0.51128733;
@@ -72,7 +72,7 @@ module.exports = {
     var p      = 5;
     var q      = 2 * p / PI;
     var t      = lambda * p / PI;
-    var dir    = false;
+    var dir    = true;
 
     var pts = (dir
       ? [[0, 0], 'C', [t, -b], [q, -a], [p, -a],

@@ -134,7 +134,9 @@ module.exports = (function () {
     var ui = this.canvas.group();
 
     this.data.vertices.forEach(function(v) {
-      ui.circle(6).fill('#000').translate(v.x - 3 , v.y - 3);
+      if(v.visible) {
+        ui.circle(6).fill('#000').translate(v.x - 3 , v.y - 3);
+      }
     });
   };
 

@@ -157,7 +157,9 @@ module.exports = (function () {
     var ui = this.canvas.group();
 
     this.data.vertices.forEach(function(v) {
-      ui.circle(6).fill('#000').translate(v.x - 3 , v.y - 3);
+      if(v.visible) {
+        ui.circle(6).fill('#000').translate(v.x - 3 , v.y - 3);
+      }
     });
   };
 
@@ -257,7 +259,7 @@ module.exports = (function () {
                     !that.getVertexById(n).distance ||
                     that.getVertexById(n).distance > vertex.distance
                   )
-                ); 
+                );
         });
         adj.forEach(function(n) {
           walk(n, distance + 1, node);
@@ -1249,7 +1251,7 @@ module.exports = {
   getPath: function(shape, options) {
 
     var position = PointHelper.getPositionValues(options.from, options.to);
-    var length   = position.l + (5 - position.l % 5);
+    var length   = position.l;// + (5 - position.l % 5);
 
     var PI     = Math.PI;
     var lambda = 0.51128733;
@@ -1258,7 +1260,7 @@ module.exports = {
     var p      = 5;
     var q      = 2 * p / PI;
     var t      = lambda * p / PI;
-    var dir    = false;
+    var dir    = true;
 
     var pts = (dir
       ? [[0, 0], 'C', [t, -b], [q, -a], [p, -a],
