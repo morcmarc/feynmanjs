@@ -210,9 +210,9 @@ describe('Stage', function() {
 
     it('sets vertex positions correctly for Left-Right diagrams', function (done) {
       
-      expect(stage.getVertexById('v1').x).toEqual(50);
+      expect(stage.getVertexById('v1').x).toEqual(60);
       expect(stage.getVertexById('v1').y).toEqual(75);
-      expect(stage.getVertexById('v2').x).toEqual(150);
+      expect(stage.getVertexById('v2').x).toEqual(140);
       expect(stage.getVertexById('v2').y).toEqual(75);
     });
 
@@ -224,9 +224,9 @@ describe('Stage', function() {
       stage.draw();
 
       expect(stage.getVertexById('v1').x).toEqual(100);
-      expect(stage.getVertexById('v1').y).toEqual(75);
+      expect(stage.getVertexById('v1').y).toEqual(90);
       expect(stage.getVertexById('v2').x).toEqual(100);
-      expect(stage.getVertexById('v2').y).toEqual(225);
+      expect(stage.getVertexById('v2').y).toEqual(210);
     });
   });
 });

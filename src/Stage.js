@@ -227,7 +227,15 @@ module.exports = (function () {
 
       if(vertex) {
         vertex.distance = vertex.distance ? Math.min(vertex.distance, distance) : distance;
-        var adj = AM[node].filter(function(n) { return n !== prev; });
+        var adj = AM[node].filter(function(n) {
+          return n !== prev &&
+                (that.getVertexById(n) &&
+                  (
+                    !that.getVertexById(n).distance ||
+                    that.getVertexById(n).distance > vertex.distance
+                  )
+                );
+        });
         adj.forEach(function(n) {
           walk(n, distance + 1, node);
         });
