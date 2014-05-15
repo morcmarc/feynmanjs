@@ -77,6 +77,7 @@ module.exports = (function() {
         labelDistance : options.dist,
         tension       : options.tension,
         right         : options.right,
+        left          : options.left,
         tag           : options.tag,
         color         : options.foreground,
         bgColor       : options.background,

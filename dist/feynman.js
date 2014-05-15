@@ -24,7 +24,15 @@ module.exports = {
 var ParticleGenerator = require('./ParticleGenerator');
 
 module.exports = (function () {
-  
+
+  /**
+   * Responsible for rendering the graph onto the canvas.
+   * @param canvasId
+   * @param canvas
+   * @param stageData
+   * @returns {Stage}
+   * @constructor
+   */
   function Stage(canvasId, canvas, stageData) {
 
     if(typeof canvas === 'undefined') {
@@ -45,6 +53,9 @@ module.exports = (function () {
     return this;
   }
 
+  /**
+   * Draw graph.
+   */
   Stage.prototype.draw = function() {
 
     _drawCanvas.bind(this)();
@@ -53,6 +64,11 @@ module.exports = (function () {
     _drawVertices.bind(this)();
   };
 
+  /**
+   * Find vertex on stage by its ID. Return the vertex object if found, undefined otherwise.
+   * @param id
+   * @returns {*}
+   */
   Stage.prototype.getVertexById = function(id) {
 
     var result;
@@ -67,6 +83,11 @@ module.exports = (function () {
     return result;
   };
 
+  /**
+   * Returns all vertices of a given distance from the "starting" side (left or top).
+   * @param dist
+   * @returns {Array}
+   */
   Stage.prototype.getVerticesByDistance = function (dist) {
     
     var results = [];
@@ -81,6 +102,10 @@ module.exports = (function () {
     return results;
   };
 
+  /**
+   * Returns the maximum distance in the graph.
+   * @returns {number}
+   */
   Stage.prototype.getNumberOfLevels = function () {
     
     var levels = 0;
@@ -92,6 +117,11 @@ module.exports = (function () {
     return levels;
   };
 
+  /**
+   * Returns a control point object if it matches the ID, undefined otherwise.
+   * @param id
+   * @returns {*}
+   */
   Stage.prototype.getControlPointById = function(id) {
 
     var result;
@@ -112,16 +142,33 @@ module.exports = (function () {
     return result;
   };
 
+  /**
+   * Returns all particles "emitted" from point.
+   * @param sP ID of vertex or control point.
+   * @returns {*}
+   */
   Stage.prototype.getParticlesStartingFromPoint = function(sP) {
 
     return _getParticleFromOrToPoint.bind(this)('from', sP);
   };
 
+  /**
+   * Returns particles "absorbed" by point.
+   * @param eP ID of vertex or control point.
+   * @returns {*}
+   */
   Stage.prototype.getParticlesEndingInPoint = function(eP) {
 
     return _getParticleFromOrToPoint.bind(this)('to', eP);
   };
 
+  /**
+   * Returns particles "absorbed" or "emitted" by point.
+   * @param dir "to" or "from"
+   * @param point ID of vertex or control point
+   * @returns {Array}
+   * @private
+   */
   var _getParticleFromOrToPoint = function(dir, point) {
 
     var results = [];
@@ -136,11 +183,19 @@ module.exports = (function () {
     return results;
   };
 
+  /**
+   * Set canvas size and other canvas attributes before drawing.
+   * @private
+   */
   var _drawCanvas = function() {
 
     this.canvas.size(this.data.width, this.data.height);
   };
 
+  /**
+   * Draw title of graph onto canvas.
+   * @private
+   */
   var _drawTitle = function() {
 
     var ui = this.canvas.group();
@@ -152,6 +207,10 @@ module.exports = (function () {
     }).translate(10, 10);
   };
 
+  /**
+   * Iterates around all vertices on stage and draws them on screen depending on their visibility attribute.
+   * @private
+   */
   var _drawVertices = function() {
 
     var ui = this.canvas.group();
@@ -163,9 +222,11 @@ module.exports = (function () {
     });
   };
 
+  /**
+   * Draw particles on screen after converting raw data to Particle<T> classes.
+   * @private
+   */
   var _drawPropagators = function() {
-
-    var ui = this.canvas.group();
 
     this.data.particles.forEach(function(p) {
 
@@ -175,6 +236,10 @@ module.exports = (function () {
     }, this);
   };
 
+  /**
+   * Distribute control points along canvas sides depending on their number and the "direction" of the graph.
+   * @private
+   */
   var _calculateControlPointLocations = function() {
 
     for(var key in this.data.cPoints) {
@@ -206,6 +271,10 @@ module.exports = (function () {
     }
   };
 
+  /**
+   * Updates vertices with their final position on the stage
+   * @private
+   */
   var _calculateVertexLocations = function() {
 
     _setVertexDistances.bind(this)();
@@ -241,21 +310,35 @@ module.exports = (function () {
     }
   };
 
+  /**
+   * Walk the vertex graph and update their distance attribute with the distance from the closest control point.
+   * @private
+   */
   var _setVertexDistances = function() {
 
     var AM    = {}; // Adjacency matrix
     var that  = this;
 
+    /**
+     * Recursive helper function. Updates distance attribute of "node" with "distance", then calls itself on adjacent nodes (excluding "previous" node).
+     * @param node Vertex / Control Point Id
+     * @param distance Integer
+     * @param prev Previous node
+     */
     var walk = function(node, distance, prev) {
 
       var vertex = that.getVertexById(node);
 
+      // Control point don't have a distance
       if(vertex) {
         vertex.distance = vertex.distance ? Math.min(vertex.distance, distance) : distance;
         var adj = AM[node].filter(function(n) {
+          // We need to filter out the previous node from the list
           return n !== prev &&
                 (that.getVertexById(n) &&
                   (
+                    // And nodes that's distance is less than the current node.
+                    // This is to avoid deadlock on cycles.
                     !that.getVertexById(n).distance ||
                     that.getVertexById(n).distance > vertex.distance
                   )
@@ -267,12 +350,14 @@ module.exports = (function () {
       }
     };
 
+    // Empty AM
     this.data.particles.forEach(function(p) {
 
       AM[p.to]   = [];
       AM[p.from] = [];
     });
 
+    // Push vertices to AM
     this.data.particles.forEach(function(p) {
 
       AM[p.to].push(p.from);
@@ -281,6 +366,7 @@ module.exports = (function () {
 
     var dir = this.data.cPoints.left.length > 0 ? 'left' : 'top';
 
+    // "Walk" the AM and calculate distances.
     this.data.cPoints[dir].forEach(function(cp) {
 
       AM[cp.id].forEach(function(v) {
@@ -475,10 +561,10 @@ module.exports = {
    * @param length     (Ll) Length
    * @returns {string} SVG path
    */
-  arc: function(particle, tile, period, length) {
+  arc: function(particle, tile, period, length, tens) {
 
-    var tension = 2;
-    var t       = 0.25 * Math.max(tension, 2);
+    var tension = tens ? tens : 2;
+    var t       = 0.25 * tension;
     var phi     = Math.acos(-0.5 / t);
     var theta   = -2 * Math.asin(period / (t * length));
     var segment = [];
@@ -737,6 +823,7 @@ module.exports = (function() {
         labelDistance : options.dist,
         tension       : options.tension,
         right         : options.right,
+        left          : options.left,
         tag           : options.tag,
         color         : options.foreground,
         bgColor       : options.background,
@@ -1004,16 +1091,23 @@ module.exports = {
       return;
     }
 
-    var ui = canvas.group();
-
+    var ui       = canvas.group();
     var position = PointHelper.getPositionValues(options.from, options.to);
+    var shape    = 'line';
+    var arcDir   = true;
+
+    if(options.left || options.right) {
+      shape  = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
+      arcDir = options.right !== undefined ? 1 : -1;
+    }
 
     this._drawArrow(ui, position.l, options.color ? options.color : this._defaults.color, false);
 
     ui
-      .path(this.getPath('line', options))
+      .path(this.getPath(shape, options))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .scale(1, arcDir);
     ui
       .transform({
         cx       : position.x,
@@ -1094,14 +1188,21 @@ module.exports = {
       return;
     }
 
-    var ui = canvas.group();
-
+    var ui       = canvas.group();
     var position = PointHelper.getPositionValues(options.from, options.to);
+    var shape    = 'line';
+    var arcDir   = true;
+
+    if(options.left || options.right) {
+      shape  = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
+      arcDir = options.right !== undefined ? 1 : -1;
+    }
 
     ui
-      .path(this.getPath('line', options))
+      .path(this.getPath(shape, options))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .scale(1, arcDir);
     ui
       .transform({
         cx       : position.x,
@@ -1214,14 +1315,22 @@ module.exports = {
       return;
     }
 
-    var ui = canvas.group();
-
+    var ui       = canvas.group();
     var position = PointHelper.getPositionValues(options.from, options.to);
+    var shape    = 'line';
+    var arcDir   = true;
+    var tension  = 2;
+
+    if(options.left || options.right) {
+      shape   = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
+      arcDir  = options.right !== undefined ? 1 : -1;
+    }
 
     ui
-      .path(this.getPath('line', options))
+      .path(this.getPath(shape, options))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .scale(1, arcDir);
     ui
       .transform({
         cx       : position.x,

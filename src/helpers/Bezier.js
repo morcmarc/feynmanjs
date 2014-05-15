@@ -85,10 +85,10 @@ module.exports = {
    * @param length     (Ll) Length
    * @returns {string} SVG path
    */
-  arc: function(particle, tile, period, length) {
+  arc: function(particle, tile, period, length, tens) {
 
-    var tension = 2;
-    var t       = 0.25 * Math.max(tension, 2);
+    var tension = tens ? tens : 2;
+    var t       = 0.25 * tension;
     var phi     = Math.acos(-0.5 / t);
     var theta   = -2 * Math.asin(period / (t * length));
     var segment = [];

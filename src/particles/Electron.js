@@ -26,16 +26,23 @@ module.exports = {
       return;
     }
 
-    var ui = canvas.group();
-
+    var ui       = canvas.group();
     var position = PointHelper.getPositionValues(options.from, options.to);
+    var shape    = 'line';
+    var arcDir   = true;
+
+    if(options.left || options.right) {
+      shape  = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
+      arcDir = options.right !== undefined ? 1 : -1;
+    }
 
     this._drawArrow(ui, position.l, options.color ? options.color : this._defaults.color, false);
 
     ui
-      .path(this.getPath('line', options))
+      .path(this.getPath(shape, options))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color });
+      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .scale(1, arcDir);
     ui
       .transform({
         cx       : position.x,

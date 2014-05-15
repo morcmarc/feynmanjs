@@ -12,7 +12,8 @@ var SVG = function() {
     polygon   : function(){ return this; },
     path      : function(){ return this; },
     stroke    : function(){ return this; },
-    transform : function(){ return this; }
+    transform : function(){ return this; },
+    scale     : function(){ return this; }
   };
 };
 
