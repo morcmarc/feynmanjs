@@ -178,10 +178,19 @@ module.exports = (function() {
     return point[0] === 'v';
   };
 
+  var _isSubVertex = function(point) {
+
+    return (/\*/).test(point);
+  };
+
   var _processEndPoint = function(id) {
 
     if(_isVertex(id) && !_getVertexById(id)) {
-      data.vertices.push({ id: id });
+      var v = { id: id };
+      if(_isSubVertex(id)) {
+        v.sub = true;
+      }
+      data.vertices.push(v);
     }
   };
 

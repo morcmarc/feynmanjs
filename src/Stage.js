@@ -276,56 +276,23 @@ module.exports = (function () {
       var sB        = stageB / segmentsB;
 
       var counter = vertices.length === 1 ? 1 : 0;
+      var levelCoeff = this.getNumberOfLevels() === 1 ? 0 : 1;
 
       vertices.forEach(function(v) {
 
-        v[coordA] = sA * (level - 1) + paddingA;
+        v[coordA] = sA * (level - levelCoeff) + paddingA;
         v[coordB] = sB * counter + paddingB;
         counter++;
       });
       level++;
     }
+
+    _calculateSubVertexLocations.bind(this)();
   };
 
-  /**
-   * Walk the vertex graph and update their distance attribute with the distance from the closest control point.
-   * @private
-   */
-  var _setVertexDistances = function() {
+  var _getAdjacencyMatrix = function() {
 
-    var AM    = {}; // Adjacency matrix
-    var that  = this;
-
-    /**
-     * Recursive helper function. Updates distance attribute of "node" with "distance", then calls itself on adjacent nodes (excluding "previous" node).
-     * @param node Vertex / Control Point Id
-     * @param distance Integer
-     * @param prev Previous node
-     */
-    var walk = function(node, distance, prev) {
-
-      var vertex = that.getVertexById(node);
-
-      // Control point don't have a distance
-      if(vertex) {
-        vertex.distance = vertex.distance ? Math.min(vertex.distance, distance) : distance;
-        var adj = AM[node].filter(function(n) {
-          // We need to filter out the previous node from the list
-          return n !== prev &&
-                (that.getVertexById(n) &&
-                  (
-                    // And nodes that's distance is less than the current node.
-                    // This is to avoid deadlock on cycles.
-                    !that.getVertexById(n).distance ||
-                    that.getVertexById(n).distance > vertex.distance
-                  )
-                );
-        });
-        adj.forEach(function(n) {
-          walk(n, distance + 1, node);
-        });
-      }
-    };
+    var AM = {};
 
     // Empty AM
     this.data.particles.forEach(function(p) {
@@ -340,6 +307,129 @@ module.exports = (function () {
       AM[p.to].push(p.from);
       AM[p.from].push(p.to);
     });
+
+    return AM;
+  };
+
+  var _calculateSubVertexLocations = function() {
+
+    var AM   = _getAdjacencyMatrix.bind(this)();
+    var dir  = this.data.cPoints.left.length > 0 ? 'left' : 'top';
+    var that = this;
+    var subVertexPath = [];
+
+    var walk = function(node, prev, start) {
+
+      var vertex = that.getVertexById(node);
+      var sP     = start;
+
+      if(vertex) {
+
+        if(vertex.sub) {
+          subVertexPath.push(node);
+        } else {
+
+          var i = 1;
+
+          subVertexPath.forEach(function(sv) {
+
+            var svObj      = that.getVertexById(sv);
+
+            if(svObj.start) {
+              return;
+            }
+
+            var startPoint = that.getVertexById(sP) ? that.getVertexById(sP) : that.getControlPointById(sP);
+            var endPoint   = that.getVertexById(node);
+            svObj.start    = svObj.start ? svObj.start : start;
+            svObj.end      = svObj.end ? svObj.end : node;
+
+            var xDt = Math.abs(endPoint.x - startPoint.x) / (subVertexPath.length + 1);
+            var yDt = Math.abs(endPoint.y - startPoint.y) / (subVertexPath.length + 1);
+            svObj.x = startPoint.x + xDt * i;
+            svObj.y = startPoint.y + yDt * i;
+            i++;
+          });
+          subVertexPath = [];
+          sP = node;
+        }
+        var adj = AM[node].filter(function(n) {
+          // We need to filter out the previous node from the list
+          return n !== prev &&
+                (that.getVertexById(n) &&
+                  (
+                    !vertex.distance ||
+                    that.getVertexById(n).distance > vertex.distance ||
+                    that.getVertexById(n).sub
+                  )
+                );
+        });
+
+        adj.forEach(function(n) {
+          walk(n, node, sP);
+        });
+      }
+    };
+
+    for(var j = 0; j < this.data.cPoints[dir].length; j++) {
+
+      var id = this.data.cPoints[dir][j].id;
+
+      for(var k = 0; k < AM[id].length; k++) {
+
+        walk(AM[id][k], id, id);
+      }
+    }
+  };
+
+  /**
+   * Walk the vertex graph and update their distance attribute with the distance from the closest control point.
+   * @private
+   */
+  var _setVertexDistances = function() {
+
+    var AM = _getAdjacencyMatrix.bind(this)();
+    var that  = this;
+
+    /**
+     * Recursive helper function. Updates distance attribute of "node" with "distance", then calls itself on adjacent nodes (excluding "previous" node).
+     * @param node Vertex / Control Point Id
+     * @param distance Integer
+     * @param prev Previous node
+     */
+    var walk = function(node, distance, prev) {
+
+      var vertex = that.getVertexById(node);
+
+      // Control point don't have a distance
+      if(vertex) {
+
+        var distanceCoeff = 1;
+
+        if(!vertex.sub) {
+          vertex.distance = vertex.distance ? Math.min(vertex.distance, distance) : distance;
+        } else {
+          distanceCoeff = 0;
+        }
+
+        var adj = AM[node].filter(function(n) {
+          // We need to filter out the previous node from the list
+          return n !== prev &&
+                (that.getVertexById(n) &&
+                  (
+                    // And nodes that's distance is less than the current node.
+                    // This is to avoid deadlock on cycles.
+                    !that.getVertexById(n).distance ||
+                    that.getVertexById(n).distance > vertex.distance
+                  )
+                );
+        });
+
+        adj.forEach(function(n) {
+          walk(n, distance + distanceCoeff, node);
+        });
+      }
+    };
 
     var dir = this.data.cPoints.left.length > 0 ? 'left' : 'top';
 

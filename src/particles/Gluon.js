@@ -73,8 +73,8 @@ module.exports = {
     var length   = position.l + (5 - position.l % 5);
 
     var gluon = {
-      width  : 15,   // the coil width of gluon propagators
-      height : 15,   // the coil height of gluon propagators
+      width  : 13,   // the coil width of gluon propagators
+      height : 13,   // the coil height of gluon propagators
       factor : 0.75, // the factor parameter for gluon propagators
       percent: 0.6,  // the percent parameter for gluon propagators
       scale  : 1.15  // the scale parameter for gluon arcs and loops

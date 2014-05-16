@@ -27,14 +27,14 @@ module.exports = {
     }
 
     var ui       = canvas.group();
-    var position = PointHelper.getPositionValues(options.from, options.to);
+    var position = PointHelper.getPositionValues(options.to, options.from);
     var shape    = 'line';
-    var arcDir   = true;
+    var arcDir   = 1;
     var tension  = 2;
 
     if(options.left || options.right) {
       shape   = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
-      arcDir  = options.right !== undefined ? 1 : -1;
+      arcDir  = options.right !== undefined ? -1 : 1;
     }
 
     ui
@@ -75,9 +75,9 @@ module.exports = {
 
     var PI     = Math.PI;
     var lambda = 0.51128733;
-    var a      = 5;
+    var a      = 2;
     var b      = 0.5 * lambda * a;
-    var p      = 5;
+    var p      = 3;
     var q      = 2 * p / PI;
     var t      = lambda * p / PI;
     var dir    = true;

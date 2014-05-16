@@ -36,7 +36,9 @@ module.exports = {
       arcDir = options.right !== undefined ? 1 : -1;
     }
 
-    this._drawArrow(ui, position.l, options.color ? options.color : this._defaults.color, false);
+    if(options.type !== 'plain') {
+      this._drawArrow(ui, position.l, options.color ? options.color : this._defaults.color, options.type === 'antifermion');
+    }
 
     ui
       .path(this.getPath(shape, options))
@@ -83,10 +85,10 @@ module.exports = {
     var y1 = 0;
     //Below-the-line
     var x2 = length / 2 - coeff * 9;
-    var y2 = 4;
+    var y2 = 3.5;
     //Above-the-line
     var x3 = length / 2 - coeff * 9;
-    var y3 = -4;
+    var y3 = -3.5;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3;
     ui
