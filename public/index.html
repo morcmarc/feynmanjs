@@ -11,26 +11,34 @@
           height     : 200,
           lang       : 'latex',
           diagram    : [
-              'fmfleftn{2}',
+              'fmfleft{i1,i2}',
               'fmfright{o1,o2}',
-              'fmf{photon}{i1,v1}',
-              'fmf{photon,foreground=green}{o1,v2}',
-              'fmf{fermion}{i2,v1,v2,o2}',
+              "fmf{fermion}{i2,v1,i1}",
+              "fmf{fermion}{o2,v2,o1}",
+              "fmf{photon,label=$\\gamma,Z^0$}{v1,v2}",
+              "fmflabel{i1}{$e^+$}",
+              "fmflabel{i2}{$e^-$}",
+              "fmflabel{o1}{$e^-,\\mu^-$}",
+              "fmflabel{o2}{$e^+,\\mu^+$}",
               'fmfdot{v1,v2}'
           ]
         };
         var annihilationRev = {
           title      : 'E-P Annihilation',
-          width      : 200,
+          width      : 250,
           height     : 200,
           lang       : 'latex',
           diagram: [
               'fmftop{i1,i2}',
               'fmfbottom{o1,o2}',
-              'fmf{fermion}{i1,v1,i2}',
-              'fmf{fermion}{o1,v2,o2}',
-              'fmf{photon}{v1,v2}',
-              'fmfdot{v1,v2}'
+              'fmf{fermion}{i2,v1,i1}',
+              'fmf{fermion}{o2,v2,o1}',
+              "fmf{photon,label=$A_\\mu(x)A_\\nu(x')$}{v1,v2}",
+              'fmfdot{v1,v2}',
+              "fmflabel{i2}{$\\psi(x')$}",
+              "fmflabel{i1}{$\\overline{\\psi}(x')$}",
+              "fmflabel{o2}{$\\psi(x)$}",
+              "fmflabel{o1}{$\\overline{\\psi}(x)$}",
           ]
         };
         var resonant = {
@@ -60,7 +68,7 @@
               'fmfrightn{2}',
               'fmf{fermion}{o1,v2,v1,i1}',
               'fmf{fermion}{i2,v3,v4,o2}',
-              'fmf{photon,label=$W^+$}{v1,v3}',
+              'fmf{photon,label=$W^+$,side=left}{v1,v3}',
               'fmf{photon,label=$W^-$}{v2,v4}',
               'fmflabel{i1}{$d$}',
               'fmflabel{i2}{$\\overline{b}$}',
@@ -87,7 +95,7 @@
     </script>
 
     <div id="feynman1" style = "width:250px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
-    <div id="feynman2" style = "width:200px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
+    <div id="feynman2" style = "width:250px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
     <div id="feynman3" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
     <div id="feynman4" style = "width:250px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
     <div id="feynman5" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>

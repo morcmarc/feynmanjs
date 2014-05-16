@@ -223,10 +223,11 @@ module.exports = (function () {
           if(!cPoint.label) {
             return;
           }
-          var label = ui.foreignObject(100,100).attr({ id: cPoint.id });
+          var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           var xOffset = 0;
           var yOffset = 0;
+          var e = document.getElementById('label-' + cPoint.id);
           switch(cPoint.side) {
             case 'left':
               xOffset = -15;
@@ -267,6 +268,8 @@ module.exports = (function () {
    * @private
    */
   var _drawPropagators = function() {
+
+    var ui = this.canvas.group();
 
     this.data.particles.forEach(function(p) {
 
@@ -956,7 +959,7 @@ module.exports = (function() {
     // Example: http://www.regexr.com/38rpl
     var rawArgs   = command.match(/\{([^{}]+)\}|\{(\$[\S]+\$)\}|\{\S+(\$[\S]+\$)\}/g);
     // Get rid of curly braces and convert comma separated args into an Array
-    var args      = _explodeArgs(_stripCurlies(rawArgs));
+    var args      = _explodeArgs(_stripCurlies(rawArgs,keyword));
 
     if(keyword !== undefined && _keywordFunctionMap[keyword] !== undefined) {
 
@@ -1141,16 +1144,23 @@ module.exports = (function() {
     });
   };
 
-  var _explodeArgs = function(args) {
+  var _explodeArgs = function(args, keyword) {
 
     var explodedArgs = [];
 
     args.forEach(function(arg) {
-      
-      var e = arg.split(',');
 
-      e = _processArgumentOptions(e);
-      explodedArgs.push(e);
+      // See http://www.regexr.com/38rqd
+      var pattern   = new RegExp(/([\w.]+|\$\S+,?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
+      var matches   = pattern.exec(arg);
+      var processed = [];
+
+      while(matches !== null) {
+        processed.push(matches[0]);
+        matches = pattern.exec(arg);
+      }
+
+      explodedArgs.push(_processArgumentOptions(processed));
     });
 
     return explodedArgs;
@@ -1533,6 +1543,16 @@ module.exports = {
       shape   = 'arc';
       arcDir  = options.right !== 0 ? -1 : 1;
       tension = options.right !== 0 ? options.right : options.left;
+    }
+
+    if(options.label) {
+      var label = canvas.foreignObject(100,100).attr({ id: options.id });
+      label.appendChild('div', { id: 'label-' + options.id, innerText: options.label });
+      label.move((options.to.x + options.from.x) / 2 + this._defaults.labelDistance, (options.to.y + options.from.y) / 2 - 10);
+      if(options.labelSide === 'left') {
+        var e = document.getElementById('label-' + options.id);
+        e.style.textAlign  = 'right';
+      }
     }
 
     ui

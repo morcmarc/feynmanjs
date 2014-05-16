@@ -200,10 +200,11 @@ module.exports = (function () {
           if(!cPoint.label) {
             return;
           }
-          var label = ui.foreignObject(100,100).attr({ id: cPoint.id });
+          var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           var xOffset = 0;
           var yOffset = 0;
+          var e = document.getElementById('label-' + cPoint.id);
           switch(cPoint.side) {
             case 'left':
               xOffset = -15;
@@ -244,6 +245,8 @@ module.exports = (function () {
    * @private
    */
   var _drawPropagators = function() {
+
+    var ui = this.canvas.group();
 
     this.data.particles.forEach(function(p) {
 

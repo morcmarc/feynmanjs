@@ -45,7 +45,7 @@ module.exports = (function() {
     // Example: http://www.regexr.com/38rpl
     var rawArgs   = command.match(/\{([^{}]+)\}|\{(\$[\S]+\$)\}|\{\S+(\$[\S]+\$)\}/g);
     // Get rid of curly braces and convert comma separated args into an Array
-    var args      = _explodeArgs(_stripCurlies(rawArgs));
+    var args      = _explodeArgs(_stripCurlies(rawArgs,keyword));
 
     if(keyword !== undefined && _keywordFunctionMap[keyword] !== undefined) {
 
@@ -230,16 +230,23 @@ module.exports = (function() {
     });
   };
 
-  var _explodeArgs = function(args) {
+  var _explodeArgs = function(args, keyword) {
 
     var explodedArgs = [];
 
     args.forEach(function(arg) {
-      
-      var e = arg.split(',');
 
-      e = _processArgumentOptions(e);
-      explodedArgs.push(e);
+      // See http://www.regexr.com/38rqd
+      var pattern   = new RegExp(/([\w.]+|\$\S+,?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
+      var matches   = pattern.exec(arg);
+      var processed = [];
+
+      while(matches !== null) {
+        processed.push(matches[0]);
+        matches = pattern.exec(arg);
+      }
+
+      explodedArgs.push(_processArgumentOptions(processed));
     });
 
     return explodedArgs;

@@ -38,6 +38,16 @@ module.exports = {
       tension = options.right !== 0 ? options.right : options.left;
     }
 
+    if(options.label) {
+      var label = canvas.foreignObject(100,100).attr({ id: options.id });
+      label.appendChild('div', { id: 'label-' + options.id, innerText: options.label });
+      label.move((options.to.x + options.from.x) / 2 + this._defaults.labelDistance, (options.to.y + options.from.y) / 2 - 10);
+      if(options.labelSide === 'left') {
+        var e = document.getElementById('label-' + options.id);
+        e.style.textAlign  = 'right';
+      }
+    }
+
     ui
       .path(this.getPath(shape, options, tension))
       .fill('none')
