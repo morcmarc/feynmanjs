@@ -379,30 +379,57 @@ module.exports = (function () {
         var adj = AM[node].filter(function(n) {
           // We need to filter out the previous node from the list
           return n !== prev &&
-                (that.getVertexById(n) &&
+                (that.getControlPointById(n) || (that.getVertexById(n) &&
                   (
                     !vertex.distance ||
+                    !that.getVertexById(n).distance ||
                     that.getVertexById(n).distance > vertex.distance ||
                     that.getVertexById(n).sub
                   )
-                );
+                ));
         });
 
         adj.forEach(function(n) {
           walk(n, node, sP);
         });
+      } else {
+
+        var j = 1;
+
+        subVertexPath.forEach(function(sv) {
+
+          var svObj      = that.getVertexById(sv);
+
+          if(svObj.start) {
+            return;
+          }
+
+          var startPoint = that.getVertexById(sP) ? that.getVertexById(sP) : that.getControlPointById(sP);
+          var endPoint   = that.getControlPointById(node);
+          svObj.start    = svObj.start ? svObj.start : start;
+          svObj.end      = svObj.end ? svObj.end : node;
+
+          var xDt = Math.abs(endPoint.x - startPoint.x) / (subVertexPath.length + 1);
+          var yDt = Math.abs(endPoint.y - startPoint.y) / (subVertexPath.length + 1);
+          svObj.x = startPoint.x + xDt * j;
+          svObj.y = startPoint.y + yDt * j;
+          j++;
+        });
+        subVertexPath = [];
       }
     };
 
-    for(var j = 0; j < this.data.cPoints[dir].length; j++) {
+    // "Walk" the AM and calculate distances.
+    this.data.cPoints[dir].forEach(function(cp) {
 
-      var id = this.data.cPoints[dir][j].id;
-
-      for(var k = 0; k < AM[id].length; k++) {
-
-        walk(AM[id][k], id, id);
+      if(!AM[cp.id]) {
+        return;
       }
-    }
+
+      AM[cp.id].forEach(function(v) {
+        walk(v, cp.id, cp.id);
+      });
+    });
   };
 
   /**
@@ -458,6 +485,10 @@ module.exports = (function () {
 
     // "Walk" the AM and calculate distances.
     this.data.cPoints[dir].forEach(function(cp) {
+
+      if(!AM[cp.id]) {
+        return;
+      }
 
       AM[cp.id].forEach(function(v) {
         walk(v, 1);
@@ -1248,10 +1279,10 @@ module.exports = {
     var x1 = length / 2 + coeff * 7;
     var y1 = 0;
     //Below-the-line
-    var x2 = length / 2 - coeff * 9;
+    var x2 = length / 2 - coeff * 7;
     var y2 = 3.5;
     //Above-the-line
-    var x3 = length / 2 - coeff * 9;
+    var x3 = length / 2 - coeff * 7;
     var y3 = -3.5;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3;
@@ -1333,7 +1364,7 @@ module.exports = {
   getPath: function(shape, options) {
 
     var position = PointHelper.getPositionValues(options.from, options.to);
-    var length   = position.l + (5 - position.l % 5);
+    var length   = position.l;
 
     var gluon = {
       width  : 13,   // the coil width of gluon propagators
@@ -1351,7 +1382,7 @@ module.exports = {
     var c     = gluon.height * (gluon.factor - 0.5);
     var d     = gluon.width  * (1 - gluon.percent);
 
-    var dir   = false;
+    var dir   = true;
     var pts   = (dir
       ? [[0, 0], 'A ' + a + ' ' + b, 0, 0, 1, [a, b],
                  'A ' + c + ' ' + d, 0, 1, 1, [a - 2 * c, b],

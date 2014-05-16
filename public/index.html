@@ -44,14 +44,14 @@
               'fmfright{o1,o2,o3,o4}',
               'fmf{fermion}{i1,v1,v2,i2}',
               'fmf{photon}{v1,v3}',
-                'fmf{fermion}{o1,v3,o2}',
+              'fmf{fermion}{o1,v3,o2}',
               'fmf{photon}{v2,v4}',
-                'fmf{fermion}{o4,v4,o3}'
+              'fmf{fermion}{o4,v4,o3}'
           ]
         };
         var box = {
           title      : 'Resonant t-channel contribution',
-          width      : 300,
+          width      : 250,
           height     : 200,
           lang       : 'latex',
           diagram: [
@@ -64,20 +64,20 @@
               'fmf{photon}{v2,v4}'
           ]
         };
-        var twoPointLoop = {
+        var penguin = {
           title      : 'Two-point Loop',
           width      : 300,
           height     : 200,
           lang       : 'latex',
           diagram: [
-              'fmfleft{i1,i2}',
-              'fmfright{o1}',
-              'fmf{plain}{i1,v1*}',
-              'fmf{fermion}{v2*,v1*}',
-              'fmf{plain}{v2*,v3}',
-              'fmf{fermion}{i2,v3}',
-              'fmf{photon}{v3,o1}',
-              'fmf{photon,left}{v1*,v2*}'
+              'fmfleftn{4}',
+              'fmfrightn{4}',
+              'fmf{antifermion}{i1,v1*,v2*,o1}',
+              'fmf{gluon}{v1*,v4}',
+              'fmf{photon,left}{v1*,v2*}',
+              'fmf{antifermion}{o2,v4,o3}',
+              'fmf{fermion}{i4,o4}',
+              'fmfdot{v1*,v2*,v4}'
           ]
         };
     </script>
@@ -85,7 +85,7 @@
     <div id="feynman1" style = "width:250px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
     <div id="feynman2" style = "width:200px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
     <div id="feynman3" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
-    <div id="feynman4" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
+    <div id="feynman4" style = "width:250px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
     <div id="feynman5" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
@@ -96,7 +96,7 @@
         feynman.draw("feynman2", annihilationRev);
         feynman.draw("feynman3", resonant);
         feynman.draw("feynman4", box);
-        feynman.draw("feynman5", twoPointLoop);
+        feynman.draw("feynman5", penguin);
     </script>
   </body>
 </html>

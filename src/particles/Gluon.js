@@ -70,7 +70,7 @@ module.exports = {
   getPath: function(shape, options) {
 
     var position = PointHelper.getPositionValues(options.from, options.to);
-    var length   = position.l + (5 - position.l % 5);
+    var length   = position.l;
 
     var gluon = {
       width  : 13,   // the coil width of gluon propagators
@@ -88,7 +88,7 @@ module.exports = {
     var c     = gluon.height * (gluon.factor - 0.5);
     var d     = gluon.width  * (1 - gluon.percent);
 
-    var dir   = false;
+    var dir   = true;
     var pts   = (dir
       ? [[0, 0], 'A ' + a + ' ' + b, 0, 0, 1, [a, b],
                  'A ' + c + ' ' + d, 0, 1, 1, [a - 2 * c, b],
