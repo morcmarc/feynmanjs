@@ -67,6 +67,18 @@ module.exports = (function() {
       _processEndPoint(toId);
 
       var options = _processPropagatorOptions(args[0].slice(1));
+
+      var rightValue = 0;
+      var leftValue  = 0;
+
+      if(options.right) {
+        rightValue = typeof options.right === 'string' ? parseFloat(options.right) : 1;
+      }
+
+      if(options.left) {
+        leftValue = typeof options.left === 'string' ? parseFloat(options.left) : 1;
+      }
+
       var p = {
         id            : id,
         from          : fromId,
@@ -75,9 +87,9 @@ module.exports = (function() {
         label         : options.label,
         labelSide     : options.side,
         labelDistance : options.dist,
-        tension       : options.tension,
-        right         : options.right,
-        left          : options.left,
+        tension       : parseFloat(options.tension),
+        right         : rightValue,
+        left          : leftValue,
         tag           : options.tag,
         color         : options.foreground,
         bgColor       : options.background,

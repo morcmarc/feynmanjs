@@ -11,7 +11,7 @@ describe('LatexParser', function() {
     diagram: [
       'fmfleft{i1,i2}',
       'fmfright{o1,o2}',
-      'fmf{fermion,tension=1/3,right,label=$\\tau$,label.side=left,label.dist=10,tag=tag1,width=5,foreground=#00F,background=#000}{i1,v1,i2}',
+      'fmf{fermion,tension=1/3,right=0.5,label=$\\tau$,label.side=left,label.dist=10,tag=tag1,width=5,foreground=#00F,background=#000}{i1,v1,i2}',
       'fmf{fermion}{o2,v2,o1}',
       'fmf{photon}{v1,v2}',
       'fmfpen{thin}',
@@ -158,7 +158,7 @@ describe('LatexParser', function() {
     it('sets tension for propagator', function() {
 
       var s = p.parse();
-      expect(s.particles[0].tension).toEqual('1/3');
+      expect(s.particles[0].tension).toEqual(parseFloat('1/3'));
     });
 
     it('sets pen width for propagator', function() {
@@ -188,7 +188,7 @@ describe('LatexParser', function() {
     it('sets left or right value for propagator', function() {
 
       var s = p.parse();
-      expect(s.particles[0].right).toEqual(true);
+      expect(s.particles[0].right).toEqual(0.5);
     });
 
     it('sets particle type correctly', function() {

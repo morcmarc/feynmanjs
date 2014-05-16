@@ -304,6 +304,10 @@ module.exports = (function () {
     // Push vertices to AM
     this.data.particles.forEach(function(p) {
 
+      if(p.tension === 0) {
+        return;
+      }
+
       AM[p.to].push(p.from);
       AM[p.from].push(p.to);
     });

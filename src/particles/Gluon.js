@@ -30,14 +30,16 @@ module.exports = {
     var position = PointHelper.getPositionValues(options.from, options.to);
     var shape    = 'line';
     var arcDir   = true;
+    var tension  = 2;
 
     if(options.left || options.right) {
-      shape  = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
-      arcDir = options.right !== undefined ? 1 : -1;
+      shape   = 'arc';
+      arcDir  = options.right !== 0 ? -1 : 1;
+      tension = options.right !== 0 ? options.right : options.left;
     }
 
     ui
-      .path(this.getPath(shape, options))
+      .path(this.getPath(shape, options, tension))
       .fill('none')
       .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
       .scale(1, arcDir);
@@ -67,10 +69,10 @@ module.exports = {
    * @param shape
    * @returns {*}
    */
-  getPath: function(shape, options) {
+  getPath: function(shape, options, tension) {
 
     var position = PointHelper.getPositionValues(options.from, options.to);
-    var length   = position.l;
+    var length   = position.l + (5 - position.l % 5);
 
     var gluon = {
       width  : 13,   // the coil width of gluon propagators
@@ -99,7 +101,7 @@ module.exports = {
     );
 
     a = (dir ? a : gluon.scale * a);
-    var lift = a / Math.pow(this.length, 0.6);
+    var lift = a / Math.pow(length, 0.6);
 
     var tile = (dir
       ? ['C', [kappa * a, lift], [a, b - kappa * b], [a, b],
@@ -116,7 +118,7 @@ module.exports = {
       case 'line':
         return Bezier.line(pts, gluon.height, length);
       case 'arc':
-        return Bezier.arc('gluon', tile, a - c, length);
+        return Bezier.arc('gluon', tile, a - c, length, tension);
       case 'loop':
         return Bezier.loop('gluon', tile, a - c, length);
       default:

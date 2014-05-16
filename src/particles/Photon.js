@@ -33,12 +33,13 @@ module.exports = {
     var tension  = 2;
 
     if(options.left || options.right) {
-      shape   = typeof options.left === 'number' || typeof options.right === 'number' || options.left === true || options.right === true ? 'arc' : 'line';
-      arcDir  = options.right !== undefined ? -1 : 1;
+      shape   = 'arc';
+      arcDir  = options.right !== 0 ? -1 : 1;
+      tension = options.right !== 0 ? options.right : options.left;
     }
 
     ui
-      .path(this.getPath(shape, options))
+      .path(this.getPath(shape, options, tension))
       .fill('none')
       .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
       .scale(1, arcDir);
@@ -68,7 +69,7 @@ module.exports = {
    * @param shape
    * @returns {*}
    */
-  getPath: function(shape, options) {
+  getPath: function(shape, options, tension) {
 
     var position = PointHelper.getPositionValues(options.from, options.to);
     var length   = position.l;// + (5 - position.l % 5);
@@ -108,7 +109,7 @@ module.exports = {
       case 'line':
         return Bezier.line(pts, 4 * p, length);
       case 'arc':
-        return Bezier.arc('photon', tile, p, length);
+        return Bezier.arc('photon', tile, p, length, tension);
       case 'loop':
         return Bezier.loop('photon', tile, p, length);
       default:
