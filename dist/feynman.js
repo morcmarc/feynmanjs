@@ -563,10 +563,10 @@ module.exports = {
           // type          : 'photon',
           // from          : 'i1',
           // to            : 'v1',
-          // label         : '$\tau$',
-          // right         : true
-          // left          : true,
-          // tension       : '1/3',
+          // label         : '$\\tau$',
+          // right         : 0
+          // left          : 1.6,
+          // tension       : 0.5,
           // tag           : 'tag1',
           // color         : '#F00',
           // bgColor       : '#0F0',
@@ -577,16 +577,19 @@ module.exports = {
       ],
       vertices  : [
         // {
-        //   id: 'v1',
-        //   visible: true
+          // id      : 'v1',
+          // visible : true,
+          // label   : '$v_1$',
+          // sub     : false
         // }
       ],
       cPoints   : {
 
         left   : [
           // {
-          //   id: 'i1',
-          //   side: 'left'
+          //   id    : 'i1',
+          //   side  : 'left',
+          //   label : '$c_1$'
           // }
         ],
         right  : [
@@ -1151,7 +1154,7 @@ module.exports = (function() {
     args.forEach(function(arg) {
 
       // See http://www.regexr.com/38rqd
-      var pattern   = new RegExp(/([\w.]+|\$\S+,?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
+      var pattern   = new RegExp(/([\w.]+|\$[\S,]?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
       var matches   = pattern.exec(arg);
       var processed = [];
 
@@ -1548,7 +1551,7 @@ module.exports = {
     if(options.label) {
       var label = canvas.foreignObject(100,100).attr({ id: options.id });
       label.appendChild('div', { id: 'label-' + options.id, innerText: options.label });
-      label.move((options.to.x + options.from.x) / 2 + this._defaults.labelDistance, (options.to.y + options.from.y) / 2 - 10);
+      label.move((options.to.x + options.from.x) / 2 + this._defaults.labelDistance, (options.to.y + options.from.y) / 2 + 10);
       if(options.labelSide === 'left') {
         var e = document.getElementById('label-' + options.id);
         e.style.textAlign  = 'right';

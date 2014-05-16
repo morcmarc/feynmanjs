@@ -237,7 +237,7 @@ module.exports = (function() {
     args.forEach(function(arg) {
 
       // See http://www.regexr.com/38rqd
-      var pattern   = new RegExp(/([\w.]+|\$\S+,?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
+      var pattern   = new RegExp(/([\w.]+|\$[\S,]?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
       var matches   = pattern.exec(arg);
       var processed = [];
 

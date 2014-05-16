@@ -15,10 +15,10 @@ module.exports = {
           // type          : 'photon',
           // from          : 'i1',
           // to            : 'v1',
-          // label         : '$\tau$',
-          // right         : true
-          // left          : true,
-          // tension       : '1/3',
+          // label         : '$\\tau$',
+          // right         : 0
+          // left          : 1.6,
+          // tension       : 0.5,
           // tag           : 'tag1',
           // color         : '#F00',
           // bgColor       : '#0F0',
@@ -29,16 +29,19 @@ module.exports = {
       ],
       vertices  : [
         // {
-        //   id: 'v1',
-        //   visible: true
+          // id      : 'v1',
+          // visible : true,
+          // label   : '$v_1$',
+          // sub     : false
         // }
       ],
       cPoints   : {
 
         left   : [
           // {
-          //   id: 'i1',
-          //   side: 'left'
+          //   id    : 'i1',
+          //   side  : 'left',
+          //   label : '$c_1$'
           // }
         ],
         right  : [
