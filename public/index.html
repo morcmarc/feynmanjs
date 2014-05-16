@@ -58,10 +58,14 @@
               'fmfpen{thin}',
               'fmfleftn{2}',
               'fmfrightn{2}',
-              'fmf{fermion}{i1,v1,v2,o1}',
+              'fmf{fermion}{o1,v2,v1,i1}',
               'fmf{fermion}{i2,v3,v4,o2}',
-              'fmf{photon}{v1,v3}',
-              'fmf{photon}{v2,v4}'
+              'fmf{photon,label=$W^+$}{v1,v3}',
+              'fmf{photon,label=$W^-$}{v2,v4}',
+              'fmflabel{i1}{$d$}',
+              'fmflabel{i2}{$\\overline{b}$}',
+              'fmflabel{o1}{$b$}',
+              'fmflabel{o2}{$\\overline{d}$}'
           ]
         };
         var penguin = {
@@ -89,6 +93,22 @@
     <div id="feynman5" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; "></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
+    <script src="lib/svg.js/svg.foreign.js"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        },
+        "HTML-CSS": { availableFonts: ["TeX"] }
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
     <script src="../dist/feynman.js"></script>
     <script>
         var feynman = new Feynman();

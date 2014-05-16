@@ -42,8 +42,8 @@ module.exports = (function() {
     // Match first "word"
     var keyword   = command.match(/\w+/g)[0];
     // Match anything between curly braces { ... }
-    // Example: http://www.regexr.com/38q9i
-    var rawArgs   = command.match(/(\{\w+([^\}\{]|\d?)+?\})/g);
+    // Example: http://www.regexr.com/38rpl
+    var rawArgs   = command.match(/\{([^{}]+)\}|\{(\$[\S]+\$)\}|\{\S+(\$[\S]+\$)\}/g);
     // Get rid of curly braces and convert comma separated args into an Array
     var args      = _explodeArgs(_stripCurlies(rawArgs));
 
@@ -185,6 +185,21 @@ module.exports = (function() {
     }
   };
 
+  var _processLabel = function(args) {
+
+    var obj = _getVertexById(args[0][0]);
+
+    if(!obj) {
+      obj = _getControlPointById(args[0][0]);
+    }
+
+    if(!obj) {
+      return;
+    }
+
+    obj.label = args[1][0];
+  };
+
   var _isVertex = function(point) {
 
     return point[0] === 'v';
@@ -208,7 +223,7 @@ module.exports = (function() {
 
   var _stripCurlies = function(args) {
 
-    var pattern = /\{|\}/g;
+    var pattern = /^\{|\}$/gm;
 
     return args.map(function(arg) {
       return arg.replace(pattern, '');
@@ -313,6 +328,7 @@ module.exports = (function() {
     'fmfbottom' : _processBottom,
     'fmfbottomn': _processNBottom,
     'fmfdot'    : _processDot,
+    'fmflabel'  : _processLabel,
     'fmfleft'   : _processLeft,
     'fmfleftn'  : _processNLeft,
     'fmfpen'    : _processPenSize,

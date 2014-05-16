@@ -62,6 +62,7 @@ module.exports = (function () {
     // _drawTitle.bind(this)();
     _drawPropagators.bind(this)();
     _drawVertices.bind(this)();
+    _drawControlPoints.bind(this)();
   };
 
   /**
@@ -205,6 +206,45 @@ module.exports = (function () {
       style  : 'italic',
       anchor : 'left'
     }).translate(10, 10);
+  };
+
+  var _drawControlPoints = function() {
+
+    var ui   = this.canvas.group();
+    var that = this;
+
+    for(var key in this.data.cPoints) {
+
+      if(this.data.cPoints.hasOwnProperty(key)) {
+
+        this.data.cPoints[key].forEach(function(cPoint) {
+
+          // Label stuff
+          if(!cPoint.label) {
+            return;
+          }
+          var label = ui.foreignObject(100,100).attr({ id: cPoint.id });
+          label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
+          var xOffset = 0;
+          var yOffset = 0;
+          switch(cPoint.side) {
+            case 'left':
+              xOffset = -15;
+              break;
+            case 'right':
+              xOffset = 3;
+              break;
+            case 'top':
+              yOffset = -15;
+              break;
+            case 'bottom':
+              yOffset = 3;
+              break;
+          }
+          label.move(cPoint.x + xOffset, cPoint.y + yOffset);
+        });
+      }
+    }
   };
 
   /**
@@ -913,8 +953,8 @@ module.exports = (function() {
     // Match first "word"
     var keyword   = command.match(/\w+/g)[0];
     // Match anything between curly braces { ... }
-    // Example: http://www.regexr.com/38q9i
-    var rawArgs   = command.match(/(\{\w+([^\}\{]|\d?)+?\})/g);
+    // Example: http://www.regexr.com/38rpl
+    var rawArgs   = command.match(/\{([^{}]+)\}|\{(\$[\S]+\$)\}|\{\S+(\$[\S]+\$)\}/g);
     // Get rid of curly braces and convert comma separated args into an Array
     var args      = _explodeArgs(_stripCurlies(rawArgs));
 
@@ -1056,6 +1096,21 @@ module.exports = (function() {
     }
   };
 
+  var _processLabel = function(args) {
+
+    var obj = _getVertexById(args[0][0]);
+
+    if(!obj) {
+      obj = _getControlPointById(args[0][0]);
+    }
+
+    if(!obj) {
+      return;
+    }
+
+    obj.label = args[1][0];
+  };
+
   var _isVertex = function(point) {
 
     return point[0] === 'v';
@@ -1079,7 +1134,7 @@ module.exports = (function() {
 
   var _stripCurlies = function(args) {
 
-    var pattern = /\{|\}/g;
+    var pattern = /^\{|\}$/gm;
 
     return args.map(function(arg) {
       return arg.replace(pattern, '');
@@ -1184,6 +1239,7 @@ module.exports = (function() {
     'fmfbottom' : _processBottom,
     'fmfbottomn': _processNBottom,
     'fmfdot'    : _processDot,
+    'fmflabel'  : _processLabel,
     'fmfleft'   : _processLeft,
     'fmfleftn'  : _processNLeft,
     'fmfpen'    : _processPenSize,

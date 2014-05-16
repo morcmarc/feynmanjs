@@ -39,6 +39,7 @@ module.exports = (function () {
     // _drawTitle.bind(this)();
     _drawPropagators.bind(this)();
     _drawVertices.bind(this)();
+    _drawControlPoints.bind(this)();
   };
 
   /**
@@ -182,6 +183,45 @@ module.exports = (function () {
       style  : 'italic',
       anchor : 'left'
     }).translate(10, 10);
+  };
+
+  var _drawControlPoints = function() {
+
+    var ui   = this.canvas.group();
+    var that = this;
+
+    for(var key in this.data.cPoints) {
+
+      if(this.data.cPoints.hasOwnProperty(key)) {
+
+        this.data.cPoints[key].forEach(function(cPoint) {
+
+          // Label stuff
+          if(!cPoint.label) {
+            return;
+          }
+          var label = ui.foreignObject(100,100).attr({ id: cPoint.id });
+          label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
+          var xOffset = 0;
+          var yOffset = 0;
+          switch(cPoint.side) {
+            case 'left':
+              xOffset = -15;
+              break;
+            case 'right':
+              xOffset = 3;
+              break;
+            case 'top':
+              yOffset = -15;
+              break;
+            case 'bottom':
+              yOffset = 3;
+              break;
+          }
+          label.move(cPoint.x + xOffset, cPoint.y + yOffset);
+        });
+      }
+    }
   };
 
   /**
