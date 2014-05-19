@@ -303,9 +303,9 @@ module.exports = (function () {
     var sideB    = this.data.cPoints.left.length > 0 ? this.data.height : this.data.width;
     var coordA   = this.data.cPoints.left.length > 0 ? 'x' : 'y';
     var coordB   = this.data.cPoints.left.length > 0 ? 'y' : 'x';
-    var paddingA = (sideA * 0.30);
-    var paddingB = (sideB * 0.30);
-    var stageA   = (sideA * 0.4);
+    var paddingA = (sideA * 0.15);
+    var paddingB = (sideB * 0.3);
+    var stageA   = (sideA * 0.7);
     var stageB   = (sideB * 0.4);
 
     var level = 1;
@@ -313,17 +313,16 @@ module.exports = (function () {
     while(this.getVerticesByDistance(level).length > 0) {
 
       var vertices  = this.getVerticesByDistance(level);
-      var segmentsA = this.getNumberOfLevels() === 1 ? 2 : this.getNumberOfLevels() - 1;
+      var segmentsA = this.getNumberOfLevels() === 1 ? 2 : this.getNumberOfLevels() + 1;
       var segmentsB = vertices.length === 1 ? 2 : vertices.length - 1;
       var sA        = stageA / segmentsA;
       var sB        = stageB / segmentsB;
 
       var counter = vertices.length === 1 ? 1 : 0;
-      var levelCoeff = this.getNumberOfLevels() === 1 ? 0 : 1;
 
       vertices.forEach(function(v) {
 
-        v[coordA] = sA * (level - levelCoeff) + paddingA;
+        v[coordA] = sA * (level) + paddingA;
         v[coordB] = sB * counter + paddingB;
         counter++;
       });

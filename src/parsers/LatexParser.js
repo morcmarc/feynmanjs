@@ -53,7 +53,7 @@ module.exports = (function() {
     }
   };
 
-  var _processFermion = function(args) {
+  var _processParticle = function(args) {
 
     var i = 0;
 
@@ -331,7 +331,7 @@ module.exports = (function() {
   };
 
   var _keywordFunctionMap = {
-    'fmf'       : _processFermion,
+    'fmf'       : _processParticle,
     'fmfbottom' : _processBottom,
     'fmfbottomn': _processNBottom,
     'fmfdot'    : _processDot,

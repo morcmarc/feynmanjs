@@ -211,10 +211,10 @@ describe('Stage', function() {
 
     it('sets vertex positions correctly for Left-Right diagrams', function (done) {
       
-      expect(stage.getVertexById('v1').x).toEqual(60);
-      expect(stage.getVertexById('v1').y).toEqual(75);
-      expect(stage.getVertexById('v2').x).toEqual(140);
-      expect(stage.getVertexById('v2').y).toEqual(75);
+      expect(Math.ceil(stage.getVertexById('v1').x)).toEqual(77);
+      expect(Math.ceil(stage.getVertexById('v1').y)).toEqual(75);
+      expect(Math.ceil(stage.getVertexById('v2').x)).toEqual(124);
+      expect(Math.ceil(stage.getVertexById('v2').y)).toEqual(75);
     });
 
     it('sets vertex positions correctly for Top-Bottom diagrams', function (done) {
@@ -224,10 +224,10 @@ describe('Stage', function() {
       stage = new Stage('testCanvas', new SVG('testCanvas'), stageData);
       stage.draw();
 
-      expect(stage.getVertexById('v1').x).toEqual(100);
-      expect(stage.getVertexById('v1').y).toEqual(90);
-      expect(stage.getVertexById('v2').x).toEqual(100);
-      expect(stage.getVertexById('v2').y).toEqual(210);
+      expect(Math.ceil(stage.getVertexById('v1').x)).toEqual(100);
+      expect(Math.ceil(stage.getVertexById('v1').y)).toEqual(115);
+      expect(Math.ceil(stage.getVertexById('v2').x)).toEqual(100);
+      expect(Math.ceil(stage.getVertexById('v2').y)).toEqual(185);
     });
   });
 });
