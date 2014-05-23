@@ -13,7 +13,10 @@ var SVG = function() {
     path      : function(){ return this; },
     stroke    : function(){ return this; },
     transform : function(){ return this; },
-    scale     : function(){ return this; }
+    scale     : function(){ return this; },
+    foreignObject : function(){ return this; },
+    attr      : function(){ return this; },
+    appendChild : function(){ return this; }
   };
 };
 

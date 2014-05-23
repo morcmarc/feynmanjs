@@ -20,7 +20,7 @@ module.exports = {
     }
   }
 };
-},{"./particles/Electron":11,"./particles/Gluon":12,"./particles/Photon":13}],2:[function(require,module,exports){
+},{"./particles/Electron":12,"./particles/Gluon":13,"./particles/Photon":14}],2:[function(require,module,exports){
 var ParticleGenerator = require('./ParticleGenerator');
 
 module.exports = (function () {
@@ -223,26 +223,19 @@ module.exports = (function () {
           if(!cPoint.label) {
             return;
           }
+
+          var cx = that.data.width  / 2;
+          var cy = that.data.height / 2;
+          var nx = cPoint.x - cx;
+          var ny = cPoint.y - cy;
+          var dt = Math.sqrt( nx * nx + ny * ny );
+          nx /= dt * -0.1;
+          ny /= dt * -0.1;
+
           var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
-          var xOffset = 0;
-          var yOffset = 0;
-          var e = document.getElementById('label-' + cPoint.id);
-          switch(cPoint.side) {
-            case 'left':
-              xOffset = -15;
-              break;
-            case 'right':
-              xOffset = 3;
-              break;
-            case 'top':
-              yOffset = -15;
-              break;
-            case 'bottom':
-              yOffset = 3;
-              break;
-          }
-          label.move(cPoint.x + xOffset, cPoint.y + yOffset);
+          
+          label.move(cPoint.x + nx, cPoint.y + ny);
         });
       }
     }
@@ -613,34 +606,39 @@ module.exports = {
 },{"./helpers/Klass":6}],4:[function(require,module,exports){
 module.exports = {
 
-  /*
-  * Recursively merge properties of two objects 
-  */
-  merge: function (obj1, obj2) {
-
-    for(var p in obj2) {
-
-      if(obj2.hasOwnProperty(p)) {
-
-        try {
-          // Property in destination object set; update its value.
-          if ( obj2[p].constructor === Object ) {
-            obj1[p] = this.merge(obj1[p], obj2[p]);
-
-          } else {
-            obj1[p] = obj2[p] && obj1[p] ? obj2[p] : obj1[p];
-
-          }
-
-        } catch(e) {
-          // Property in destination object not set; create it and set its value.
-          obj1[p] = obj2[p];
-
-        }
-      }
+  merge: function(target, source) {
+        
+    /* Merges two (or more) objects,
+       giving the last one precedence */
+    
+    if ( typeof target !== 'object' ) {
+      target = {};
     }
-
-    return obj1;
+    
+    for (var property in source) {
+        
+      if ( source.hasOwnProperty(property) ) {
+          
+        var sourceProperty = source[ property ];
+          
+        if ( typeof sourceProperty === 'object' ) {
+          target[ property ] = this.merge( target[ property ], sourceProperty );
+          continue;
+        }
+        
+        if(sourceProperty !== undefined) {
+          target[ property ] = sourceProperty;
+        }
+          
+      }
+      
+    }
+    
+    for (var a = 2, l = arguments.length; a < l; a++) {
+      this.merge(target, arguments[a]);
+    }
+    
+    return target;
   }
 };
 },{}],5:[function(require,module,exports){
@@ -847,6 +845,34 @@ module.exports = {
   }
 };
 },{}],7:[function(require,module,exports){
+module.exports = function(canvas, opts, angle) {
+
+  var label = canvas.foreignObject().attr({ id: opts.id });
+  label.appendChild('span', { id: 'label-' + opts.id, innerText: opts.label });
+  var e = document.getElementById('label-' + opts.id);
+  e.style.textAlign = 'center';
+
+  var nx = opts.to.x - opts.from.x;
+  var ny = opts.to.y - opts.from.y;
+  var dt = Math.sqrt( nx * nx + ny * ny );
+
+  nx /= dt * (1 / opts.labelDistance);
+  ny /= dt * (1 / opts.labelDistance);
+
+  var n1x = -ny + ((opts.to.x + opts.from.x) / 2) - Math.sin(angle) * e.offsetWidth  / 2;
+  var n1y =  nx + ((opts.to.y + opts.from.y) / 2) - Math.cos(angle) * e.offsetHeight / 2 - Math.sin(angle) * e.offsetHeight / 2;
+  var n2x =  ny + ((opts.to.x + opts.from.x) / 2) - Math.cos(angle) * e.offsetWidth  / 8;
+  var n2y = -nx + ((opts.to.y + opts.from.y) / 2) - Math.cos(angle) * e.offsetHeight / 2 - Math.sin(angle) * e.offsetHeight / 2;
+
+  if(opts.labelSide === 'left') {
+    label.move(n1x, n1y);
+  } else {
+    label.move(n2x, n2y);
+  }
+
+  return label;
+};
+},{}],8:[function(require,module,exports){
 module.exports = {
 
   getAngle: function(A, B, inRadian) {
@@ -873,7 +899,7 @@ module.exports = {
     return { x: pA.x, y: pA.y, r: angle, l: length };
   }
 };
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var ParserFactory = require('./parsers/ParserFactory');
 var Stage         = require('./Stage');
 
@@ -913,7 +939,7 @@ module.exports = (function() {
 
   return Feynman;
 })();
-},{"./Stage":2,"./parsers/ParserFactory":10}],9:[function(require,module,exports){
+},{"./Stage":2,"./parsers/ParserFactory":11}],10:[function(require,module,exports){
 var StageStructure = require('./../StageStructure');
 var Klass = require('./../helpers/Klass');
 
@@ -1263,7 +1289,7 @@ module.exports = (function() {
 
   return LatexParser;
 })();
-},{"./../StageStructure":3,"./../helpers/Klass":6}],10:[function(require,module,exports){
+},{"./../StageStructure":3,"./../helpers/Klass":6}],11:[function(require,module,exports){
 var LatexParser = require('./LatexParser');
 
 module.exports = {
@@ -1276,28 +1302,29 @@ module.exports = {
     }
   }
 };
-},{"./LatexParser":9}],11:[function(require,module,exports){
+},{"./LatexParser":10}],12:[function(require,module,exports){
 var PointHelper = require('./../helpers/Point');
 var ArrayHelper = require('./../helpers/Array');
 var Bezier      = require('./../helpers/Bezier');
+var Label       = require('./../helpers/Label');
+
+var _defaults = {
+  type          : 'electron',
+  from          : { x: 0, y: 0 },
+  to            : { x: 0, y: 0 },
+  label         : '',
+  right         : false,
+  left          : false,
+  tension       : 1,
+  tag           : '',
+  color         : '#000',
+  bgColor       : null,
+  penWidth      : 2,
+  labelSide     : 'right',
+  labelDistance : 10
+};
 
 module.exports = {
-
-  _defaults: {
-    type          : 'electron',
-    from          : { x: 0, y: 0 },
-    to            : { x: 0, y: 0 },
-    label         : '',
-    right         : false,
-    left          : false,
-    tension       : 1,
-    tag           : '',
-    color         : '#000',
-    bgColor       : null,
-    penWidth      : 2,
-    labelSide     : 'right',
-    labelDistance : 10
-  },
 
   draw: function(canvas, options) {
 
@@ -1305,8 +1332,13 @@ module.exports = {
       return;
     }
 
+    var opts = {};
+    ArrayHelper.merge(opts, _defaults);
+    ArrayHelper.merge(opts, options);
+
     var ui       = canvas.group();
     var position = PointHelper.getPositionValues(options.from, options.to);
+    var angleRad = PointHelper.getAngle(opts.from, opts.to, true);
     var shape    = 'line';
     var arcDir   = true;
     var tension  = 2;
@@ -1318,13 +1350,17 @@ module.exports = {
     }
 
     if(options.type !== 'plain') {
-      this._drawArrow(ui, position.l, options.color ? options.color : this._defaults.color, options.type === 'antifermion');
+      this._drawArrow(ui, position.l, options.color ? options.color : _defaults.color, options.type === 'antifermion');
+    }
+
+    if(opts.label) {
+      var label = new Label(canvas, opts, angleRad);
     }
 
     ui
       .path(this.getPath(shape, options, tension))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .stroke({ width: options.penWidth ? options.penWidth : _defaults.penWidth, color: options.color ? options.color : _defaults.color })
       .scale(1, arcDir);
     ui
       .transform({
@@ -1377,28 +1413,29 @@ module.exports = {
       .fill(color);
   }
 };
-},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Point":7}],12:[function(require,module,exports){
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Label":7,"./../helpers/Point":8}],13:[function(require,module,exports){
 var PointHelper = require('./../helpers/Point');
 var ArrayHelper = require('./../helpers/Array');
 var Bezier      = require('./../helpers/Bezier');
+var Label       = require('./../helpers/Label');
+
+var _defaults = {
+  type          : 'gluon',
+  from          : { x: 0, y: 0 },
+  to            : { x: 0, y: 0 },
+  label         : '',
+  right         : false,
+  left          : false,
+  tension       : 1,
+  tag           : '',
+  color         : '#009933',
+  bgColor       : null,
+  penWidth      : 2,
+  labelSide     : 'right',
+  labelDistance : 10
+};
 
 module.exports = {
-
-  _defaults: {
-    type          : 'gluon',
-    from          : { x: 0, y: 0 },
-    to            : { x: 0, y: 0 },
-    label         : '',
-    right         : false,
-    left          : false,
-    tension       : 1,
-    tag           : '',
-    color         : '#009933',
-    bgColor       : null,
-    penWidth      : 2,
-    labelSide     : 'right',
-    labelDistance : 10
-  },
 
   draw: function(canvas, options) {
 
@@ -1406,22 +1443,31 @@ module.exports = {
       return;
     }
 
+    var opts = {};
+    ArrayHelper.merge(opts, _defaults);
+    ArrayHelper.merge(opts, options);
+
     var ui       = canvas.group();
-    var position = PointHelper.getPositionValues(options.from, options.to);
+    var position = PointHelper.getPositionValues(opts.from, opts.to);
+    var angleRad = PointHelper.getAngle(opts.from, opts.to, true);
     var shape    = 'line';
     var arcDir   = true;
     var tension  = 2;
 
-    if(options.left || options.right) {
+    if(opts.left || opts.right) {
       shape   = 'arc';
-      arcDir  = options.right !== 0 ? -1 : 1;
-      tension = options.right !== 0 ? options.right : options.left;
+      arcDir  = opts.right !== 0 ? -1 : 1;
+      tension = opts.right !== 0 ? opts.right : opts.left;
+    }
+
+    if(opts.label) {
+      var label = new Label(canvas, opts, angleRad);
     }
 
     ui
-      .path(this.getPath(shape, options, tension))
+      .path(this.getPath(shape, opts, tension))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .stroke({ width: opts.penWidth ? opts.penWidth : _defaults.penWidth, color: opts.color ? opts.color : _defaults.color })
       .scale(1, arcDir);
     ui
       .transform({
@@ -1506,28 +1552,29 @@ module.exports = {
     }
   }
 };
-},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Point":7}],13:[function(require,module,exports){
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Label":7,"./../helpers/Point":8}],14:[function(require,module,exports){
 var PointHelper = require('./../helpers/Point');
 var ArrayHelper = require('./../helpers/Array');
 var Bezier      = require('./../helpers/Bezier');
+var Label       = require('./../helpers/Label');
+
+var _defaults = {
+  type          : 'photon',
+  from          : { x: 0, y: 0 },
+  to            : { x: 0, y: 0 },
+  label         : '',
+  right         : false,
+  left          : false,
+  tension       : 1,
+  tag           : '',
+  color         : '#0066FF',
+  bgColor       : null,
+  penWidth      : 2,
+  labelSide     : 'right',
+  labelDistance : 15
+};
 
 module.exports = {
-
-  _defaults: {
-    type          : 'photon',
-    from          : { x: 0, y: 0 },
-    to            : { x: 0, y: 0 },
-    label         : '',
-    right         : false,
-    left          : false,
-    tension       : 1,
-    tag           : '',
-    color         : '#0066FF',
-    bgColor       : null,
-    penWidth      : 2,
-    labelSide     : 'right',
-    labelDistance : 10
-  },
 
   draw: function(canvas, options) {
 
@@ -1535,32 +1582,31 @@ module.exports = {
       return;
     }
 
+    var opts = {};
+    ArrayHelper.merge(opts, _defaults);
+    ArrayHelper.merge(opts, options);
+
     var ui       = canvas.group();
-    var position = PointHelper.getPositionValues(options.to, options.from);
+    var position = PointHelper.getPositionValues(opts.to, opts.from);
+    var angleRad = PointHelper.getAngle(opts.from, opts.to, true);
     var shape    = 'line';
     var arcDir   = 1;
     var tension  = 2;
 
-    if(options.left || options.right) {
+    if(opts.left || opts.right) {
       shape   = 'arc';
-      arcDir  = options.right !== 0 ? -1 : 1;
-      tension = options.right !== 0 ? options.right : options.left;
+      arcDir  = opts.right !== 0 ? -1 : 1;
+      tension = opts.right !== 0 ? opts.right : opts.left;
     }
 
-    if(options.label) {
-      var label = canvas.foreignObject(100,100).attr({ id: options.id });
-      label.appendChild('div', { id: 'label-' + options.id, innerText: options.label });
-      label.move((options.to.x + options.from.x) / 2 + this._defaults.labelDistance, (options.to.y + options.from.y) / 2 + 10);
-      if(options.labelSide === 'left') {
-        var e = document.getElementById('label-' + options.id);
-        e.style.textAlign  = 'right';
-      }
+    if(opts.label) {
+      var label = new Label(canvas, opts, angleRad);
     }
 
     ui
-      .path(this.getPath(shape, options, tension))
+      .path(this.getPath(shape, opts, tension))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .stroke({ width: opts.penWidth ? opts.penWidth : _defaults.penWidth, color: opts.color ? opts.color : _defaults.color })
       .scale(1, arcDir);
     ui
       .transform({
@@ -1636,4 +1682,4 @@ module.exports = {
     }
   }
 };
-},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Point":7}]},{},[8])
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Label":7,"./../helpers/Point":8}]},{},[9])

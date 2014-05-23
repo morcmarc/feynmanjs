@@ -1,24 +1,25 @@
 var PointHelper = require('./../helpers/Point');
 var ArrayHelper = require('./../helpers/Array');
 var Bezier      = require('./../helpers/Bezier');
+var Label       = require('./../helpers/Label');
+
+var _defaults = {
+  type          : 'gluon',
+  from          : { x: 0, y: 0 },
+  to            : { x: 0, y: 0 },
+  label         : '',
+  right         : false,
+  left          : false,
+  tension       : 1,
+  tag           : '',
+  color         : '#009933',
+  bgColor       : null,
+  penWidth      : 2,
+  labelSide     : 'right',
+  labelDistance : 10
+};
 
 module.exports = {
-
-  _defaults: {
-    type          : 'gluon',
-    from          : { x: 0, y: 0 },
-    to            : { x: 0, y: 0 },
-    label         : '',
-    right         : false,
-    left          : false,
-    tension       : 1,
-    tag           : '',
-    color         : '#009933',
-    bgColor       : null,
-    penWidth      : 2,
-    labelSide     : 'right',
-    labelDistance : 10
-  },
 
   draw: function(canvas, options) {
 
@@ -26,22 +27,31 @@ module.exports = {
       return;
     }
 
+    var opts = {};
+    ArrayHelper.merge(opts, _defaults);
+    ArrayHelper.merge(opts, options);
+
     var ui       = canvas.group();
-    var position = PointHelper.getPositionValues(options.from, options.to);
+    var position = PointHelper.getPositionValues(opts.from, opts.to);
+    var angleRad = PointHelper.getAngle(opts.from, opts.to, true);
     var shape    = 'line';
     var arcDir   = true;
     var tension  = 2;
 
-    if(options.left || options.right) {
+    if(opts.left || opts.right) {
       shape   = 'arc';
-      arcDir  = options.right !== 0 ? -1 : 1;
-      tension = options.right !== 0 ? options.right : options.left;
+      arcDir  = opts.right !== 0 ? -1 : 1;
+      tension = opts.right !== 0 ? opts.right : opts.left;
+    }
+
+    if(opts.label) {
+      var label = new Label(canvas, opts, angleRad);
     }
 
     ui
-      .path(this.getPath(shape, options, tension))
+      .path(this.getPath(shape, opts, tension))
       .fill('none')
-      .stroke({ width: options.penWidth ? options.penWidth : this._defaults.penWidth, color: options.color ? options.color : this._defaults.color })
+      .stroke({ width: opts.penWidth ? opts.penWidth : _defaults.penWidth, color: opts.color ? opts.color : _defaults.color })
       .scale(1, arcDir);
     ui
       .transform({

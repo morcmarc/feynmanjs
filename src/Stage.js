@@ -200,26 +200,19 @@ module.exports = (function () {
           if(!cPoint.label) {
             return;
           }
+
+          var cx = that.data.width  / 2;
+          var cy = that.data.height / 2;
+          var nx = cPoint.x - cx;
+          var ny = cPoint.y - cy;
+          var dt = Math.sqrt( nx * nx + ny * ny );
+          nx /= dt * -0.1;
+          ny /= dt * -0.1;
+
           var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
-          var xOffset = 0;
-          var yOffset = 0;
-          var e = document.getElementById('label-' + cPoint.id);
-          switch(cPoint.side) {
-            case 'left':
-              xOffset = -15;
-              break;
-            case 'right':
-              xOffset = 3;
-              break;
-            case 'top':
-              yOffset = -15;
-              break;
-            case 'bottom':
-              yOffset = 3;
-              break;
-          }
-          label.move(cPoint.x + xOffset, cPoint.y + yOffset);
+          
+          label.move(cPoint.x + nx, cPoint.y + ny);
         });
       }
     }

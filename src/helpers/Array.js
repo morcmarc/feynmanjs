@@ -1,32 +1,37 @@
 module.exports = {
 
-  /*
-  * Recursively merge properties of two objects 
-  */
-  merge: function (obj1, obj2) {
-
-    for(var p in obj2) {
-
-      if(obj2.hasOwnProperty(p)) {
-
-        try {
-          // Property in destination object set; update its value.
-          if ( obj2[p].constructor === Object ) {
-            obj1[p] = this.merge(obj1[p], obj2[p]);
-
-          } else {
-            obj1[p] = obj2[p] && obj1[p] ? obj2[p] : obj1[p];
-
-          }
-
-        } catch(e) {
-          // Property in destination object not set; create it and set its value.
-          obj1[p] = obj2[p];
-
-        }
-      }
+  merge: function(target, source) {
+        
+    /* Merges two (or more) objects,
+       giving the last one precedence */
+    
+    if ( typeof target !== 'object' ) {
+      target = {};
     }
-
-    return obj1;
+    
+    for (var property in source) {
+        
+      if ( source.hasOwnProperty(property) ) {
+          
+        var sourceProperty = source[ property ];
+          
+        if ( typeof sourceProperty === 'object' ) {
+          target[ property ] = this.merge( target[ property ], sourceProperty );
+          continue;
+        }
+        
+        if(sourceProperty !== undefined) {
+          target[ property ] = sourceProperty;
+        }
+          
+      }
+      
+    }
+    
+    for (var a = 2, l = arguments.length; a < l; a++) {
+      this.merge(target, arguments[a]);
+    }
+    
+    return target;
   }
 };
