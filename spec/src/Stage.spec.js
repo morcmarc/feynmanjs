@@ -2,21 +2,21 @@ var Stage = require('./../../src/Stage');
 var ParserFactory = require('./../../src/parsers/ParserFactory');
 var SVG = function() {
   return {
-    size      : function(){ return this; },
-    group     : function(){ return this; },
-    text      : function(){ return this; },
-    font      : function(){ return this; },
-    translate : function(){ return this; },
-    circle    : function(){ return this; },
-    fill      : function(){ return this; },
-    polygon   : function(){ return this; },
-    path      : function(){ return this; },
-    stroke    : function(){ return this; },
-    transform : function(){ return this; },
-    scale     : function(){ return this; },
+    size          : function(){ return this; },
+    group         : function(){ return this; },
+    text          : function(){ return this; },
+    font          : function(){ return this; },
+    translate     : function(){ return this; },
+    circle        : function(){ return this; },
+    fill          : function(){ return this; },
+    polygon       : function(){ return this; },
+    path          : function(){ return this; },
+    stroke        : function(){ return this; },
+    transform     : function(){ return this; },
+    scale         : function(){ return this; },
     foreignObject : function(){ return this; },
-    attr      : function(){ return this; },
-    appendChild : function(){ return this; }
+    attr          : function(){ return this; },
+    appendChild   : function(){ return this; }
   };
 };
 

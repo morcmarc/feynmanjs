@@ -201,18 +201,19 @@ module.exports = (function () {
             return;
           }
 
-          var cx = that.data.width  / 2;
-          var cy = that.data.height / 2;
-          var nx = cPoint.x - cx;
-          var ny = cPoint.y - cy;
-          var dt = Math.sqrt( nx * nx + ny * ny );
-          nx /= dt * -0.1;
-          ny /= dt * -0.1;
+          var cx  = that.data.width  / 2;
+          var cy  = that.data.height / 2;
+          var nx  = cPoint.x - cx;
+          var ny  = cPoint.y - cy;
+          var a   = Math.atan2(ny, nx);
+          
+          nx *= 1.10;
+          ny *= 1.10;
 
           var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           
-          label.move(cPoint.x + nx, cPoint.y + ny);
+          label.move(cx + nx, cy + ny);
         });
       }
     }

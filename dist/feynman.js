@@ -224,18 +224,19 @@ module.exports = (function () {
             return;
           }
 
-          var cx = that.data.width  / 2;
-          var cy = that.data.height / 2;
-          var nx = cPoint.x - cx;
-          var ny = cPoint.y - cy;
-          var dt = Math.sqrt( nx * nx + ny * ny );
-          nx /= dt * -0.1;
-          ny /= dt * -0.1;
+          var cx  = that.data.width  / 2;
+          var cy  = that.data.height / 2;
+          var nx  = cPoint.x - cx;
+          var ny  = cPoint.y - cy;
+          var a   = Math.atan2(ny, nx);
+          
+          nx *= 1.10;
+          ny *= 1.10;
 
           var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           
-          label.move(cPoint.x + nx, cPoint.y + ny);
+          label.move(cx + nx, cy + ny);
         });
       }
     }
@@ -850,6 +851,10 @@ module.exports = function(canvas, opts, angle) {
   var label = canvas.foreignObject().attr({ id: opts.id });
   label.appendChild('span', { id: 'label-' + opts.id, innerText: opts.label });
   var e = document.getElementById('label-' + opts.id);
+  if(!e) {
+    return;
+  }
+
   e.style.textAlign = 'center';
 
   var nx = opts.to.x - opts.from.x;
@@ -859,10 +864,10 @@ module.exports = function(canvas, opts, angle) {
   nx /= dt * (1 / opts.labelDistance);
   ny /= dt * (1 / opts.labelDistance);
 
-  var n1x = -ny + ((opts.to.x + opts.from.x) / 2) - Math.sin(angle) * e.offsetWidth  / 2;
-  var n1y =  nx + ((opts.to.y + opts.from.y) / 2) - Math.cos(angle) * e.offsetHeight / 2 - Math.sin(angle) * e.offsetHeight / 2;
-  var n2x =  ny + ((opts.to.x + opts.from.x) / 2) - Math.cos(angle) * e.offsetWidth  / 8;
-  var n2y = -nx + ((opts.to.y + opts.from.y) / 2) - Math.cos(angle) * e.offsetHeight / 2 - Math.sin(angle) * e.offsetHeight / 2;
+  var n1x = -ny + ((opts.to.x + opts.from.x) / 2);
+  var n1y =  nx + ((opts.to.y + opts.from.y) / 2);
+  var n2x =  ny + ((opts.to.x + opts.from.x) / 2);
+  var n2y = -nx + ((opts.to.y + opts.from.y) / 2);
 
   if(opts.labelSide === 'left') {
     label.move(n1x, n1y);
