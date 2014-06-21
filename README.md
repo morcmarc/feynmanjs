@@ -1,20 +1,24 @@
 #Feynman
 ========
 
-**A simple cross-browser Javascript library for generating (animated) Feynman diagrams using SVG.**
+Cross-browser Javascript library for drawing Feynman diagrams using SVG and HTML5, based on feynMF [1].
+
+####Disclaimer
+
+The library is by no means ready yet to be used in "production". Check out jQuery.feyn [2] for a reliable HTML5 solution.
 
 ##Usage
 
 ###Dependencies
 
-- [SVG.js](http://www.svgjs.com/) - Included with source code
+- [SVG.js](http://www.svgjs.com/) - *for now, see roadmap*
 
-###Latex Example
+###Latex (feynMF) flavour example
 
 **HTML:**
 
 ```html
-<div id="feynman" style="width: 400px; height: 400px; background-color: #EEE;"></div>
+<div id="annihilation"></div>
 ```
 
 **JavaScript:**
@@ -38,24 +42,40 @@ var annihilation = {
   ]
 };
 
-feynman.draw("feynman", annihilation);
+feynman.draw("annihilation", annihilation);
 ```
+
+You can find more examples in the examples folder.
 
 ##Features
 
-Coming soon...
+###Auto-layout
+
+The library is based on feynMF [1] and it implements most of its features including the auto-layout system. Given a simple instruction set and description of participants in a system the engine will attempt to lay out the diagram as nicely as possible without any manual intervention. Currently there is no option to position elements by hand but it is top priority.
+
+###Parsers
+
+The library allows easy implementation of different parser engines through a unified stage class. At the moment only the feynMF language is supported.
+
+###Labels
+
+**Experimental**. Labels are in development, but the feature is already accessible for parsers. Check out examples.
 
 ##Roadmap
 
-Coming soon...
+- Hammer out issues in auto-layout
+- Labels
+- Implement API to allow after-draw handling of elements (i.e.: fine tuning position of vertices, propagators etc.)
+- Remove svg.js dependency
+- Add support for non MathJax labels (i.e.: unicode labels)
+- Add option to turn off auto-layout and allow users to position elements through configuration
+- Animations: for educational purposes, to help easier understanding of particle behaviour
 
-##Contributing
+##Development
 
-The library relies on contributions of the open-source community! To submit a fix or an enhancement fork the repository, checkout the 'development' branch, make your changes, add your name to the Contributors section in README.md, and send a pull request!
+###Contributing
 
-###Dependencies
-
-- [Jasmine 2.0](https://github.com/pivotal/jasmine) - Included with source code
+To submit a fix or an enhancement fork the repository, checkout the 'development' branch, add your name to the Contributors section in README.md, and send a pull request!
 
 ###Building
 
@@ -75,16 +95,20 @@ To run test suite from command line type:
 
 `grunt test`
 
-Alternatively you can run it in the browser at '/spec/'. There is also a grunt task with live reload:
+Alternatively you can run it in the browser at `/spec`. There is also a grunt task with live reload:
 
 `grunt watch:test`
 
 ##References
 
-\[1\] [http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf](http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf)
+\[1\] [http://photino.github.io/jquery-feyn/index.html](http://photino.github.io/jquery-feyn/index.html)
+
+\[2\] [http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf](http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf)
 
 ---
 
-[Marcell Jusztin](mailto:hello@morcmarc.com)
+This software is licensed under the MIT License.
 
-Copyright (c) 2014 Marcell Jusztin. This software is licensed under the MIT License.
+##Contributors
+
+- [Marcell Jusztin](mailto:hello@morcmarc.com)
