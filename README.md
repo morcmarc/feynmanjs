@@ -1,7 +1,8 @@
 #Feynman
-========
 
 Cross-browser Javascript library for drawing Feynman diagrams using SVG and HTML5, based on feynMF [1].
+
+![alt tag](https://raw.github.com/morcmarc/feynmanjs/master/examples/ex1.png)
 
 ####Disclaimer
 
