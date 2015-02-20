@@ -36,7 +36,7 @@ module.exports = (function () {
   Stage.prototype.draw = function() {
 
     _drawCanvas.bind(this)();
-    // _drawTitle.bind(this)();
+    _drawTitle.bind(this)();
     _drawPropagators.bind(this)();
     _drawVertices.bind(this)();
     _drawControlPoints.bind(this)();
@@ -177,12 +177,13 @@ module.exports = (function () {
   var _drawTitle = function() {
 
     var ui = this.canvas.group();
-    ui.text(this.data.title).font({
+    var t  = ui.text(this.data.title).font({
       family : 'Georgia',
-      size   :  14,
+      size   :  12,
       style  : 'italic',
-      anchor : 'left'
-    }).translate(10, 10);
+      anchor : 'middle',
+    })
+    t.translate(this.data.width/2, this.data.height - 30);
   };
 
   var _drawControlPoints = function() {
@@ -279,6 +280,9 @@ module.exports = (function () {
         this.data.cPoints[key].forEach(function(cp) {
           cp[coordA] = coeff === -1 ? sideB - paddingA : paddingA;
           cp[coordB] = i * s + paddingA;
+          // Offset coordinates to fit a nice curve instead of a hard line
+          // Farther away from the "center" we are the more we push the CP to the left or down.
+          cp[coordA] += Math.abs((sideA/2) - cp[coordB]) * coeff * 0.1;
           i++;
         });
       }
@@ -315,11 +319,14 @@ module.exports = (function () {
       var counter = vertices.length === 1 ? 1 : 0;
 
       vertices.forEach(function(v) {
-
         v[coordA] = sA * (level) + paddingA;
         v[coordB] = sB * counter + paddingB;
+        // Vertices on the same level "attract" each other, pulling the image tighter.
+        v[coordA] += (sideA/2 - v[coordA]) * 0.1;
+        v[coordB] += (sideB/2 - v[coordB]) * 0.1;
         counter++;
       });
+
       level++;
     }
 

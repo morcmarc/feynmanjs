@@ -164,13 +164,13 @@ describe('Stage', function() {
 
       stage.draw();
       
-      expect(stage.getControlPointById('i1').x).toEqual(30);
-      expect(stage.getControlPointById('i2').x).toEqual(30);
+      expect(stage.getControlPointById('i1').x).toEqual(34.5);
+      expect(stage.getControlPointById('i2').x).toEqual(34.5);
       expect(stage.getControlPointById('i1').y).toEqual(30);
       expect(stage.getControlPointById('i2').y).toEqual(120);
 
-      expect(stage.getControlPointById('o1').x).toEqual(170);
-      expect(stage.getControlPointById('o2').x).toEqual(170);
+      expect(stage.getControlPointById('o1').x).toEqual(165.5);
+      expect(stage.getControlPointById('o2').x).toEqual(165.5);
       expect(stage.getControlPointById('o1').y).toEqual(30);
       expect(stage.getControlPointById('o2').y).toEqual(120);
     });
@@ -184,13 +184,13 @@ describe('Stage', function() {
       
       expect(stage.getControlPointById('i1').x).toEqual(40);
       expect(stage.getControlPointById('i2').x).toEqual(160);
-      expect(stage.getControlPointById('i1').y).toEqual(40);
-      expect(stage.getControlPointById('i2').y).toEqual(40);
+      expect(stage.getControlPointById('i1').y).toEqual(46);
+      expect(stage.getControlPointById('i2').y).toEqual(46);
 
       expect(stage.getControlPointById('o1').x).toEqual(40);
       expect(stage.getControlPointById('o2').x).toEqual(160);
-      expect(stage.getControlPointById('o1').y).toEqual(260);
-      expect(stage.getControlPointById('o2').y).toEqual(260);
+      expect(stage.getControlPointById('o1').y).toEqual(254);
+      expect(stage.getControlPointById('o2').y).toEqual(254);
     });
 
     it('sets vertex distances for simple diagrams (no loops or cycles)', function (done) {
@@ -214,9 +214,9 @@ describe('Stage', function() {
 
     it('sets vertex positions correctly for Left-Right diagrams', function (done) {
       
-      expect(Math.ceil(stage.getVertexById('v1').x)).toEqual(77);
+      expect(Math.ceil(stage.getVertexById('v1').x)).toEqual(79);
       expect(Math.ceil(stage.getVertexById('v1').y)).toEqual(75);
-      expect(Math.ceil(stage.getVertexById('v2').x)).toEqual(124);
+      expect(Math.ceil(stage.getVertexById('v2').x)).toEqual(121);
       expect(Math.ceil(stage.getVertexById('v2').y)).toEqual(75);
     });
 
@@ -228,9 +228,9 @@ describe('Stage', function() {
       stage.draw();
 
       expect(Math.ceil(stage.getVertexById('v1').x)).toEqual(100);
-      expect(Math.ceil(stage.getVertexById('v1').y)).toEqual(115);
+      expect(Math.ceil(stage.getVertexById('v1').y)).toEqual(119);
       expect(Math.ceil(stage.getVertexById('v2').x)).toEqual(100);
-      expect(Math.ceil(stage.getVertexById('v2').y)).toEqual(185);
+      expect(Math.ceil(stage.getVertexById('v2').y)).toEqual(182);
     });
   });
 });

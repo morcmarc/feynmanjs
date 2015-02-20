@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Electron = require('./particles/Electron');
 var Photon   = require('./particles/Photon');
 var Gluon    = require('./particles/Gluon');
@@ -59,7 +59,7 @@ module.exports = (function () {
   Stage.prototype.draw = function() {
 
     _drawCanvas.bind(this)();
-    // _drawTitle.bind(this)();
+    _drawTitle.bind(this)();
     _drawPropagators.bind(this)();
     _drawVertices.bind(this)();
     _drawControlPoints.bind(this)();
@@ -200,12 +200,13 @@ module.exports = (function () {
   var _drawTitle = function() {
 
     var ui = this.canvas.group();
-    ui.text(this.data.title).font({
+    var t  = ui.text(this.data.title).font({
       family : 'Georgia',
-      size   :  14,
+      size   :  12,
       style  : 'italic',
-      anchor : 'left'
-    }).translate(10, 10);
+      anchor : 'middle',
+    })
+    t.translate(this.data.width/2, this.data.height - 30);
   };
 
   var _drawControlPoints = function() {
@@ -302,6 +303,9 @@ module.exports = (function () {
         this.data.cPoints[key].forEach(function(cp) {
           cp[coordA] = coeff === -1 ? sideB - paddingA : paddingA;
           cp[coordB] = i * s + paddingA;
+          // Offset coordinates to fit a nice curve instead of a hard line
+          // Farther away from the "center" we are the more we push the CP to the left or down.
+          cp[coordA] += Math.abs((sideA/2) - cp[coordB]) * coeff * 0.1;
           i++;
         });
       }
@@ -338,11 +342,14 @@ module.exports = (function () {
       var counter = vertices.length === 1 ? 1 : 0;
 
       vertices.forEach(function(v) {
-
         v[coordA] = sA * (level) + paddingA;
         v[coordB] = sB * counter + paddingB;
+        // Vertices on the same level "attract" each other, pulling the image tighter.
+        v[coordA] += (sideA/2 - v[coordA]) * 0.1;
+        v[coordB] += (sideB/2 - v[coordB]) * 0.1;
         counter++;
       });
+
       level++;
     }
 
@@ -1687,4 +1694,4 @@ module.exports = {
     }
   }
 };
-},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Label":7,"./../helpers/Point":8}]},{},[9])
+},{"./../helpers/Array":4,"./../helpers/Bezier":5,"./../helpers/Label":7,"./../helpers/Point":8}]},{},[9]);

@@ -33,12 +33,13 @@
               'fmfbottom{o1,o2}',
               'fmf{fermion}{i2,v1,i1}',
               'fmf{fermion}{o2,v2,o1}',
-              "fmf{photon,label=$A_\\mu(x)A_\\nu(x')$}{v1,v2}",
+              // "fmf{photon,label=$A_\\mu(x)A_\\nu(x')$}{v1,v2}",
+              "fmf{photon}{v1,v2}",
               'fmfdot{v1,v2}',
-              "fmflabel{i2}{$\\psi(x')$}",
-              "fmflabel{i1}{$\\overline{\\psi}(x')$}",
-              "fmflabel{o2}{$\\psi(x)$}",
-              "fmflabel{o1}{$\\overline{\\psi}(x)$}",
+              // "fmflabel{i2}{$\\psi(x')$}",
+              // "fmflabel{i1}{$\\overline{\\psi}(x')$}",
+              // "fmflabel{o2}{$\\psi(x)$}",
+              // "fmflabel{o1}{$\\overline{\\psi}(x)$}",
           ]
         };
         var resonant = {
@@ -68,12 +69,8 @@
               'fmfrightn{2}',
               'fmf{fermion}{o1,v2,v1,i1}',
               'fmf{fermion}{i2,v3,v4,o2}',
-              'fmf{photon,label=$W^+$,side=left}{v1,v3}',
-              'fmf{photon,label=$W^-$}{v2,v4}',
-              'fmflabel{i1}{$d$}',
-              'fmflabel{i2}{$\\overline{b}$}',
-              'fmflabel{o1}{$b$}',
-              'fmflabel{o2}{$\\overline{d}$}'
+              'fmf{photon}{v1,v3}',
+              'fmf{photon}{v2,v4}'
           ]
         };
         var penguin = {
@@ -127,12 +124,12 @@
           diagram: [
               'fmfleft{i1,i2}',
               'fmfright{o1,o2,o3}',
-              'fmf{fermion,label=$f$}{i1,v1,o1}',
-              'fmf{fermion,label=$f$}{i2,v2,o3}',
+              'fmf{fermion}{i1,v1,o1}',
+              'fmf{fermion}{i2,v2,o3}',
               'fmf{photon}{v1,v3,v2}',
               'fmf{photon}{v3,o2}',
-              'fmflabel{o2}{$H$}',
-              'fmflabel{v3}{$W,Z$}'
+              // 'fmflabel{o2}{$H$}',
+              // 'fmflabel{v3}{$W,Z$}'
           ]
         };
         var higgs4 = {
@@ -143,24 +140,25 @@
           diagram: [
               'fmfleft{i1,i2}',
               'fmfright{o1}',
+              'fmftop{t1}',
+              'fmfbottom{b1}',
               'fmf{gluon}{i1,v1}',
               'fmf{gluon}{i2,v2}',
-              'fmf{antifermion}{v3,v1,v4,v2,v5}',
-              'fmf{photon}{v4,o1}',
+              'fmf{antifermion}{t1,v1,v4,v2,b1}',
+              'fmf{photon}{v4,o1}'
           ]
         };
     </script>
 
-    <div id="feynman1" style = "width:280px; height:200px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman2" style = "width:270px; height:200px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman3" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman4" style = "width:250px; height:200px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman5" style = "width:300px; height:200px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-
-    <div id="higgs1" style = "width:250px; height:250px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs2" style = "width:250px; height:250px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs3" style = "width:250px; height:250px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs4" style = "width:250px; height:250px; background-color: #EEE; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="feynman1" style = "width:280px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="feynman2" style = "width:270px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="feynman3" style = "width:300px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="feynman4" style = "width:250px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="feynman5" style = "width:300px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="higgs1" style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="higgs2" style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="higgs3" style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div id="higgs4" style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
 
     <script src="lib/svg.js/svg.min.js"></script>
     <script src="lib/svg.js/svg.foreign.js"></script>
@@ -187,7 +185,6 @@
         feynman.draw("feynman3", resonant);
         feynman.draw("feynman4", box);
         feynman.draw("feynman5", penguin);
-
         feynman.draw("higgs1", higgs1);
         feynman.draw("higgs2", higgs2);
         feynman.draw("higgs3", higgs3);
