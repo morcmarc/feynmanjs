@@ -60,10 +60,13 @@ The library allows easy implementation of different parser engines through a uni
 
 ###Labels
 
-**Experimental**. Labels are in development, but the feature is already accessible for parsers. Check out examples.
+**Experimental**. The current label positioning function is dodgy, there is too many variables to calculate with and MathJax is
+unreliable. However it places labels good enough so that they can be fine tuned by hand using the `labelx` and `labely` attributes (see examples).
 
 ##Roadmap
 
+- Add more line types e.g.: dashed, dotted
+- Add more vertex types, i.e.: blobs
 - Implement API to allow after-draw handling of elements (i.e.: fine tuning position of vertices, propagators etc.)
 - Remove svg.js dependency
 - Add support for non MathJax labels (i.e.: unicode labels)
