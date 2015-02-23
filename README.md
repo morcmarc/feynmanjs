@@ -20,6 +20,10 @@ The library is by no means ready yet to be used in "production". Check out jQuer
 
 ```html
 <div id="annihilation"></div>
+...
+<script src="../path/to/svg.min.js"></script>
+<script src="../path/to/svg.foreign.js"></script>
+<script src="../path/to/feynman.min.js"></script>
 ```
 
 **JavaScript:**
