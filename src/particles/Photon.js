@@ -14,7 +14,7 @@ var _defaults = {
   tag           : '',
   color         : '#0066FF',
   bgColor       : null,
-  penWidth      : 2,
+  penWidth      : 2.5,
   labelSide     : 'right',
   labelDistance : 15
 };

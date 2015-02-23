@@ -1,14 +1,18 @@
 <html>
   <head>
-    
+    <title>FeynmanJS &mdash; Examples</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   </head>
   <body>
 
     <script>
         var annihilation = {
           title      : 'E-P Annihilation',
-          width      : 250,
-          height     : 200,
+          width      : 400,
+          height     : 320,
           lang       : 'latex',
           diagram    : [
               'fmfleft{i1,i2}',
@@ -25,8 +29,8 @@
         };
         var annihilationRev = {
           title      : 'E-P Annihilation',
-          width      : 250,
-          height     : 200,
+          width      : 400,
+          height     : 400,
           lang       : 'latex',
           diagram: [
               'fmftop{i1,i2}',
@@ -44,8 +48,8 @@
         };
         var resonant = {
           title      : 'Resonant t-channel contribution',
-          width      : 300,
-          height     : 200,
+          width      : 400,
+          height     : 320,
           lang       : 'latex',
           diagram: [
               'fmfpen{thin}',
@@ -66,8 +70,8 @@
         };
         var box = {
           title      : 'Box diagram',
-          width      : 250,
-          height     : 200,
+          width      : 400,
+          height     : 270,
           lang       : 'latex',
           diagram: [
               'fmfleftn{2}',
@@ -84,8 +88,8 @@
         };
         var penguin = {
           title      : 'Penguin',
-          width      : 300,
-          height     : 200,
+          width      : 400,
+          height     : 300,
           lang       : 'latex',
           diagram: [
               'fmfleftn{4}',
@@ -106,8 +110,8 @@
         };
         var higgs1 = {
           title      : 'Gluon fusion',
-          width      : 250,
-          height     : 250,
+          width      : 400,
+          height     : 300,
           lang       : 'latex',
           diagram: [
               'fmfleft{i1,i2}',
@@ -123,8 +127,8 @@
         };
         var higgs2 = {
           title      : 'Higgs Strahlung',
-          width      : 250,
-          height     : 250,
+          width      : 400,
+          height     : 300,
           lang       : 'latex',
           diagram: [
               'fmfleft{i1,i2}',
@@ -136,8 +140,8 @@
         };
         var higgs3 = {
           title      : 'Vector boson fusion',
-          width      : 250,
-          height     : 250,
+          width      : 400,
+          height     : 300,
           lang       : 'latex',
           diagram: [
               'fmfleft{i1,i2}',
@@ -150,8 +154,8 @@
         };
         var higgs4 = {
           title      : 'Top fusion',
-          width      : 300,
-          height     : 250,
+          width      : 400,
+          height     : 300,
           lang       : 'latex',
           diagram: [
               'fmfleft{i1,i2}',
@@ -166,15 +170,157 @@
         };
     </script>
 
-    <div id="feynman1" style = "width:280px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman2" style = "width:270px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman3" style = "width:300px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman4" style = "width:250px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="feynman5" style = "width:300px; height:200px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs1"   style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs2"   style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs3"   style = "width:250px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
-    <div id="higgs4"   style = "width:300px; height:250px; float: left; margin-right: 10px; margin-bottom: 10px;"></div>
+    <div class="container">
+      <h1>Examples</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <pre>
+var annihilation = {
+  title      : 'E-P Annihilation',
+  lang       : 'latex',
+  width      : 400,
+  height     : 320,
+  diagram    : [
+    'fmfleft{i1,i2}',
+    'fmfright{o1,o2}',
+    'fmf{fermion}{i2,v1,i1}',
+    'fmf{fermion}{o2,v2,o1}',
+    'fmf{photon,label=$\\gamma,Z^0$,labelx=-12,labely=-15}{v1,v2}',
+    'fmflabel{i1,labelx=-10,labely=-20}{$e^+$}',
+    'fmflabel{i2,labelx=-10}{$e^-$}',
+    'fmflabel{o1,labelx=0,labely=-15}{$e^-,\\mu^-$}',
+    'fmflabel{o2,labelx=0,labely=-5}{$e^+,\\mu^+$}',
+    'fmfdot{v1,v2}'
+  ]
+};
+          </pre>
+        </div>
+        <div class="col-md-6">
+          <div id="feynman1"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre>
+var annihilationRev = {
+  title      : 'E-P Annihilation',
+  width      : 400,
+  height     : 400,
+  lang       : 'latex',
+  diagram: [
+    'fmftop{i1,i2}',
+    'fmfbottom{o1,o2}',
+    'fmf{fermion}{i2,v1,i1}',
+    'fmf{fermion}{o2,v2,o1}',
+    "fmf{photon,label=$A_\\mu(x)A_\\nu(x')$,labely=-10}{v1,v2}",
+    "fmf{photon}{v1,v2}",
+    'fmfdot{v1,v2}',
+    "fmflabel{i2,labelx=0,labely=-20}{$\\psi(x')$}",
+    "fmflabel{i1,labely=-23,labelx=-27}{$\\overline{\\psi}(x')$}",
+    "fmflabel{o2}{$\\psi(x)$}",
+    "fmflabel{o1,labelx=-27,labely=-4}{$\\overline{\\psi}(x)$}",
+  ]
+};
+          </pre>
+        </div>
+        <div class="col-md-6">
+          <div id="feynman2"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre>
+var resonant = {
+  title      : 'Resonant t-channel contribution',
+  width      : 400,
+  height     : 320,
+  lang       : 'latex',
+  diagram: [
+    'fmfpen{thin}',
+    'fmfleft{i1,i2}',
+    'fmfright{o1,o2,o3,o4}',
+    'fmf{antifermion}{i1,v1,v2,i2}',
+    'fmf{photon}{v1,v3}',
+    'fmf{fermion}{o1,v3,o2}',
+    'fmf{photon}{v2,v4}',
+    'fmf{fermion}{o4,v4,o3}',
+    'fmflabel{i1,labelx=-10,labely=-10}{$e^+$}',
+    'fmflabel{i2,labelx=-10}{$e^-$}',
+    'fmflabel{o1,labely=-5}{$\\overline{c}$}',
+    'fmflabel{o2}{$s$}',
+    'fmflabel{o3,labely=-5}{$\\nu_\\mu$}',
+    'fmflabel{o4,labely=-10}{$\\mu^+$}'
+  ]
+};
+          </pre>
+        </div>
+        <div class="col-md-6">
+          <div id="feynman3"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre>
+var box = {
+  title      : 'Box diagram',
+  width      : 400,
+  height     : 270,
+  lang       : 'latex',
+  diagram: [
+    'fmfleftn{2}',
+    'fmfrightn{2}',
+    'fmf{fermion}{o1,v2,v1,i1}',
+    'fmf{fermion}{i2,v3,v4,o2}',
+    'fmf{photon,label=$W^+$,side=left,labelx=-20,labely=-10}{v1,v3}',
+    'fmf{photon,label=$W^-$,labelx=-5,labely=-8}{v2,v4}',
+    'fmflabel{i1,labelx=-10,labely=-10}{$d$}',
+    'fmflabel{i2,labelx=-10}{$\\overline{b}$}',
+    'fmflabel{o1,labely=-5}{$b$}',
+    'fmflabel{o2}{$\\overline{d}$}',
+  ]
+};
+          </pre>
+        </div>
+        <div class="col-md-6">
+          <div id="feynman4"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre>
+var penguin = {
+  title      : 'Penguin',
+  width      : 400,
+  height     : 300,
+  lang       : 'latex',
+  diagram: [
+    'fmfleftn{4}',
+    'fmfrightn{4}',
+    'fmf{antifermion}{i1,v1*,v2*,v3*,o1}',
+    'fmf{gluon,left=4,label=$g$}{v2*,v4}',
+    'fmf{photon,left=2.1,tension=0,labelx=-15,labely=-10,label=$\\overline{u}\\,\\overline{c}\\,\\overline{t}$}{v1*,v3*}',
+    'fmf{antifermion}{o2,v4,o3}',
+    'fmf{fermion}{i4,o4}',
+    'fmfdot{v1*,v2*,v3*,v4}',
+    'fmflabel{i4}{$d$}',
+    'fmflabel{o4}{$d$}',
+    'fmflabel{o2}{$u$}',
+    'fmflabel{o3}{$\\overline{u}$}',
+    'fmflabel{i1}{$\\overline{b}$}',
+    'fmflabel{o1}{$\\overline{s}$}'
+  ]
+};
+          </pre>
+        </div>
+        <div class="col-md-6">
+          <div id="feynman5"></div>
+        </div>
+      </div>
+    </div>
 
     <script src="lib/svg.js/svg.min.js"></script>
     <script src="lib/svg.js/svg.foreign.js"></script>
@@ -201,10 +347,10 @@
         feynman.draw("feynman3", resonant);
         feynman.draw("feynman4", box);
         feynman.draw("feynman5", penguin);
-        feynman.draw("higgs1",   higgs1);
-        feynman.draw("higgs2",   higgs2);
-        feynman.draw("higgs3",   higgs3);
-        feynman.draw("higgs4",   higgs4);
+        // feynman.draw("higgs1",   higgs1);
+        // feynman.draw("higgs2",   higgs2);
+        // feynman.draw("higgs3",   higgs3);
+        // feynman.draw("higgs4",   higgs4);
     </script>
   </body>
 </html>

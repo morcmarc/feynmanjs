@@ -1346,9 +1346,9 @@ var _defaults = {
   left          : false,
   tension       : 1,
   tag           : '',
-  color         : '#000',
+  color         : '#333',
   bgColor       : null,
-  penWidth      : 2,
+  penWidth      : 2.5,
   labelSide     : 'right',
   labelDistance : 10
 };
@@ -1459,7 +1459,7 @@ var _defaults = {
   tag           : '',
   color         : '#009933',
   bgColor       : null,
-  penWidth      : 2,
+  penWidth      : 2.5,
   labelSide     : 'right',
   labelDistance : 10
 };
@@ -1598,7 +1598,7 @@ var _defaults = {
   tag           : '',
   color         : '#0066FF',
   bgColor       : null,
-  penWidth      : 2,
+  penWidth      : 2.5,
   labelSide     : 'right',
   labelDistance : 15
 };
