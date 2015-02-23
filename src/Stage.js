@@ -206,7 +206,6 @@ module.exports = (function () {
           var cy  = that.data.height / 2;
           var nx  = cPoint.x - cx;
           var ny  = cPoint.y - cy;
-          var a   = Math.atan2(ny, nx);
           
           nx *= 1.10;
           ny *= 1.10;
@@ -214,11 +213,7 @@ module.exports = (function () {
           var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           
-          label.move(cx + nx, cy + ny);
-
-          if(cPoint.labelX && cPoint.labelY) {
-            label.move(cPoint.labelX, cPoint.labelY);
-          }
+          label.move(cx+nx+cPoint.labelX, cy+ny+cPoint.labelY);
         });
       }
     }
@@ -230,7 +225,8 @@ module.exports = (function () {
    */
   var _drawVertices = function() {
 
-    var ui = this.canvas.group();
+    var ui   = this.canvas.group();
+    var that = this;
 
     this.data.vertices.forEach(function(v) {
       if(v.visible) {

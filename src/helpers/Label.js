@@ -21,14 +21,13 @@ module.exports = function(canvas, opts, angle) {
   var n2x =  ny + ((opts.to.x + opts.from.x) / 2);
   var n2y = -nx + ((opts.to.y + opts.from.y) / 2);
 
-  if(opts.labelSide === 'left') {
-    label.move(n1x, n1y);
-  } else {
-    label.move(n2x, n2y);
-  }
+  var dx  = opts.labelX !== NaN ? opts.labelX : 0;
+  var dy  = opts.labelY !== NaN ? opts.labelY : 0;
 
-  if(opts.labelX && opts.labelY) {
-    label.move(opts.labelX, opts.labelY);
+  if(opts.labelSide === 'left') {
+    label.move(n1x + dx, n1y + dy);
+  } else {
+    label.move(n2x + dx, n2y + dy);
   }
 
   return label;

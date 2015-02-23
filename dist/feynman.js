@@ -229,7 +229,6 @@ module.exports = (function () {
           var cy  = that.data.height / 2;
           var nx  = cPoint.x - cx;
           var ny  = cPoint.y - cy;
-          var a   = Math.atan2(ny, nx);
           
           nx *= 1.10;
           ny *= 1.10;
@@ -237,11 +236,7 @@ module.exports = (function () {
           var label = ui.foreignObject().attr({ id: cPoint.id });
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           
-          label.move(cx + nx, cy + ny);
-
-          if(cPoint.labelX && cPoint.labelY) {
-            label.move(cPoint.labelX, cPoint.labelY);
-          }
+          label.move(cx+nx+cPoint.labelX, cy+ny+cPoint.labelY);
         });
       }
     }
@@ -253,7 +248,8 @@ module.exports = (function () {
    */
   var _drawVertices = function() {
 
-    var ui = this.canvas.group();
+    var ui   = this.canvas.group();
+    var that = this;
 
     this.data.vertices.forEach(function(v) {
       if(v.visible) {
@@ -595,26 +591,29 @@ module.exports = {
 
         left   : [
           // {
-            // id    : 'i1',
-            // side  : 'left',
-            // label : '$c_1$',
-            // labelX  : 10,
-            // labelY  : 10,
+            // id     : 'i1',
+            // side   : 'left',
+            // label  : '$c_1$',
+            // labelX : 10,
+            // labelY : 10,
           // }
         ],
         right  : [
           // {
           //   id: 'i1'
+          //   ...
           // }
         ],
         top    : [
           // {
           //   id: 'i1'
+          //   ...
           // }
         ],
         bottom : [
           // {
           //   id: 'i1'
+          //   ...
           // }
         ]
       }
@@ -886,14 +885,13 @@ module.exports = function(canvas, opts, angle) {
   var n2x =  ny + ((opts.to.x + opts.from.x) / 2);
   var n2y = -nx + ((opts.to.y + opts.from.y) / 2);
 
-  if(opts.labelSide === 'left') {
-    label.move(n1x, n1y);
-  } else {
-    label.move(n2x, n2y);
-  }
+  var dx  = opts.labelX !== NaN ? opts.labelX : 0;
+  var dy  = opts.labelY !== NaN ? opts.labelY : 0;
 
-  if(opts.labelX && opts.labelY) {
-    label.move(opts.labelX, opts.labelY);
+  if(opts.labelSide === 'left') {
+    label.move(n1x + dx, n1y + dy);
+  } else {
+    label.move(n2x + dx, n2y + dy);
   }
 
   return label;
@@ -1054,8 +1052,8 @@ module.exports = (function() {
         label         : options.label,
         labelSide     : options.side,
         labelDistance : options.dist,
-        labelX        : options.labelx,
-        labelY        : options.labely,
+        labelX        : options.labelx ? parseInt(options.labelx) : 0,
+        labelY        : options.labely ? parseInt(options.labely) : 0,
         tension       : parseFloat(options.tension),
         right         : rightValue,
         left          : leftValue,
@@ -1167,12 +1165,10 @@ module.exports = (function() {
     }
 
     var labelCoords = _processPropagatorOptions(args[0].slice(1));
-    if(labelCoords.labelx && labelCoords.labely) {
-      obj.labelX = labelCoords.labelx;
-      obj.labelY = labelCoords.labely;
-    }
 
-    obj.label = args[1][0];
+    obj.labelX = labelCoords.labelx ? parseInt(labelCoords.labelx) : 0;
+    obj.labelY = labelCoords.labely ? parseInt(labelCoords.labely) : 0;
+    obj.label  = args[1][0];
   };
 
   var _isVertex = function(point) {
@@ -1211,8 +1207,8 @@ module.exports = (function() {
 
     args.forEach(function(arg) {
 
-      // See http://www.regexr.com/38rqd
-      var pattern   = new RegExp(/([\w.]+|\$[\S,]?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
+      // See http://www.regexr.com/3afr4
+      var pattern   = new RegExp(/([\w.]+|\$[\S,]?\S+\$)=?(\$[\S\ ]*,?[\S\ ]*\$|[\w.*-]+|#\w+)?/g);
       var matches   = pattern.exec(arg);
       var processed = [];
 

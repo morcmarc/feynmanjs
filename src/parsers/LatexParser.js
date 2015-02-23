@@ -86,8 +86,8 @@ module.exports = (function() {
         label         : options.label,
         labelSide     : options.side,
         labelDistance : options.dist,
-        labelX        : options.labelx,
-        labelY        : options.labely,
+        labelX        : options.labelx ? parseInt(options.labelx) : 0,
+        labelY        : options.labely ? parseInt(options.labely) : 0,
         tension       : parseFloat(options.tension),
         right         : rightValue,
         left          : leftValue,
@@ -199,12 +199,10 @@ module.exports = (function() {
     }
 
     var labelCoords = _processPropagatorOptions(args[0].slice(1));
-    if(labelCoords.labelx && labelCoords.labely) {
-      obj.labelX = labelCoords.labelx;
-      obj.labelY = labelCoords.labely;
-    }
 
-    obj.label = args[1][0];
+    obj.labelX = labelCoords.labelx ? parseInt(labelCoords.labelx) : 0;
+    obj.labelY = labelCoords.labely ? parseInt(labelCoords.labely) : 0;
+    obj.label  = args[1][0];
   };
 
   var _isVertex = function(point) {
@@ -243,8 +241,8 @@ module.exports = (function() {
 
     args.forEach(function(arg) {
 
-      // See http://www.regexr.com/38rqd
-      var pattern   = new RegExp(/([\w.]+|\$[\S,]?\S+\$)=?(\$\S+,?\S+\$|[\w.*]+|#\w+)?/g);
+      // See http://www.regexr.com/3afr4
+      var pattern   = new RegExp(/([\w.]+|\$[\S,]?\S+\$)=?(\$[\S\ ]*,?[\S\ ]*\$|[\w.*-]+|#\w+)?/g);
       var matches   = pattern.exec(arg);
       var processed = [];
 

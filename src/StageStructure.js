@@ -43,26 +43,29 @@ module.exports = {
 
         left   : [
           // {
-            // id    : 'i1',
-            // side  : 'left',
-            // label : '$c_1$',
-            // labelX  : 10,
-            // labelY  : 10,
+            // id     : 'i1',
+            // side   : 'left',
+            // label  : '$c_1$',
+            // labelX : 10,
+            // labelY : 10,
           // }
         ],
         right  : [
           // {
           //   id: 'i1'
+          //   ...
           // }
         ],
         top    : [
           // {
           //   id: 'i1'
+          //   ...
           // }
         ],
         bottom : [
           // {
           //   id: 'i1'
+          //   ...
           // }
         ]
       }
