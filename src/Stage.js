@@ -215,6 +215,10 @@ module.exports = (function () {
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           
           label.move(cx + nx, cy + ny);
+
+          if(cPoint.labelX && cPoint.labelY) {
+            label.move(cPoint.labelX, cPoint.labelY);
+          }
         });
       }
     }

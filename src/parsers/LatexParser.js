@@ -198,6 +198,12 @@ module.exports = (function() {
       return;
     }
 
+    var labelCoords = _processPropagatorOptions(args[0].slice(1));
+    if(labelCoords.labelx && labelCoords.labely) {
+      obj.labelX = labelCoords.labelx;
+      obj.labelY = labelCoords.labely;
+    }
+
     obj.label = args[1][0];
   };
 

@@ -238,6 +238,10 @@ module.exports = (function () {
           label.appendChild('div', { id: 'label-' + cPoint.id, innerText: cPoint.label });
           
           label.move(cx + nx, cy + ny);
+
+          if(cPoint.labelX && cPoint.labelY) {
+            label.move(cPoint.labelX, cPoint.labelY);
+          }
         });
       }
     }
@@ -1160,6 +1164,12 @@ module.exports = (function() {
 
     if(!obj) {
       return;
+    }
+
+    var labelCoords = _processPropagatorOptions(args[0].slice(1));
+    if(labelCoords.labelx && labelCoords.labely) {
+      obj.labelX = labelCoords.labelx;
+      obj.labelY = labelCoords.labely;
     }
 
     obj.label = args[1][0];
