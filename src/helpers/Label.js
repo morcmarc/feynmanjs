@@ -27,5 +27,9 @@ module.exports = function(canvas, opts, angle) {
     label.move(n2x, n2y);
   }
 
+  if(opts.labelX && opts.labelY) {
+    label.move(opts.labelX, opts.labelY);
+  }
+
   return label;
 };

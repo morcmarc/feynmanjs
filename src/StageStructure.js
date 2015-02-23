@@ -24,7 +24,9 @@ module.exports = {
           // bgColor       : '#0F0',
           // penWidth      : 5,
           // labelSide     : 'right',
-          // labelDistance : 10
+          // labelDistance : 10,
+          // labelX        : 10,
+          // labelY        : 10
         // }
       ],
       vertices  : [
@@ -32,6 +34,8 @@ module.exports = {
           // id      : 'v1',
           // visible : true,
           // label   : '$v_1$',
+          // labelX  : 10,
+          // labelY  : 10,
           // sub     : false
         // }
       ],
@@ -39,9 +43,11 @@ module.exports = {
 
         left   : [
           // {
-          //   id    : 'i1',
-          //   side  : 'left',
-          //   label : '$c_1$'
+            // id    : 'i1',
+            // side  : 'left',
+            // label : '$c_1$',
+            // labelX  : 10,
+            // labelY  : 10,
           // }
         ],
         right  : [

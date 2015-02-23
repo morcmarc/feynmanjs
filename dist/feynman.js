@@ -572,7 +572,9 @@ module.exports = {
           // bgColor       : '#0F0',
           // penWidth      : 5,
           // labelSide     : 'right',
-          // labelDistance : 10
+          // labelDistance : 10,
+          // labelX        : 10,
+          // labelY        : 10
         // }
       ],
       vertices  : [
@@ -580,6 +582,8 @@ module.exports = {
           // id      : 'v1',
           // visible : true,
           // label   : '$v_1$',
+          // labelX  : 10,
+          // labelY  : 10,
           // sub     : false
         // }
       ],
@@ -587,9 +591,11 @@ module.exports = {
 
         left   : [
           // {
-          //   id    : 'i1',
-          //   side  : 'left',
-          //   label : '$c_1$'
+            // id    : 'i1',
+            // side  : 'left',
+            // label : '$c_1$',
+            // labelX  : 10,
+            // labelY  : 10,
           // }
         ],
         right  : [
@@ -882,6 +888,10 @@ module.exports = function(canvas, opts, angle) {
     label.move(n2x, n2y);
   }
 
+  if(opts.labelX && opts.labelY) {
+    label.move(opts.labelX, opts.labelY);
+  }
+
   return label;
 };
 },{}],8:[function(require,module,exports){
@@ -1002,7 +1012,6 @@ module.exports = (function() {
     var args      = _explodeArgs(_stripCurlies(rawArgs,keyword));
 
     if(keyword !== undefined && _keywordFunctionMap[keyword] !== undefined) {
-
       _keywordFunctionMap[keyword](args);
     }
   };
@@ -1041,6 +1050,8 @@ module.exports = (function() {
         label         : options.label,
         labelSide     : options.side,
         labelDistance : options.dist,
+        labelX        : options.labelx,
+        labelY        : options.labely,
         tension       : parseFloat(options.tension),
         right         : rightValue,
         left          : leftValue,

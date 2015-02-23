@@ -48,7 +48,6 @@ module.exports = (function() {
     var args      = _explodeArgs(_stripCurlies(rawArgs,keyword));
 
     if(keyword !== undefined && _keywordFunctionMap[keyword] !== undefined) {
-
       _keywordFunctionMap[keyword](args);
     }
   };
@@ -87,6 +86,8 @@ module.exports = (function() {
         label         : options.label,
         labelSide     : options.side,
         labelDistance : options.dist,
+        labelX        : options.labelx,
+        labelY        : options.labely,
         tension       : parseFloat(options.tension),
         right         : rightValue,
         left          : leftValue,
