@@ -64,8 +64,6 @@ The library allows easy implementation of different parser engines through a uni
 
 ##Roadmap
 
-- Hammer out issues in auto-layout
-- Labels
 - Implement API to allow after-draw handling of elements (i.e.: fine tuning position of vertices, propagators etc.)
 - Remove svg.js dependency
 - Add support for non MathJax labels (i.e.: unicode labels)

@@ -51,26 +51,35 @@
               'fmfpen{thin}',
               'fmfleft{i1,i2}',
               'fmfright{o1,o2,o3,o4}',
-              'fmf{fermion}{i1,v1,v2,i2}',
+              'fmf{antifermion}{i1,v1,v2,i2}',
               'fmf{photon}{v1,v3}',
               'fmf{fermion}{o1,v3,o2}',
               'fmf{photon}{v2,v4}',
-              'fmf{fermion}{o4,v4,o3}'
+              'fmf{fermion}{o4,v4,o3}',
+              'fmflabel{i1,labelx=-10,labely=-10}{$e^+$}',
+              'fmflabel{i2,labelx=-10}{$e^-$}',
+              'fmflabel{o1,labely=-5}{$\\overline{c}$}',
+              'fmflabel{o2}{$s$}',
+              'fmflabel{o3,labely=-5}{$\\nu_\\mu$}',
+              'fmflabel{o4,labely=-10}{$\\mu^+$}'
           ]
         };
         var box = {
-          title      : 'Resonant t-channel contribution',
+          title      : 'Box diagram',
           width      : 250,
           height     : 200,
           lang       : 'latex',
           diagram: [
-              'fmfpen{thin}',
               'fmfleftn{2}',
               'fmfrightn{2}',
               'fmf{fermion}{o1,v2,v1,i1}',
               'fmf{fermion}{i2,v3,v4,o2}',
-              'fmf{photon}{v1,v3}',
-              'fmf{photon}{v2,v4}'
+              'fmf{photon,label=$W^+$,side=left,labelx=-20,labely=-10}{v1,v3}',
+              'fmf{photon,label=$W^-$,labelx=-5,labely=-8}{v2,v4}',
+              'fmflabel{i1,labelx=-10,labely=-10}{$d$}',
+              'fmflabel{i2,labelx=-10}{$\\overline{b}$}',
+              'fmflabel{o1,labely=-5}{$b$}',
+              'fmflabel{o2}{$\\overline{d}$}',
           ]
         };
         var penguin = {
@@ -107,6 +116,9 @@
               'fmf{gluon}{i2,v2}',
               'fmf{antifermion}{v1,v3,v2,v1}',
               'fmf{photon}{v3,o1}',
+              'fmflabel{i1,labelx=-10}{$g$}',
+              'fmflabel{i2,labelx=-10}{$g$}',
+              'fmflabel{o1,labely=-5}{$H$}'
           ]
         };
         var higgs2 = {
