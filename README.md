@@ -4,6 +4,8 @@ Cross-browser Javascript library for drawing Feynman diagrams using SVG and HTML
 
 ![alt tag](https://raw.github.com/morcmarc/feynmanjs/master/examples/ex1.png)
 
+**[See more examples](http://morcmarc.github.io/feynmanjs/examples/)**
+
 ####Disclaimer
 
 The library is by no means ready yet to be used in "production". Check out jQuery.feyn [2] for a reliable HTML5 solution.
@@ -50,7 +52,7 @@ var annihilation = {
 feynman.draw("annihilation", annihilation);
 ```
 
-You can find more examples in the examples folder.
+More [examples](http://morcmarc.github.io/feynmanjs/examples/).
 
 ##Features
 
@@ -65,7 +67,7 @@ The library allows easy implementation of different parser engines through a uni
 ###Labels
 
 **Experimental**. The current label positioning function is dodgy, there is too many variables to calculate with and MathJax is
-unreliable. However it places labels good enough so that they can be fine tuned by hand using the `labelx` and `labely` attributes (see examples).
+unreliable. However it places labels good enough so that they can be fine tuned by hand using the `labelx` and `labely` attributes (see [examples](http://morcmarc.github.io/feynmanjs/examples/)).
 
 ##Roadmap
 
