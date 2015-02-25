@@ -4,6 +4,8 @@ var Stage         = require('./Stage');
 module.exports = (function() {
 
   var Feynman = function() {
+    var elements = document.getElementsByClassName('feynmanjs');
+    [].forEach.call(elements, _loadInplace, this);
 
     return this;
   };
@@ -31,6 +33,29 @@ module.exports = (function() {
     stage.draw();
 
     return this;
+  };
+
+  var _loadInplace = function(elem) {
+    var data     = {};
+    var raw      = elem.textContent;
+    var dataElem = document.createElement('div');
+    var figElem  = document.createElement('figure');
+
+    dataElem.style.display = 'none';
+    dataElem.textContent   = raw;
+    dataElem.className     = 'feynmanjs-data';
+    figElem.className      = 'feynmanjs-figure';
+
+    elem.textContent = '';
+    elem.appendChild(dataElem);
+    elem.appendChild(figElem);
+
+    try {
+      data = JSON.parse(raw);
+      this.draw(figElem, data);
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   window.Feynman = Feynman;
