@@ -1,0 +1,203 @@
+<html>
+  <head>
+    <title>FeynmanJS &mdash; Examples</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="lib/prism.css" rel="stylesheet" />
+  </head>
+  <body>
+
+  <div id="wrapper">
+    
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">FeynmanJS</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <h1>A visual guide &mdash; WIP</h1>
+
+      <h2>Propagators</h2>
+      <p>Currently supported line types: solid, wave, loop and dashed. Fermions and ghosts also have an anti pair, which will render the arrow in the opposite direction.</p>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre><code class="language-javascript">
+{
+  "title": "Propagators",
+  "width": 300,
+  "height": 300,
+  "diagram": [
+    "fmfleftn{5}",
+    "fmfrightn{5}",
+    "fmf{fermion}{i1,o1}",
+    "fmf{photon}{i2,o2}",
+    "fmf{gluon}{i3,o3}",
+    "fmf{ghost}{i4,o4}",
+    "fmf{antifermion}{i5,o5}"
+  ]
+}
+          </code></pre>
+        </div>
+        <div class="col-md-6">
+          <div class="feynmanjs">
+{
+  "title": "Propagators",
+  "width": 300,
+  "height": 300,
+  "diagram": [
+    "fmfleftn{5}",
+    "fmfrightn{5}",
+    "fmf{fermion}{i1,o1}",
+    "fmf{photon}{i2,o2}",
+    "fmf{gluon}{i3,o3}",
+    "fmf{ghost}{i4,o4}",
+    "fmf{antifermion}{i5,o5}"
+  ]
+}
+          </div>
+        </div>
+      </div>
+
+      <h2>Top-down view</h2>
+      <p>You can easily create top-down diagrams instead of left-right ones by using <code>fmftop</code> and <code>fmfbottom</code>, but you can also mix them to create more complex layouts.</p>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre><code class="language-javascript">
+{
+  "title": "Gluon-Ghost Vertex for QCD",
+  "width": 300,
+  "height": 300,
+  "diagram": [
+    "fmftopn{1}",
+    "fmfbottomn{2}",
+    "fmf{gluon}{i1,v1}",
+    "fmf{ghost}{o1,v1}",
+    "fmf{ghost,label=$p$,labelx=5,labely=-5}{v1,o2}",
+    "fmflabel{i1}{$c,\\mu$}",
+    "fmflabel{o1}{$b$}",
+    "fmflabel{o2}{$a$}",
+    "fmfdot{v1}"
+  ]
+}
+          </code></pre>
+        </div>
+        <div class="col-md-6">
+          <div class="feynmanjs">
+{
+  "title": "Gluon-Ghost Vertex for QCD",
+  "width": 300,
+  "height": 300,
+  "diagram": [
+    "fmftopn{1}",
+    "fmfbottomn{2}",
+    "fmf{gluon}{i1,v1}",
+    "fmf{ghost}{o1,v1}",
+    "fmf{ghost,label=$p$,labelx=5,labely=-5}{v1,o2}",
+    "fmflabel{i1}{$c,\\mu$}",
+    "fmflabel{o1}{$b$}",
+    "fmflabel{o2}{$a$}",
+    "fmfdot{v1}"
+  ]
+}
+          </div>
+        </div>
+      </div>
+
+      <h2>Weightless vertices</h2>
+      <p>If you don't want a vertex to have an influence on the layout, append a <code>*</code> to its name (e.g.: <code>v1*</code>). This can be particularly useful when you would like to split up a propagator into multiple segments, but you don't want your layout to be skewed.</p>
+
+      <div class="row">
+        <div class="col-md-6">
+          <pre><code class="language-javascript">
+{
+  "title"      : "Penguin",
+  "width"      : 400,
+  "height"     : 300,
+  "diagram": [
+    "fmfleftn{4}",
+    "fmfrightn{4}",
+    "fmf{antifermion}{i1,v1*,v2*,v3*,o1}",
+    "fmf{gluon,left=4,label=$g$}{v2*,v4}",
+    "fmf{photon,left=2.1,tension=0,labelx=-15,labely=-10,label=$\\overline{u}\\,\\overline{c}\\,\\overline{t}$}{v1*,v3*}",
+    "fmf{antifermion}{o2,v4,o3}",
+    "fmf{fermion}{i4,o4}",
+    "fmfdot{v1*,v2*,v3*,v4}",
+    "fmflabel{i4}{$d$}",
+    "fmflabel{o4}{$d$}",
+    "fmflabel{o2}{$u$}",
+    "fmflabel{o3}{$\\overline{u}$}",
+    "fmflabel{i1}{$\\overline{b}$}",
+    "fmflabel{o1}{$\\overline{s}$}"
+  ]
+}
+          </code></pre>
+        </div>
+        <div class="col-md-6">
+          <div class="feynmanjs">
+{
+  "title"      : "Penguin",
+  "width"      : 300,
+  "height"     : 200,
+  "diagram": [
+    "fmfleftn{4}",
+    "fmfrightn{4}",
+    "fmf{antifermion}{i1,v1*,v2*,v3*,o1}",
+    "fmf{gluon,left=4,label=$g$}{v2*,v4}",
+    "fmf{photon,left=2.1,tension=0,labelx=-15,labely=-10,label=$\\overline{u}\\,\\overline{c}\\,\\overline{t}$}{v1*,v3*}",
+    "fmf{antifermion}{o2,v4,o3}",
+    "fmf{fermion}{i4,o4}",
+    "fmfdot{v1*,v2*,v3*,v4}",
+    "fmflabel{i4}{$d$}",
+    "fmflabel{o4}{$d$}",
+    "fmflabel{o2}{$u$}",
+    "fmflabel{o3}{$\\overline{u}$}",
+    "fmflabel{i1}{$\\overline{b}$}",
+    "fmflabel{o1}{$\\overline{s}$}"
+  ]
+}
+          </div>
+        </div>
+      </div>
+
+      <div id="footer" style="height: 50px; line-height: 50px; margin: 0;">
+        <p class="muted credit"><small>FeynmanJS and SVG.js are licensed under the MIT license. MathJax is distributed under the Apache License, Version 2.0.</small></p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/svg.js/1.0.1/svg.min.js"></script>
+  <script src="lib/svg.js/svg.foreign.js"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      "HTML-CSS": { availableFonts: ["TeX"] }
+    });
+  </script>
+  <script type="text/javascript"
+    src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+  <script src="lib/prism.js"></script>
+  <script src="feynman.js"></script>
+  <script>
+      var feynman = new Feynman();
+  </script>
+
+  </body>
+</html>

@@ -38,7 +38,7 @@ module.exports = (function() {
   var _loadInplace = function(elem) {
     var data     = {};
     var raw      = elem.textContent;
-    var dataElem = document.createElement('div');
+    var dataElem = document.createElement('pre');
     var figElem  = document.createElement('figure');
 
     dataElem.style.display = 'none';
