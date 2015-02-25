@@ -25,7 +25,8 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         files: {
-          'dist/feynman.js': ['src/index.js']
+          'dist/feynman.js': ['src/index.js'],
+          'doc/feynman.js': ['src/index.js']
         },
         options: {
           debug      : true,
@@ -68,6 +69,15 @@ module.exports = function(grunt) {
           livereload: true
         }
       }
+    },
+    express: {
+      docs: {
+        options: {
+          port: 9000,
+          hostname: '0.0.0.0',
+          bases: ['./doc']
+        }
+      }
     }
   });
 
@@ -78,6 +88,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-express');
+
+  grunt.registerTask('servedocs', ['express:docs', 'express-keepalive']);
 
   // Default task(s).
   grunt.registerTask('default', 'Browserify and uglify', function() {

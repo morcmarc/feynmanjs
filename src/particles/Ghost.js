@@ -92,14 +92,14 @@ module.exports = {
     var coeff = anti ? -1 : 1;
 
     //On-the-line
-    var x1 = length / 2 + coeff * 7;
-    var y1 = 0;
+    var x1 = length / 2 + coeff * 10;
+    var y1 = 1.20;
     //Below-the-line
-    var x2 = length / 2 - coeff * 7;
-    var y2 = 3.5;
+    var x2 = length / 2 - coeff * 10;
+    var y2 = 6.5;
     //Above-the-line
-    var x3 = length / 2 - coeff * 7;
-    var y3 = -3.5;
+    var x3 = length / 2 - coeff * 10;
+    var y3 = -4.5;
     //'x1,y1 x2,y2, x3,y3'
     var polygonString = '' + x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3;
     ui
