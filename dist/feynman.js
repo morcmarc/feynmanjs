@@ -964,7 +964,7 @@ module.exports = (function() {
     return this;
   };
 
-  var _loadInplace = function(elem) {
+  function _loadInplace(elem) {
     var data     = {};
     var raw      = elem.textContent;
     var dataElem = document.createElement('pre');
