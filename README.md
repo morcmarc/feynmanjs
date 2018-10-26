@@ -6,17 +6,17 @@ Cross-browser Javascript library for drawing Feynman diagrams using SVG and HTML
 
 **[See more examples](http://morcmarc.github.io/feynmanjs/doc/)**
 
-####Disclaimer
+#### Disclaimer
 
 The library is by no means ready yet to be used in "production". Check out jQuery.feyn [2] for a reliable HTML5 solution.
 
-##Usage
+## Usage
 
-###Dependencies
+### Dependencies
 
 - [SVG.js](http://www.svgjs.com/) - *for now, see roadmap*
 
-###Latex (feynMF) flavour example
+### Latex (feynMF) flavour example
 
 **HTML:**
 
@@ -54,22 +54,22 @@ feynman.draw("annihilation", annihilation);
 
 More [examples](http://morcmarc.github.io/feynmanjs/doc/).
 
-##Features
+## Features
 
-###Auto-layout
+### Auto-layout
 
 The library is based on feynMF [1] and it implements most of its features including the auto-layout system. Given a simple instruction set and description of participants in a system the engine will attempt to lay out the diagram as nicely as possible without any manual intervention. Currently there is no option to position elements by hand but it is top priority.
 
-###Parsers
+### Parsers
 
 The library allows easy implementation of different parser engines through a unified stage class. At the moment only the feynMF language is supported.
 
-###Labels
+### Labels
 
 **Experimental**. The current label positioning function is dodgy, there is too many variables to calculate with and MathJax is
 unreliable. However it places labels good enough so that they can be fine tuned by hand using the `labelx` and `labely` attributes (see [examples](http://morcmarc.github.io/feynmanjs/doc/)).
 
-##Roadmap
+## Roadmap
 
 - Add more line types e.g.: dashed, dotted
 - Add more vertex types, i.e.: blobs
@@ -79,13 +79,13 @@ unreliable. However it places labels good enough so that they can be fine tuned 
 - Add option to turn off auto-layout and allow users to position elements through configuration
 - Animations: for educational purposes, to help easier understanding of particle behaviour
 
-##Development
+## Development
 
-###Contributing
+### Contributing
 
 To submit a fix or an enhancement fork the repository, checkout the 'development' branch, add your name to the Contributors section in README.md, and send a pull request!
 
-###Building
+### Building
 
 Install dependencies first:
 
@@ -97,7 +97,7 @@ Then run build task:
 
 Generated files can be found in the `dist` folder.
 
-###Running unit tests
+### Running unit tests
 
 To run test suite from command line type:
 
@@ -107,16 +107,15 @@ Alternatively you can run it in the browser at `/spec`. There is also a grunt ta
 
 `grunt watch:test`
 
-##References
+## References
 
 \[1\] [http://photino.github.io/jquery-feyn/index.html](http://photino.github.io/jquery-feyn/index.html)
-
 \[2\] [http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf](http://www.pd.infn.it/TeX/doc/latex/feynmf/manual.pdf)
 
 ---
 
 This software is licensed under the MIT License.
 
-##Contributors
+## Contributors
 
 - [Marcell Jusztin](mailto:hello@morcmarc.com)
